@@ -48,5 +48,7 @@ typedef struct
 /* Function Prototypes
  ******************************************************************************/
 
+void BopIt_RegisterLogger(void (*logger)(const char *const message));
+void BopIt_RegisterTime(BopIt_TimeMs_t (*time)());
 void BopIt_Init(BopIt_GameContext_t *const gameContext);
 void BopIt_Run(BopIt_GameContext_t *const gameContext);
