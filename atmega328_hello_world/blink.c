@@ -1,5 +1,7 @@
 /* Simple program for an ATmega328 to blink 3 LEDs when a button is pressed */
-// Branched and Edited by Kushal Parekh
+
+/* Branched and Edited by Kushal Parekh */
+/* Branched and Edited by Benjamin Esquieres */
 
 #ifndef __AVR_ATmega328P__
 #define __AVR_ATmega328P__
