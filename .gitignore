@@ -1,2 +1,6 @@
 # vscode
 .vscode
+
+# ESP-IDF
+sdkconfig*
+LaserBlaster/build
