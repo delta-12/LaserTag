@@ -28,13 +28,13 @@
 static char BopIt_LogBuffer[BOPIT_LOG_BUFFER_SIZE];
 
 static void (*BopIt_Logger)(const char *const message) = NULL;
-static BopIt_TimeMs_t (*BopIt_Time)() = NULL;
+static BopIt_TimeMs_t (*BopIt_Time)(void) = NULL;
 
 /* Function Prototypes
  ******************************************************************************/
 
 static void BopIt_Log(const char *const format, ...);
-static BopIt_TimeMs_t BopIt_GetTime();
+static BopIt_TimeMs_t BopIt_GetTime(void);
 static BopIt_TimeMs_t BopIt_GetElapsedTime(const BopIt_TimeMs_t startTime);
 static BopIt_Command_t *BopIt_GetRandomCommand(const BopIt_Command_t *const commands, const uint32_t commandCount);
 static void BopIt_HandleStart(BopIt_GameContext_t *const gameContext);
@@ -55,7 +55,7 @@ void BopIt_RegisterLogger(void (*logger)(const char *const message))
     }
 }
 
-void BopIt_RegisterTime(BopIt_TimeMs_t (*time)())
+void BopIt_RegisterTime(BopIt_TimeMs_t (*time)(void))
 {
     if (time != NULL)
     {
@@ -126,7 +126,7 @@ static void BopIt_Log(const char *const format, ...)
     }
 }
 
-static BopIt_TimeMs_t BopIt_GetTime()
+static BopIt_TimeMs_t BopIt_GetTime(void)
 {
     BopIt_TimeMs_t time = 0U;
 

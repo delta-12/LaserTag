@@ -34,7 +34,9 @@ typedef struct
     bool Detected;
 } BopIt_Command_t;
 
-typedef struct
+typedef struct BopIt_GameContext BopIt_GameContext_t;
+
+struct BopIt_GameContext
 {
     BopIt_GameState_t GameState;
     uint8_t Score;
@@ -46,12 +48,12 @@ typedef struct
     BopIt_TimeMs_t WaitStart;
     void (*OnGameStart)(BopIt_GameContext_t *const gameContext);
     void (*OnGameEnd)(BopIt_GameContext_t *const gameContext);
-} BopIt_GameContext_t;
+};
 
 /* Function Prototypes
  ******************************************************************************/
 
 void BopIt_RegisterLogger(void (*logger)(const char *const message));
-void BopIt_RegisterTime(BopIt_TimeMs_t (*time)());
+void BopIt_RegisterTime(BopIt_TimeMs_t (*time)(void));
 void BopIt_Init(BopIt_GameContext_t *const gameContext);
 void BopIt_Run(BopIt_GameContext_t *const gameContext);
