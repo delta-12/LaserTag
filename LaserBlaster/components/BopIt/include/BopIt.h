@@ -27,11 +27,11 @@ typedef enum
 
 typedef struct
 {
+    const char *Name;
     void (*IssueCommand)(void);
     void (*SuccessFeedback)(void);
     void (*FailFeedback)(void);
-    void (*UpdateInput)(void);
-    bool Detected;
+    bool (*GetInput)(void);
 } BopIt_Command_t;
 
 typedef struct BopIt_GameContext BopIt_GameContext_t;
@@ -41,7 +41,7 @@ struct BopIt_GameContext
     BopIt_GameState_t GameState;
     uint8_t Score;
     uint8_t Lives;
-    BopIt_Command_t *Commands;
+    BopIt_Command_t **Commands;
     uint32_t CommandCount;
     BopIt_Command_t *CurrentCommand;
     BopIt_TimeMs_t WaitTime;
