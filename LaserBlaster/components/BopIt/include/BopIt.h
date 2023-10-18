@@ -7,6 +7,7 @@
 
 /* Includes
  ******************************************************************************/
+#include <stdbool.h>
 #include <stdint.h>
 
 /* Typedefs
@@ -16,14 +17,12 @@ typedef uint32_t BopIt_TimeMs_t; /* Time in milliseconds */
 
 typedef enum
 {
-    INIT,
-    START,
-    COMMAND,
-    WAIT,
-    SUCCESS,
-    FAIL,
-    END,
-    DEINIT
+    BOPIT_GAMESTATE_START,
+    BOPIT_GAMESTATE_COMMAND,
+    BOPIT_GAMESTATE_WAIT,
+    BOPIT_GAMESTATE_SUCCESS,
+    BOPIT_GAMESTATE_FAIL,
+    BOPIT_GAMESTATE_END,
 } BopIt_GameState_t;
 
 typedef struct
@@ -31,6 +30,8 @@ typedef struct
     void (*IssueCommand)(void);
     void (*SuccessFeedback)(void);
     void (*FailFeedback)(void);
+    void (*UpdateInput)(void);
+    bool Detected;
 } BopIt_Command_t;
 
 typedef struct
@@ -43,6 +44,8 @@ typedef struct
     BopIt_Command_t *CurrentCommand;
     BopIt_TimeMs_t WaitTime;
     BopIt_TimeMs_t WaitStart;
+    void (*OnGameStart)(BopIt_GameContext_t *const gameContext);
+    void (*OnGameEnd)(BopIt_GameContext_t *const gameContext);
 } BopIt_GameContext_t;
 
 /* Function Prototypes

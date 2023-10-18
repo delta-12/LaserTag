@@ -17,11 +17,10 @@
 /* Defines
  ******************************************************************************/
 
-#ifndef BOPIT_LOG_BUFFER_SIZE
 #define BOPIT_LOG_BUFFER_SIZE 1024U
-#endif
 #define BOPIT_MAX_SCORE 99U
 #define BOPIT_INIT_LIVES 3U
+#define BOPIT_DETECTED_INPUTS_SUCCESS 1U
 #define BOPIT_MAX_WAIT_TIME_MS 5000U
 #define BOPIT_MIN_WAIT_TIME_MS 500U
 #define BOPIT_WAIT_TIME_DECREMENT_MS (BOPIT_MAX_WAIT_TIME_MS - BOPIT_MIN_WAIT_TIME_MS) / (BOPIT_MAX_SCORE)
@@ -38,14 +37,12 @@ static void BopIt_Log(const char *const format, ...);
 static BopIt_TimeMs_t BopIt_GetTime();
 static BopIt_TimeMs_t BopIt_GetElapsedTime(const BopIt_TimeMs_t startTime);
 static BopIt_Command_t *BopIt_GetRandomCommand(const BopIt_Command_t *const commands, const uint32_t commandCount);
-static void BopIt_HandleInit(BopIt_GameContext_t *const gameContext);
 static void BopIt_HandleStart(BopIt_GameContext_t *const gameContext);
 static void BopIt_HandleCommand(BopIt_GameContext_t *const gameContext);
 static void BopIt_HandleWait(BopIt_GameContext_t *const gameContext);
 static void BopIt_HandleSuccess(BopIt_GameContext_t *const gameContext);
 static void BopIt_HandleFail(BopIt_GameContext_t *const gameContext);
 static void BopIt_HandleEnd(BopIt_GameContext_t *const gameContext);
-static void BopIt_HandleDeinit(BopIt_GameContext_t *const gameContext);
 
 /* Function Definitions
  ******************************************************************************/
@@ -70,7 +67,7 @@ void BopIt_Init(BopIt_GameContext_t *const gameContext)
 {
     if (gameContext != NULL)
     {
-        gameContext->GameState = INIT;
+        gameContext->GameState = BOPIT_GAMESTATE_START;
         gameContext->Lives = BOPIT_INIT_LIVES;
         gameContext->WaitTime = BOPIT_MAX_WAIT_TIME_MS;
 
@@ -84,29 +81,23 @@ void BopIt_Run(BopIt_GameContext_t *const gameContext)
     {
         switch (gameContext->GameState)
         {
-        case INIT:
-            BopIt_HandleInit(gameContext);
-            break;
-        case START:
+        case BOPIT_GAMESTATE_START:
             BopIt_HandleStart(gameContext);
             break;
-        case COMMAND:
+        case BOPIT_GAMESTATE_COMMAND:
             BopIt_HandleCommand(gameContext);
             break;
-        case WAIT:
+        case BOPIT_GAMESTATE_WAIT:
             BopIt_HandleWait(gameContext);
             break;
-        case SUCCESS:
+        case BOPIT_GAMESTATE_SUCCESS:
             BopIt_HandleSuccess(gameContext);
             break;
-        case FAIL:
+        case BOPIT_GAMESTATE_FAIL:
             BopIt_HandleFail(gameContext);
             break;
-        case END:
+        case BOPIT_GAMESTATE_END:
             BopIt_HandleEnd(gameContext);
-            break;
-        case DEINIT:
-            BopIt_HandleDeinit(gameContext);
             break;
         default:
             break;
@@ -171,27 +162,18 @@ static BopIt_Command_t *BopIt_GetRandomCommand(const BopIt_Command_t *const comm
     return command;
 }
 
-static void BopIt_HandleInit(BopIt_GameContext_t *const gameContext)
-{
-    if (gameContext != NULL)
-    {
-        BopIt_Log("Initializing game\n");
-
-        /* TODO configure game */
-
-        gameContext->GameState = START;
-    }
-}
-
 static void BopIt_HandleStart(BopIt_GameContext_t *const gameContext)
 {
     if (gameContext != NULL)
     {
         BopIt_Log("Starting game\n");
 
-        /* TODO start game */
+        if (gameContext->OnGameStart != NULL)
+        {
+            (*gameContext->OnGameStart)(gameContext);
+        }
 
-        gameContext->GameState = COMMAND;
+        gameContext->GameState = BOPIT_GAMESTATE_COMMAND;
     }
 }
 
@@ -207,23 +189,43 @@ static void BopIt_HandleCommand(BopIt_GameContext_t *const gameContext)
 
         BopIt_Log("Waiting for player action\n");
         gameContext->WaitStart = BopIt_GetTime();
-        gameContext->GameState = WAIT;
+        gameContext->GameState = BOPIT_GAMESTATE_WAIT;
     }
 }
 
 static void BopIt_HandleWait(BopIt_GameContext_t *const gameContext)
 {
+    BopIt_Command_t *command;
+    uint32_t commandIndex = 0U;
+
     if (gameContext != NULL)
     {
-        /* TODO check for inputs */
-
         if (BopIt_GetElapsedTime(gameContext->WaitStart) > gameContext->WaitTime)
         {
             BopIt_Log("Out of time\n");
-            gameContext->GameState = FAIL;
+            gameContext->GameState = BOPIT_GAMESTATE_FAIL;
         }
 
-        /* TODO check input for success */
+        while (commandIndex < gameContext->CommandCount && gameContext->GameState != BOPIT_GAMESTATE_FAIL)
+        {
+            command = (BopIt_Command_t *)(gameContext->Commands + commandIndex);
+
+            (*command->UpdateInput)();
+
+            if (command->Detected)
+            {
+                if (command == gameContext->CurrentCommand)
+                {
+                    gameContext->GameState = BOPIT_GAMESTATE_SUCCESS;
+                }
+                else
+                {
+                    gameContext->GameState = BOPIT_GAMESTATE_FAIL;
+                }
+            }
+
+            commandIndex++;
+        }
     }
 }
 
@@ -237,11 +239,11 @@ static void BopIt_HandleSuccess(BopIt_GameContext_t *const gameContext)
         if (gameContext->Score < BOPIT_MAX_SCORE)
         {
             gameContext->WaitTime -= BOPIT_WAIT_TIME_DECREMENT_MS;
-            gameContext->GameState = COMMAND;
+            gameContext->GameState = BOPIT_GAMESTATE_COMMAND;
         }
         else
         {
-            gameContext->GameState = END;
+            gameContext->GameState = BOPIT_GAMESTATE_END;
         }
     }
 }
@@ -255,7 +257,7 @@ static void BopIt_HandleFail(BopIt_GameContext_t *const gameContext)
         gameContext->Lives--;
         if (gameContext->Lives == 0U)
         {
-            gameContext->GameState = END;
+            gameContext->GameState = BOPIT_GAMESTATE_END;
         }
     }
 }
@@ -267,16 +269,9 @@ static void BopIt_HandleEnd(BopIt_GameContext_t *const gameContext)
         BopIt_Log("Game over\n");
         BopIt_Log("Score: %d, Lives: %d\n", gameContext->Score, gameContext->Lives);
 
-        /* TODO end game */
-
-        gameContext->GameState = DEINIT;
-    }
-}
-
-static void BopIt_HandleDeinit(BopIt_GameContext_t *const gameContext)
-{
-    if (gameContext != NULL)
-    {
-        /* TODO handle deinit */
+        if (gameContext->OnGameEnd != NULL)
+        {
+            (*gameContext->OnGameEnd)(gameContext);
+        }
     }
 }
