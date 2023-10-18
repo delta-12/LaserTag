@@ -3,4 +3,4 @@
 
 # ESP-IDF
 sdkconfig*
-LaserBlaster/build
+build
