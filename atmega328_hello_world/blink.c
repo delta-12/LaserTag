@@ -1,5 +1,6 @@
 /* Simple program for an ATmega328 to blink 3 LEDs when a button is pressed */
 
+/* Branched and Edited by Tyler Hansen */
 /* Branched and Edited by Kushal Parekh */
 /* Branched and Edited by Benjamin Esquieres */
 
