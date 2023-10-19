@@ -48,45 +48,49 @@ Firmware for this project targets the ESP32, and as such, ESP-IDF is used for fi
 
 #### Build
 
-    Firmware for a device can be built by navigating to the directory within the repository that contains the firmware targetting the particular device and running the build command.
+Firmware for a device can be built by navigating to the directory within the repository that contains the firmware targetting the particular device and running the build command.
 
-    `idf.py build`
+`idf.py build`
 
 #### Flash and Monitor
 
-    Firmware can be flashed a device with ESP-IDF using the flash command.
+Firmware can be flashed a device with ESP-IDF using the flash command.
 
-    `idf.py -p PORT flash`
+`idf.py -p PORT flash`
 
-    Replace `PORT` with the port of the device you are flashing, e.g. `idf.py -p /dev/ttyUSB0 flash`.
+Replace `PORT` with the port of the device you are flashing, e.g. `idf.py -p /dev/ttyUSB0 flash`.
 
-    After flashing a device, its output can be monitored using the monitor command.
+After flashing a device, its output can be monitored using the monitor command.
 
-    `idf.py -p PORT monitor`
+`idf.py -p PORT monitor`
 
-    Again, replace `PORT` with the port of the device you are monitoring, e.g. `idf.py -p /dev/ttyUSB0 monitor`.
+Again, replace `PORT` with the port of the device you are monitoring, e.g. `idf.py -p /dev/ttyUSB0 monitor`.
 
-    These two commands can also be combined as follows:
+These two commands can also be combined as follows:
 
-    `idf.py -p PORT flash monitor`
+`idf.py -p PORT flash monitor`
 
-    e.g. `idf.py -p /dev/ttyUSB0 flash monitor`
+e.g. `idf.py -p /dev/ttyUSB0 flash monitor`
 
 #### Configuration menu
 
-    ESP-IDF provides a graphical menu for configuring project settings such as config defines and build settings.  The configuration menu can be accessed by running the following command.
+ESP-IDF provides a graphical menu for configuring project settings such as config defines and build settings. The configuration menu can be accessed by running the following command.
 
-    `idf.py menuconfig`
+`idf.py menuconfig`
 
 ### Docker
 
 If you do not wish to install ESP-IDF, the ESP-IDF Docker Image can be used instead. This may also be suitable for environments in which it is diffcult to install or use ESP-IDF. Obviously, Docker is required for this approach. For instructions to setup Docker, see [https://www.docker.com/get-started/](https://www.docker.com/get-started/).
 
-1. Navigate to the project directory and build the firmware with the docker command
+1. The firmware can be configured by running
+
+   `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp -it espressif/idf idf.py menuconfig`
+
+2. Navigate to the project directory and build the firmware with the docker command
 
    `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp espressif/idf idf.py build`
 
-2. To flash the firmware, run
+3. To flash the firmware, run
 
    `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp --device=/dev/ttyUSB0 espressif/idf idf.py -p /dev/ttyUSB0 flash`
 
@@ -97,9 +101,5 @@ If you do not wish to install ESP-IDF, the ESP-IDF Docker Image can be used inst
    The flash and monitor commands can be combined into a single command as follows
 
    `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp --device=/dev/ttyUSB0 -it espressif/idf idf.py -p /dev/ttyUSB0 flash monitor`
-
-The firmware can also be configured by running
-
-`docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp -it espressif/idf idf.py menuconfig`
 
 Note: These commands assume the environment is a Debian-based Linux distribution with the target device connected on port `/dev/ttyUSB0`.
