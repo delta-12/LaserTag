@@ -1,7 +1,7 @@
 /**
  * @file BopIt.c
  *
- * @brief Keep track of game state and handle commands and actions
+ * @brief Keep track of game state and handle commands and actions.
  *
  ******************************************************************************/
 
@@ -17,18 +17,20 @@
 /* Defines
  ******************************************************************************/
 
-#define BOPIT_LOG_BUFFER_SIZE 1024U
-#define BOPIT_MAX_SCORE 99U
-#define BOPIT_INIT_LIVES 3U
-#define BOPIT_DETECTED_INPUTS_SUCCESS 1U
-#define BOPIT_MAX_WAIT_TIME_MS 5000U
-#define BOPIT_MIN_WAIT_TIME_MS 500U
-#define BOPIT_WAIT_TIME_DECREMENT_MS (BOPIT_MAX_WAIT_TIME_MS - BOPIT_MIN_WAIT_TIME_MS) / (BOPIT_MAX_SCORE)
+#define BOPIT_LOG_BUFFER_SIZE 1024U                                                                        /* Size of buffer for storing messages to be logged */
+#define BOPIT_MAX_SCORE 99U                                                                                /* Maximum game score, game is over after player reaches this score */
+#define BOPIT_INIT_LIVES 3U                                                                                /* Starting player lives */
+#define BOPIT_MAX_WAIT_TIME_MS 5000U                                                                       /* Maximum time in milliseconds to complete a command */
+#define BOPIT_MIN_WAIT_TIME_MS 500U                                                                        /* Minimum time in milliseconds to complete a command */
+#define BOPIT_WAIT_TIME_DECREMENT_MS (BOPIT_MAX_WAIT_TIME_MS - BOPIT_MIN_WAIT_TIME_MS) / (BOPIT_MAX_SCORE) /* Numer of milliseconds to decrease time to complete a command */
 
-static char BopIt_LogBuffer[BOPIT_LOG_BUFFER_SIZE];
+/* Globals
+ ******************************************************************************/
 
-static void (*BopIt_Logger)(const char *const message) = NULL;
-static BopIt_TimeMs_t (*BopIt_Time)(void) = NULL;
+static char BopIt_LogBuffer[BOPIT_LOG_BUFFER_SIZE]; /* Buffer for storing messages to be logged */
+
+static void (*BopIt_Logger)(const char *const message) = NULL; /* Client-specified logging function, not be called directly */
+static BopIt_TimeMs_t (*BopIt_Time)(void) = NULL;              /* Client-specified function to get current time in milliseconds, not be called directly */
 
 /* Function Prototypes
  ******************************************************************************/
@@ -47,6 +49,11 @@ static void BopIt_HandleEnd(BopIt_GameContext_t *const gameContext);
 /* Function Definitions
  ******************************************************************************/
 
+/**
+ * @brief Register a function for logging.
+ *
+ * @param[in] logger Logging function
+ ******************************************************************************/
 void BopIt_RegisterLogger(void (*logger)(const char *const message))
 {
     if (logger != NULL)
@@ -55,6 +62,11 @@ void BopIt_RegisterLogger(void (*logger)(const char *const message))
     }
 }
 
+/**
+ * @brief Register a function for getting the current time in milliseconds.
+ *
+ * @param[in] time Function to get current time in milliseconds
+ ******************************************************************************/
 void BopIt_RegisterTime(BopIt_TimeMs_t (*time)(void))
 {
     if (time != NULL)
@@ -63,11 +75,19 @@ void BopIt_RegisterTime(BopIt_TimeMs_t (*time)(void))
     }
 }
 
+/**
+ * @brief Initialize a BopIt game.  Sets initial game state, player score and
+ * lives, and time to complete a command.  Also seeds rand for selecting a
+ * random command to issue.
+ *
+ * @param[in,out] gameContext Context for a BopIt game
+ ******************************************************************************/
 void BopIt_Init(BopIt_GameContext_t *const gameContext)
 {
     if (gameContext != NULL)
     {
         gameContext->GameState = BOPIT_GAMESTATE_START;
+        gameContext->Score = 0U;
         gameContext->Lives = BOPIT_INIT_LIVES;
         gameContext->WaitTime = BOPIT_MAX_WAIT_TIME_MS;
 
@@ -75,6 +95,12 @@ void BopIt_Init(BopIt_GameContext_t *const gameContext)
     }
 }
 
+/**
+ * @brief Handle the current state of a BopIt game.  Call to update the game
+ * state.
+ *
+ * @param[in,out] gameContext Context for a BopIt game
+ ******************************************************************************/
 void BopIt_Run(BopIt_GameContext_t *const gameContext)
 {
     if (gameContext != NULL)
@@ -105,6 +131,13 @@ void BopIt_Run(BopIt_GameContext_t *const gameContext)
     }
 }
 
+/**
+ * @brief Log a message using registered logging function.  Calls printf if no
+ * logging function is registered.
+ *
+ * @param[in] format Message format string
+ * @param[in] ...    Arguments for message format string
+ ******************************************************************************/
 static void BopIt_Log(const char *const format, ...)
 {
     va_list args;
@@ -126,6 +159,12 @@ static void BopIt_Log(const char *const format, ...)
     }
 }
 
+/**
+ * @brief Get the current time in milliseconds.  Returns 0 if no function to
+ * get the current time in milliseconds is registered.
+ *
+ * @return Current time in milliseconds
+ ******************************************************************************/
 static BopIt_TimeMs_t BopIt_GetTime(void)
 {
     BopIt_TimeMs_t time = 0U;
@@ -138,6 +177,14 @@ static BopIt_TimeMs_t BopIt_GetTime(void)
     return time;
 }
 
+/**
+ * @brief Get the elapsed time from the start time in milliseconds.
+ *
+ * @param[in] startTime Start time in milliseconds from which to get the
+ * elapsed time
+ *
+ * @return Elapsed time in milliseconds
+ ******************************************************************************/
 static BopIt_TimeMs_t BopIt_GetElapsedTime(const BopIt_TimeMs_t startTime)
 {
     BopIt_TimeMs_t time = 0U;
@@ -150,6 +197,14 @@ static BopIt_TimeMs_t BopIt_GetElapsedTime(const BopIt_TimeMs_t startTime)
     return time;
 }
 
+/**
+ * @brief Get a command randomly selected from a list of commands.
+ *
+ * @param[in] commands     Pointer to list of command pointers
+ * @param[in] commandCount Number of commands in list
+ *
+ * @return Pointer to a randomly selected command
+ ******************************************************************************/
 static BopIt_Command_t *BopIt_GetRandomCommand(const BopIt_Command_t *const *const commands, const uint32_t commandCount)
 {
     BopIt_Command_t *command = NULL;
@@ -162,6 +217,11 @@ static BopIt_Command_t *BopIt_GetRandomCommand(const BopIt_Command_t *const *con
     return command;
 }
 
+/**
+ * @brief Handle the start state of a BopIt game.  Starts the game.
+ *
+ * @param[in,out] gameContext Context for a BopIt game
+ ******************************************************************************/
 static void BopIt_HandleStart(BopIt_GameContext_t *const gameContext)
 {
     if (gameContext != NULL)
@@ -185,6 +245,12 @@ static void BopIt_HandleStart(BopIt_GameContext_t *const gameContext)
     }
 }
 
+/**
+ * @brief Handle the command state of a BopIt game.  Issues a randomly selected
+ * command.
+ *
+ * @param[in,out] gameContext Context for a BopIt game
+ ******************************************************************************/
 static void BopIt_HandleCommand(BopIt_GameContext_t *const gameContext)
 {
     if (gameContext != NULL)
@@ -204,6 +270,13 @@ static void BopIt_HandleCommand(BopIt_GameContext_t *const gameContext)
     }
 }
 
+/**
+ * @brief Handle the wait state of a BopIt game.  Waits for the player to
+ * complete the issued command in a given amount of time and checks if the
+ * correct input was made by the player.
+ *
+ * @param[in,out] gameContext Context for a BopIt game
+ ******************************************************************************/
 static void BopIt_HandleWait(BopIt_GameContext_t *const gameContext)
 {
     BopIt_Command_t *command;
@@ -211,12 +284,14 @@ static void BopIt_HandleWait(BopIt_GameContext_t *const gameContext)
 
     if (gameContext != NULL)
     {
+        /* Check if the player is out of time to complete the issued command */
         if (BopIt_GetElapsedTime(gameContext->WaitStart) > gameContext->WaitTime)
         {
             BopIt_Log("Out of time");
             gameContext->GameState = BOPIT_GAMESTATE_FAIL;
         }
 
+        /* Check if the player made the correct input and no other inputs */
         while (commandIndex < gameContext->CommandCount && gameContext->GameState != BOPIT_GAMESTATE_FAIL)
         {
             command = *(BopIt_Command_t **)(gameContext->Commands + commandIndex);
@@ -238,6 +313,13 @@ static void BopIt_HandleWait(BopIt_GameContext_t *const gameContext)
     }
 }
 
+/**
+ * @brief Handle the success state of a BopIt game.  Calls function to provide
+ * feedback for successfully completing the command, increments the player
+ * score, and decreases the time to complete the next command.
+ *
+ * @param[in,out] gameContext Context for a BopIt game
+ ******************************************************************************/
 static void BopIt_HandleSuccess(BopIt_GameContext_t *const gameContext)
 {
     if (gameContext != NULL)
@@ -257,6 +339,12 @@ static void BopIt_HandleSuccess(BopIt_GameContext_t *const gameContext)
     }
 }
 
+/**
+ * @brief Handle the success state of a BopIt game.  Calls function to provide
+ * feedback for failing to complete the command and decreases player lives.
+ *
+ * @param[in,out] gameContext Context for a BopIt game
+ ******************************************************************************/
 static void BopIt_HandleFail(BopIt_GameContext_t *const gameContext)
 {
     if (gameContext != NULL)
@@ -275,6 +363,11 @@ static void BopIt_HandleFail(BopIt_GameContext_t *const gameContext)
     }
 }
 
+/**
+ * @brief Handle the end state of a BopIt game.  Ends BopIt game.
+ *
+ * @param[in,out] gameContext Context for a BopIt game
+ ******************************************************************************/
 static void BopIt_HandleEnd(BopIt_GameContext_t *const gameContext)
 {
     if (gameContext != NULL)
