@@ -36,7 +36,7 @@ static BopIt_TimeMs_t (*BopIt_Time)(void) = NULL;
 static void BopIt_Log(const char *const format, ...);
 static BopIt_TimeMs_t BopIt_GetTime(void);
 static BopIt_TimeMs_t BopIt_GetElapsedTime(const BopIt_TimeMs_t startTime);
-static BopIt_Command_t *BopIt_GetRandomCommand(const BopIt_Command_t **const commands, const uint32_t commandCount);
+static BopIt_Command_t *BopIt_GetRandomCommand(const BopIt_Command_t *const *const commands, const uint32_t commandCount);
 static void BopIt_HandleStart(BopIt_GameContext_t *const gameContext);
 static void BopIt_HandleCommand(BopIt_GameContext_t *const gameContext);
 static void BopIt_HandleWait(BopIt_GameContext_t *const gameContext);
@@ -150,7 +150,7 @@ static BopIt_TimeMs_t BopIt_GetElapsedTime(const BopIt_TimeMs_t startTime)
     return time;
 }
 
-static BopIt_Command_t *BopIt_GetRandomCommand(const BopIt_Command_t **const commands, const uint32_t commandCount)
+static BopIt_Command_t *BopIt_GetRandomCommand(const BopIt_Command_t *const *const commands, const uint32_t commandCount)
 {
     BopIt_Command_t *command = NULL;
 
@@ -191,7 +191,7 @@ static void BopIt_HandleCommand(BopIt_GameContext_t *const gameContext)
     {
         BopIt_Log("Score: %d, Lives: %d", gameContext->Score, gameContext->Lives);
 
-        gameContext->CurrentCommand = BopIt_GetRandomCommand(gameContext->Commands, gameContext->CommandCount);
+        gameContext->CurrentCommand = BopIt_GetRandomCommand((const BopIt_Command_t *const *const)(gameContext->Commands), gameContext->CommandCount);
         if (gameContext->CurrentCommand != NULL)
         {
             BopIt_Log("Issuing command %s", gameContext->CurrentCommand->Name);
