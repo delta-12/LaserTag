@@ -113,7 +113,7 @@ void BopItCommands_Button1SuccessFeedback(void)
 
 void BopItCommands_Button1FailFeedback(void)
 {
-    ESP_LOGI(BopItCommands_EspLogTag, "Successfully pressed Button 1");
+    ESP_LOGI(BopItCommands_EspLogTag, "Failed to pressed Button 1");
 }
 
 bool BopItCommands_Button1GetInput(void)
@@ -143,7 +143,7 @@ void BopItCommands_Button2SuccessFeedback(void)
 
 void BopItCommands_Button2FailFeedback(void)
 {
-    ESP_LOGI(BopItCommands_EspLogTag, "Successfully pressed Button 2");
+    ESP_LOGI(BopItCommands_EspLogTag, "Failed to pressed Button 2");
 }
 
 bool BopItCommands_Button2GetInput(void)
