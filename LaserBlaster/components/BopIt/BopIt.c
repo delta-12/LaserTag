@@ -142,12 +142,12 @@ static void BopIt_Log(const char *const format, ...)
 {
     va_list args;
 
-    va_start(args, format);
-    vsnprintf(BopIt_LogBuffer, BOPIT_LOG_BUFFER_SIZE, format, args);
-    va_end(args);
-
     if (format != NULL)
     {
+        va_start(args, format);
+        vsnprintf(BopIt_LogBuffer, BOPIT_LOG_BUFFER_SIZE, format, args);
+        va_end(args);
+
         if (BopIt_Logger == NULL)
         {
             printf("%s", BopIt_LogBuffer);
