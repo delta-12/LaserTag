@@ -78,6 +78,37 @@ ESP-IDF provides a graphical menu for configuring project settings such as confi
 
 `idf.py menuconfig`
 
+#### Create a Component
+
+Components created as part of this project should be general, standalone modules; all other project-specific modules should be placed in the `main` directory. An example of a component that is a general purpose module is an IMU driver. An example of a project-specific module is GPIO configurations for specific buttons on a particular device.
+
+To create a component:
+
+1. Make a directory in the `components` directory.
+
+   `mkdir components/NAME`
+
+   Replace `NAME` with the name of the component, e.g. `mkdir components/BopIt`.
+
+2. Create a manifest for the component.
+
+   `idf.py create-manifest --component=NAME`
+
+   Again, replace `NAME` with the name of the component, e.g. `idf.py create-manifest --component=BopIt`.
+
+3. Create a CMake file for build the component. A basic example is provided below.
+
+   ```
+   set(sources "BopIt.c")
+   set(includes "include")
+
+   idf_component_register(
+      SRCS ${sources}
+      INCLUDE_DIRS ${includes}
+      REQUIRES BopIt
+   )
+   ```
+
 ### Docker
 
 If you do not wish to install ESP-IDF, the ESP-IDF Docker Image can be used instead. This may also be suitable for environments in which it is diffcult to install or use ESP-IDF. Obviously, Docker is required for this approach. For instructions to setup Docker, see [https://www.docker.com/get-started/](https://www.docker.com/get-started/).
