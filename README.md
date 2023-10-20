@@ -64,7 +64,7 @@ After flashing a device, its output can be monitored using the monitor command.
 
 `idf.py -p PORT monitor`
 
-Again, replace `PORT` with the port of the device you are monitoring, e.g. `idf.py -p /dev/ttyUSB0 monitor`.
+Again, replace `PORT` with the port of the device you are monitoring, e.g. `idf.py -p /dev/ttyUSB0 monitor`. To exit from the monitor command, use `Ctrl + ]`.
 
 These two commands can also be combined as follows:
 
