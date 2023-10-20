@@ -7,7 +7,6 @@
 
 /* Includes
  ******************************************************************************/
-#include "driver/gpio.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "freertos/queue.h"
@@ -37,6 +36,9 @@ static void Gpio_RegisterButtonEventHandler(Gpio_EventHandler_t eventHandler);
 /* Function Definitions
  ******************************************************************************/
 
+/**
+ * @brief Initialize all GPIO required.
+ ******************************************************************************/
 void Gpio_Init(void)
 {
     /* Initialize button inputs with interrupt on falling edge */
@@ -50,6 +52,12 @@ void Gpio_Init(void)
     gpio_config(&buttons);
 }
 
+/**
+ * @brief Register handlers for different types of GPIO events.
+ *
+ * @param[in] gpioType     Type of GPIO to register a handler for
+ * @param[in] eventHandler Handler for GPIO event
+ ******************************************************************************/
 void Gpio_RegisterEventHandler(const Gpio_Type_t gpioType, Gpio_EventHandler_t eventHandler)
 {
     if (eventHandler != NULL)
@@ -66,7 +74,8 @@ void Gpio_RegisterEventHandler(const Gpio_Type_t gpioType, Gpio_EventHandler_t e
 }
 
 /**
- * @brief Add button interrupt event to the button event queue.
+ * @brief GPIO button ISR.  Adds button interrupt event to the button event
+ * queue.
  *
  * @param[in] arg GPIO number
  ******************************************************************************/
@@ -95,6 +104,11 @@ static void Gpio_ButtonEventHandlerTask(void *arg)
     }
 }
 
+/**
+ * @brief Register a GPIO handler for button events.
+ *
+ * @param[in] eventHandler Handler for GPIO button events
+ ******************************************************************************/
 static void Gpio_RegisterButtonEventHandler(Gpio_EventHandler_t eventHandler)
 {
     if (eventHandler != NULL)

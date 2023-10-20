@@ -5,8 +5,12 @@
  *
  ******************************************************************************/
 
+#ifndef GPIO_H
+#define GPIO_H
+
 /* Includes
  ******************************************************************************/
+#include "driver/gpio.h"
 #include <stdint.h>
 
 /* Defines
@@ -33,3 +37,5 @@ typedef enum
 
 void Gpio_Init(void);
 void Gpio_RegisterEventHandler(const Gpio_Type_t gpioType, Gpio_EventHandler_t eventHandler);
+
+#endif
