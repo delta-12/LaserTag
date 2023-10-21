@@ -42,7 +42,7 @@ Guide to getting started with working on this project.
 
 4. Open a pull request.
 
-   Code submitted in a pull request must have been thoroughly tested and verified to work. All pull requests must be linked to an issue. The base ref may be the `develop` branch, which contains the latest changes verified to work. `main`, on the other hand, is only for releases of production code and artifacts. Do not request to merge changes directly into `main`.
+   Code submitted in a pull request must have been thoroughly tested and verified to work. All CI tests or other CI actions should be passing. All pull requests must be linked to an issue, and each must include a brief description of the changes made as well as the purpose for the changes. The base ref may be the `develop` branch, which contains the latest changes verified to work. `main`, on the other hand, is only for releases of production code and artifacts. Do not request to merge changes directly into `main`.
 
 5. Close the issue if resolved.
 
