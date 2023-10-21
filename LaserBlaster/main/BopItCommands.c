@@ -36,7 +36,7 @@ bool BopItCommands_Button1InputFlag = false;
 SemaphoreHandle_t BopItCommands_Button1InputFlagMutex = NULL;
 StaticSemaphore_t BopItCommands_Button1InputFlagMutexBuffer;
 BopIt_Command_t BopItCommands_Button1 = {
-    .Name = "Button 0 Command",
+    .Name = "Button 1 Command",
     .IssueCommand = BopItCommands_Button1IssueCommand,
     .SuccessFeedback = BopItCommands_Button1SuccessFeedback,
     .FailFeedback = BopItCommands_Button1FailFeedback,
@@ -47,7 +47,7 @@ bool BopItCommands_Button2InputFlag = false;
 SemaphoreHandle_t BopItCommands_Button2InputFlagMutex = NULL;
 StaticSemaphore_t BopItCommands_Button2InputFlagMutexBuffer;
 BopIt_Command_t BopItCommands_Button2 = {
-    .Name = "Button 0 Command",
+    .Name = "Button 2 Command",
     .IssueCommand = BopItCommands_Button2IssueCommand,
     .SuccessFeedback = BopItCommands_Button2SuccessFeedback,
     .FailFeedback = BopItCommands_Button2FailFeedback,

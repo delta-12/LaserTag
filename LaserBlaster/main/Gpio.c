@@ -23,8 +23,10 @@
 /* Globals
  ******************************************************************************/
 
-static QueueHandle_t Gpio_ButtonEventQueue = NULL;         /* Queue for storing button interrupt events */
-static Gpio_EventHandler_t Gpio_ButtonEventHandler = NULL; /* Button event handler registered by client, not be called directly */
+static StaticQueue_t Gpio_ButtonEventQueue;                                          /* Queue for storing button interrupt events */
+uint8_t Gpio_ButtonEventQueueBuffer[GPIO_EVENT_QUEUE_SIZE * sizeof(Gpio_GpioNum_t)]; /* Statically allocated buffer for button interrupt event queue's storage area */
+static QueueHandle_t Gpio_ButtonEventQueueHandle = NULL;                             /* Handle for queue storing button interrupt events */
+static Gpio_EventHandler_t Gpio_ButtonEventHandler = NULL;                           /* Button event handler registered by client, not be called directly */
 
 /* Function Prototypes
  ******************************************************************************/
@@ -83,7 +85,7 @@ static void IRAM_ATTR Gpio_ButtonIsrHandler(void *arg)
 {
     Gpio_GpioNum_t gpioNum = (Gpio_GpioNum_t)arg;
 
-    xQueueSendFromISR(Gpio_ButtonEventQueue, &gpioNum, NULL);
+    xQueueSendFromISR(Gpio_ButtonEventQueueHandle, &gpioNum, NULL);
 }
 
 /**
@@ -97,7 +99,7 @@ static void Gpio_ButtonEventHandlerTask(void *arg)
 
     for (;;)
     {
-        if (xQueueReceive(Gpio_ButtonEventQueue, &gpioNum, portMAX_DELAY))
+        if (xQueueReceive(Gpio_ButtonEventQueueHandle, &gpioNum, portMAX_DELAY))
         {
             (*Gpio_ButtonEventHandler)(gpioNum); /* Assumes Gpio_RegisterButtonEventHandler checked for NULL pointer */
         }
@@ -117,7 +119,7 @@ static void Gpio_RegisterButtonEventHandler(Gpio_EventHandler_t eventHandler)
         Gpio_ButtonEventHandler = eventHandler;
 
         /* Create a queue to handle GPIO event from ISR */
-        Gpio_ButtonEventQueue = xQueueCreate(GPIO_EVENT_QUEUE_SIZE, sizeof(Gpio_GpioNum_t));
+        Gpio_ButtonEventQueueHandle = xQueueCreateStatic(GPIO_EVENT_QUEUE_SIZE, sizeof(Gpio_GpioNum_t), Gpio_ButtonEventQueueBuffer, &Gpio_ButtonEventQueue);
 
         /* Start task to handle events in the queue */
         xTaskCreate(Gpio_ButtonEventHandlerTask, "Gpio_ButtonEventHandlerTask", GPIO_TASK_STACK_DEPTH, NULL, GPIO_TASK_PRIORITY, NULL);
