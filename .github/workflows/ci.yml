@@ -12,3 +12,15 @@ jobs:
       - name: "Cppcheck"
         working-directory: ./LaserBlaster
         run: /opt/esp/entrypoint.sh idf.py cppcheck
+  build:
+    runs-on: ubuntu-latest
+    container:
+      image: d3lta12/idf-cppcheck:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          submodules: "recursive"
+      - name: "Build"
+        working-directory: ./LaserBlaster
+        run: /opt/esp/entrypoint.sh idf.py build
