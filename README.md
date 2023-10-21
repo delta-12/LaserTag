@@ -20,7 +20,13 @@ Guide to getting started with working on this project.
 
    For information on how ESP-IDF is used in this project, see the [ESP-IDF](#esp-idf) section.
 
-### Procedure
+2. Cppcheck
+
+   This project uses Cppcheck for static analysis. Cppcheck is submoduled in the `tools` directory. To setup Cppcheck, run `git submodule update --init` if the `--recurse-submodules` option was not included when cloning the repository, and follow the instructions for compiling Cppcheck with CMake found [here](https://github.com/danmar/cppcheck/#cmake). CMake should already be installed during the ESP-IDF installation process. The project's CMake configuration will automatically search for the Cppcheck binary in the Cppcheck submodule `build` directory.
+
+   Note: When following the instructions to compile Cppcheck using CMake, commands should be run from within the `tools/cppcheck` directory.
+
+### Procedure to Contribute
 
 1. Clone the repository.
 
