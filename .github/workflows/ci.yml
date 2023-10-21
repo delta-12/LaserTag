@@ -1,0 +1,10 @@
+on: [push]
+jobs:
+  static_analysis:
+    runs-on: ubuntu-latest
+    container:
+      image: d3lta12/idf-cppcheck:latest
+    steps:
+      name: Checkout
+      uses: actions/checkout@v4
+      run: idf.py cppcheck
