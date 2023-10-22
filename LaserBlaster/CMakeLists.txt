@@ -43,7 +43,9 @@ add_custom_target(
         cppcheck
         ${${CPPCHECK_NAME}_BIN}
         --enable=all
-        --suppress=missingInclude
-        --suppress=missingIncludeSystem
+        --suppress-xml=../suppressions.xml
+        --error-exitcode=2
+        --xml
+        --output-file=cppcheck_report.xml
         ${CPPCHECK_SOURCES}
 )
