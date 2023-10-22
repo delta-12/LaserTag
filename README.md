@@ -115,6 +115,14 @@ To create a component:
    )
    ```
 
+### Cppcheck
+
+Perform static analyis with Cppcheck by running
+
+`idf.py cppcheck`
+
+This will generate a report named `cppcheck_report.xml` in the project's build directory.
+
 ### Docker
 
 If you do not wish to install ESP-IDF, the ESP-IDF Docker Image can be used instead. This may also be suitable for environments in which it is diffcult to install or use ESP-IDF. Obviously, Docker is required for this approach. For instructions to setup Docker, see [https://www.docker.com/get-started/](https://www.docker.com/get-started/).
@@ -138,5 +146,11 @@ If you do not wish to install ESP-IDF, the ESP-IDF Docker Image can be used inst
    The flash and monitor commands can be combined into a single command as follows
 
    `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp --device=/dev/ttyUSB0 -it espressif/idf idf.py -p /dev/ttyUSB0 flash monitor`
+
+4. Static analysis with Cppcheck can be performed with the `d3lta12/idf-cppcheck` Docker image, which is a modified version of the `espressif/idf` image and used in CI.
+
+   `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp -it d3lta12/idf-cppcheck:latest idf.py cppcheck`
+
+   Any of the commands above or other standard `idf.py` commands will also work with this image. The Dockerfile for this image can be found in `tools/docker`.
 
 Note: These commands assume the environment is a Debian-based Linux distribution with the target device connected on port `/dev/ttyUSB0`.
