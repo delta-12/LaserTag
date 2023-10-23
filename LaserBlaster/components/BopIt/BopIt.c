@@ -142,12 +142,12 @@ static void BopIt_Log(const char *const format, ...)
 {
     va_list args;
 
-    va_start(args, format);
-    vsnprintf(BopIt_LogBuffer, BOPIT_LOG_BUFFER_SIZE, format, args);
-    va_end(args);
-
     if (format != NULL)
     {
+        va_start(args, format);
+        vsnprintf(BopIt_LogBuffer, BOPIT_LOG_BUFFER_SIZE, format, args);
+        va_end(args);
+
         if (BopIt_Logger == NULL)
         {
             printf("%s", BopIt_LogBuffer);
@@ -255,7 +255,7 @@ static void BopIt_HandleCommand(BopIt_GameContext_t *const gameContext)
 {
     if (gameContext != NULL)
     {
-        BopIt_Log("Score: %d, Lives: %d", gameContext->Score, gameContext->Lives);
+        BopIt_Log("Score: %d, Lives: %d, Time to Complete Command: %ldms", gameContext->Score, gameContext->Lives, gameContext->WaitTime);
 
         gameContext->CurrentCommand = BopIt_GetRandomCommand((const BopIt_Command_t *const *const)(gameContext->Commands), gameContext->CommandCount);
         if (gameContext->CurrentCommand != NULL)
