@@ -1,8 +1,9 @@
-set(sources "DFRobotDFPlayerMini/DFRobotDFPlayerMini.cpp")
-set(includes "DFRobotDFPlayerMini")
+set(sources "DFRobotDFPlayerMini/DFRobotDFPlayerMini.cpp" "DFPlayerMini_Arduino.cpp")
+set(includes "DFRobotDFPlayerMini" "include")
 
 idf_component_register(
     SRCS ${sources}
     INCLUDE_DIRS ${includes}
     REQUIRES DFPlayerMini
+    PRIV_REQUIRES esp_timer
 )
