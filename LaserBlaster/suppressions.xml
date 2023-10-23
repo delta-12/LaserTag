@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<suppressions>
+    <suppress>
+        <id>missingInclude</id>
+    </suppress>
+    <suppress>
+        <id>missingIncludeSystem</id>
+    </suppress>
+    <suppress>
+        <id>unusedFunction</id>
+        <fileName>*/main/LaserBlaster.c</fileName>
+        <symbolName>app_main</symbolName>
+    </suppress>
+    <suppress>
+        <id>variableScope</id>
+        <fileName>*/components/BopIt/BopIt.c</fileName>
+        <symbolName>args</symbolName>
+    </suppress>
+    <suppress>
+        <id>variableScope</id>
+        <fileName>*/components/BopIt/BopIt.c</fileName>
+        <symbolName>command</symbolName>
+    </suppress>
+    <suppress>
+        <id>variableScope</id>
+        <fileName>*/components/BopIt/BopIt.c</fileName>
+        <symbolName>commandIndex</symbolName>
+    </suppress>
+</suppressions>
