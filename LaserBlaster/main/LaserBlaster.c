@@ -9,6 +9,7 @@
 #include <stdio.h>
 
 #define BOPIT_COMMAND_COUNT 3U
+#define BOPIT_RUN_DELAY 10U
 #define US_PER_MS 1000ULL
 
 static const char *BopItTag = "BopIt";
@@ -40,7 +41,7 @@ void app_main(void)
     while (bopItGameContext.GameState != BOPIT_GAMESTATE_END)
     {
         BopIt_Run(&bopItGameContext);
-        vTaskDelay(10U / portTICK_PERIOD_MS);
+        vTaskDelay(BOPIT_RUN_DELAY / portTICK_PERIOD_MS);
     }
     BopIt_Run(&bopItGameContext);
 }

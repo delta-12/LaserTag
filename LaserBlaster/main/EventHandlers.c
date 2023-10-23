@@ -24,6 +24,12 @@ void EventHandlers_Button2EventHandler(void);
 /* Function Definitions
  ******************************************************************************/
 
+/**
+ * @brief Handle a button event.  Calls event handler corresponding to button
+ * that produced the event.
+ *
+ * @param[in] gpioNum GPIO number of the button that produced the event
+ ******************************************************************************/
 void EventHandlers_ButtonEventHandler(const Gpio_GpioNum_t gpioNum)
 {
     switch (gpioNum)
@@ -42,6 +48,11 @@ void EventHandlers_ButtonEventHandler(const Gpio_GpioNum_t gpioNum)
     }
 }
 
+/**
+ * @brief Update Button 0 input flag to indicate Button 0 was pressed.
+ *
+ * @note BopItCommands must have been initialized to create the mutex.
+ ******************************************************************************/
 void EventHandlers_Button0EventHandler(void)
 {
     if (xSemaphoreTake(BopItCommands_Button0InputFlagMutex, EVENTHANDLERS_SEMPHR_BLOCK_TIME) == pdTRUE)
@@ -51,6 +62,11 @@ void EventHandlers_Button0EventHandler(void)
     }
 }
 
+/**
+ * @brief Update Button 1 input flag to indicate Button 1 was pressed.
+ *
+ * @note BopItCommands must have been initialized to create the mutex.
+ ******************************************************************************/
 void EventHandlers_Button1EventHandler(void)
 {
     if (xSemaphoreTake(BopItCommands_Button1InputFlagMutex, EVENTHANDLERS_SEMPHR_BLOCK_TIME) == pdTRUE)
@@ -60,6 +76,11 @@ void EventHandlers_Button1EventHandler(void)
     }
 }
 
+/**
+ * @brief Update Button 2 input flag to indicate Button 2 was pressed.
+ *
+ * @note BopItCommands must have been initialized to create the mutex.
+ ******************************************************************************/
 void EventHandlers_Button2EventHandler(void)
 {
     if (xSemaphoreTake(BopItCommands_Button2InputFlagMutex, EVENTHANDLERS_SEMPHR_BLOCK_TIME) == pdTRUE)
