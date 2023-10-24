@@ -1,4 +1,4 @@
-set(sources "DFRobotDFPlayerMini/DFRobotDFPlayerMini.cpp" "DFPlayerMini_Arduino.cpp")
+set(sources "DFRobotDFPlayerMini/DFRobotDFPlayerMini.cpp" "DFPlayerMini_Arduino.cpp" "DFPlayerMini.cpp")
 set(includes "DFRobotDFPlayerMini" "include")
 
 idf_component_register(

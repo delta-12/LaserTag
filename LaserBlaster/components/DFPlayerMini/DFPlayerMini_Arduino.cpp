@@ -26,14 +26,20 @@ uint16_t millis(void)
     return (uint16_t)(esp_timer_get_time() / US_PER_MS);
 }
 
-void delay(uint16_t ms)
+void delay(const uint16_t ms)
 {
     vTaskDelay(ms / portTICK_PERIOD_MS);
 }
 
-Stream::Stream(uint8_t rxPin, uint8_t txPin, bool inverseLogic) {}
+Stream::Stream(const uint32_t rxPin, const uint32_t txPin, const bool inverseLogic) {}
+
+Stream::Stream(const bool inverseLogic) {}
 
 Stream::~Stream(void) {}
+
+void Stream::begin(void) {}
+
+void Stream::setPins(const uint32_t rxPin, const uint32_t txPin) {}
 
 bool Stream::available(void)
 {
@@ -45,12 +51,12 @@ uint8_t Stream::read(void)
     return 0U;
 }
 
-uint8_t Stream::read(uint8_t *buffer, size_t size)
+uint8_t Stream::read(uint8_t *const buffer, const size_t size)
 {
     return 0U;
 }
 
-size_t Stream::write(const uint8_t *buffer, size_t size)
+size_t Stream::write(const uint8_t *const buffer, const size_t size)
 {
     return 0U;
 }

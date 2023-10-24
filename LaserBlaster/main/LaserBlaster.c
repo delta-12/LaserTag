@@ -1,5 +1,6 @@
 #include "BopIt.h"
 #include "BopItCommands.h"
+#include "DFPlayerMini.h"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "EventHandlers.h"
@@ -11,6 +12,8 @@
 #define BOPIT_COMMAND_COUNT 3U
 #define BOPIT_RUN_DELAY 10U
 #define US_PER_MS 1000ULL
+#define UART_RX_PIN GPIO_NUM_16
+#define UART_TX_PIN GPIO_NUM_17
 
 static const char *BopItTag = "BopIt";
 

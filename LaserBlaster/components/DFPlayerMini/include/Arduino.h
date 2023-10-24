@@ -19,19 +19,22 @@
  ******************************************************************************/
 
 uint16_t millis(void);
-void delay(uint64_t ms);
+void delay(const uint64_t ms);
 
 /* Class Declarations
  ******************************************************************************/
 class Stream
 {
 public:
-    Stream(uint8_t rxPin, uint8_t txPin, bool inverseLogic = false);
+    Stream(const uint32_t rxPin, const uint32_t txPin, const bool inverseLogic = false);
+    Stream(const bool inverseLogic = false);
     ~Stream(void);
+    void begin(void);
+    void setPins(const uint32_t rxPin, const uint32_t txPin);
     bool available(void);
     uint8_t read(void);
-    uint8_t read(uint8_t *buffer, size_t size);
-    size_t write(const uint8_t *buffer, size_t size);
+    uint8_t read(uint8_t *const buffer, const size_t size);
+    size_t write(const uint8_t *const buffer, const size_t size);
 };
 
 #endif
