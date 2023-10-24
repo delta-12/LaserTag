@@ -1,7 +1,7 @@
 /**
  * @file DFPlayerMini.cpp
  *
- * @brief Wrapper around DFRobotDFPlayerMini library
+ * @brief C-compatible wrapper around DFPlayerMini_PlayerMini
  *
  ******************************************************************************/
 
@@ -9,7 +9,7 @@
  ******************************************************************************/
 #include "Arduino.h"
 #include "DFPlayerMini.h"
-#include "DFRobotDFPlayerMini.h"
+#include "DFPlayerMini_PlayerMini.h"
 
 /* Function Definitions
  ******************************************************************************/
@@ -20,14 +20,14 @@ extern "C"
 
     void *DFPlayerMini_CreateHandle(const uint32_t rxPin, const uint32_t txPin)
     {
-        return (DFRobotDFPlayerMini *)new DFRobotDFPlayerMini();
+        return (DFPlayerMini_PlayerMini *)new DFPlayerMini_PlayerMini(rxPin, txPin);
     }
 
     void DFPlayerMini_FreeHandle(void *handle)
     {
         if (handle != nullptr)
         {
-            delete (DFRobotDFPlayerMini *)handle;
+            delete (DFPlayerMini_PlayerMini *)handle;
         }
     }
 
@@ -37,7 +37,7 @@ extern "C"
 
         if (handle != nullptr)
         {
-            handledMessage = ((DFRobotDFPlayerMini *)handle)->handleMessage(type, parameter);
+            handledMessage = ((DFPlayerMini_PlayerMini *)handle)->handleMessage(type, parameter);
         }
 
         return handledMessage;
@@ -49,7 +49,7 @@ extern "C"
 
         if (handle != nullptr)
         {
-            handledError = ((DFRobotDFPlayerMini *)handle)->handleMessage(type, parameter);
+            handledError = ((DFPlayerMini_PlayerMini *)handle)->handleMessage(type, parameter);
         }
 
         return handledError;
@@ -60,17 +60,22 @@ extern "C"
 
         if (handle != nullptr)
         {
-            command = ((DFRobotDFPlayerMini *)handle)->readCommand();
+            command = ((DFPlayerMini_PlayerMini *)handle)->readCommand();
         }
 
         return command;
     }
 
-    bool DFPlayerMini_Begin(const void *const handle, void *stream, const bool isACK, const bool doReset)
+    bool DFPlayerMini_Begin(const void *const handle, const bool isACK, const bool doReset)
     {
-        /* TODO */
+        bool begin = false;
 
-        return false;
+        if (handle != nullptr)
+        {
+            begin = ((DFPlayerMini_PlayerMini *)handle)->begin(isACK, doReset);
+        }
+
+        return begin;
     }
 
     bool DFPlayerMini_WaitAvailable(const void *const handle, const uint64_t duration)
@@ -79,7 +84,7 @@ extern "C"
 
         if (handle != nullptr)
         {
-            available = ((DFRobotDFPlayerMini *)handle)->waitAvailable(duration);
+            available = ((DFPlayerMini_PlayerMini *)handle)->waitAvailable(duration);
         }
 
         return available;
@@ -91,7 +96,7 @@ extern "C"
 
         if (handle != nullptr)
         {
-            available = ((DFRobotDFPlayerMini *)handle)->available();
+            available = ((DFPlayerMini_PlayerMini *)handle)->available();
         }
 
         return available;
@@ -103,7 +108,7 @@ extern "C"
 
         if (handle != nullptr)
         {
-            type = ((DFRobotDFPlayerMini *)handle)->readType();
+            type = ((DFPlayerMini_PlayerMini *)handle)->readType();
         }
 
         return type;
@@ -115,7 +120,7 @@ extern "C"
 
         if (handle != nullptr)
         {
-            read = ((DFRobotDFPlayerMini *)handle)->read();
+            read = ((DFPlayerMini_PlayerMini *)handle)->read();
         }
 
         return read;
@@ -125,7 +130,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->setTimeOut(timeOutDuration);
+            ((DFPlayerMini_PlayerMini *)handle)->setTimeOut(timeOutDuration);
         }
     }
 
@@ -133,7 +138,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->next();
+            ((DFPlayerMini_PlayerMini *)handle)->next();
         }
     }
 
@@ -141,7 +146,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->previous();
+            ((DFPlayerMini_PlayerMini *)handle)->previous();
         }
     }
 
@@ -149,7 +154,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->play(fileNumber);
+            ((DFPlayerMini_PlayerMini *)handle)->play(fileNumber);
         }
     }
 
@@ -157,7 +162,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->volumeUp();
+            ((DFPlayerMini_PlayerMini *)handle)->volumeUp();
         }
     }
 
@@ -165,7 +170,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->volumeDown();
+            ((DFPlayerMini_PlayerMini *)handle)->volumeDown();
         }
     }
 
@@ -173,7 +178,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->volume(volume);
+            ((DFPlayerMini_PlayerMini *)handle)->volume(volume);
         }
     }
 
@@ -181,7 +186,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->EQ(eq);
+            ((DFPlayerMini_PlayerMini *)handle)->EQ(eq);
         }
     }
 
@@ -189,7 +194,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->loop(fileNumber);
+            ((DFPlayerMini_PlayerMini *)handle)->loop(fileNumber);
         }
     }
 
@@ -197,7 +202,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->outputDevice(device);
+            ((DFPlayerMini_PlayerMini *)handle)->outputDevice(device);
         }
     }
 
@@ -205,7 +210,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->sleep();
+            ((DFPlayerMini_PlayerMini *)handle)->sleep();
         }
     }
 
@@ -213,7 +218,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->reset();
+            ((DFPlayerMini_PlayerMini *)handle)->reset();
         }
     }
 
@@ -221,7 +226,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->start();
+            ((DFPlayerMini_PlayerMini *)handle)->start();
         }
     }
 
@@ -229,7 +234,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->pause();
+            ((DFPlayerMini_PlayerMini *)handle)->pause();
         }
     }
 
@@ -237,7 +242,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->playFolder(folderNumber, fileNumber);
+            ((DFPlayerMini_PlayerMini *)handle)->playFolder(folderNumber, fileNumber);
         }
     }
 
@@ -245,7 +250,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->outputSetting(enable, gain);
+            ((DFPlayerMini_PlayerMini *)handle)->outputSetting(enable, gain);
         }
     }
 
@@ -253,7 +258,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->enableLoopAll();
+            ((DFPlayerMini_PlayerMini *)handle)->enableLoopAll();
         }
     }
 
@@ -261,7 +266,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->disableLoopAll();
+            ((DFPlayerMini_PlayerMini *)handle)->disableLoopAll();
         }
     }
 
@@ -269,7 +274,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->playMp3Folder(fileNumber);
+            ((DFPlayerMini_PlayerMini *)handle)->playMp3Folder(fileNumber);
         }
     }
 
@@ -277,7 +282,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->advertise(fileNumber);
+            ((DFPlayerMini_PlayerMini *)handle)->advertise(fileNumber);
         }
     }
 
@@ -285,7 +290,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->playLargeFolder(folderNumber, fileNumber);
+            ((DFPlayerMini_PlayerMini *)handle)->playLargeFolder(folderNumber, fileNumber);
         }
     }
 
@@ -293,7 +298,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->stopAdvertise();
+            ((DFPlayerMini_PlayerMini *)handle)->stopAdvertise();
         }
     }
 
@@ -301,7 +306,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->stop();
+            ((DFPlayerMini_PlayerMini *)handle)->stop();
         }
     }
 
@@ -309,7 +314,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->loopFolder(folderNumber);
+            ((DFPlayerMini_PlayerMini *)handle)->loopFolder(folderNumber);
         }
     }
 
@@ -317,7 +322,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->randomAll();
+            ((DFPlayerMini_PlayerMini *)handle)->randomAll();
         }
     }
 
@@ -325,7 +330,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->enableLoop();
+            ((DFPlayerMini_PlayerMini *)handle)->enableLoop();
         }
     }
 
@@ -333,7 +338,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->disableLoop();
+            ((DFPlayerMini_PlayerMini *)handle)->disableLoop();
         }
     }
 
@@ -341,7 +346,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->enableDAC();
+            ((DFPlayerMini_PlayerMini *)handle)->enableDAC();
         }
     }
 
@@ -349,7 +354,7 @@ extern "C"
     {
         if (handle != nullptr)
         {
-            ((DFRobotDFPlayerMini *)handle)->disableDAC();
+            ((DFPlayerMini_PlayerMini *)handle)->disableDAC();
         }
     }
 
@@ -359,7 +364,7 @@ extern "C"
 
         if (handle != nullptr)
         {
-            state = ((DFRobotDFPlayerMini *)handle)->readState();
+            state = ((DFPlayerMini_PlayerMini *)handle)->readState();
         }
 
         return state;
@@ -371,7 +376,7 @@ extern "C"
 
         if (handle != nullptr)
         {
-            volume = ((DFRobotDFPlayerMini *)handle)->readVolume();
+            volume = ((DFPlayerMini_PlayerMini *)handle)->readVolume();
         }
 
         return volume;
@@ -383,7 +388,7 @@ extern "C"
 
         if (handle != nullptr)
         {
-            eq = ((DFRobotDFPlayerMini *)handle)->readEQ();
+            eq = ((DFPlayerMini_PlayerMini *)handle)->readEQ();
         }
 
         return eq;
@@ -395,7 +400,7 @@ extern "C"
 
         if (handle != nullptr)
         {
-            fileCounts = ((DFRobotDFPlayerMini *)handle)->readFileCounts();
+            fileCounts = ((DFPlayerMini_PlayerMini *)handle)->readFileCounts();
         }
 
         return fileCounts;
@@ -407,7 +412,7 @@ extern "C"
 
         if (handle != nullptr)
         {
-            currentFileNumber = ((DFRobotDFPlayerMini *)handle)->readCurrentFileNumber(device);
+            currentFileNumber = ((DFPlayerMini_PlayerMini *)handle)->readCurrentFileNumber(device);
         }
 
         return currentFileNumber;
@@ -419,7 +424,7 @@ extern "C"
 
         if (handle != nullptr)
         {
-            fileCountsInFolder = ((DFRobotDFPlayerMini *)handle)->readFileCountsInFolder(folderNumber);
+            fileCountsInFolder = ((DFPlayerMini_PlayerMini *)handle)->readFileCountsInFolder(folderNumber);
         }
 
         return fileCountsInFolder;
@@ -431,7 +436,7 @@ extern "C"
 
         if (handle != nullptr)
         {
-            folderCounts = ((DFRobotDFPlayerMini *)handle)->readFolderCounts();
+            folderCounts = ((DFPlayerMini_PlayerMini *)handle)->readFolderCounts();
         }
 
         return folderCounts;

@@ -1,7 +1,7 @@
 /**
  * @file DFPlayerMini.h
  *
- * @brief Wrapper around DFRobotDFPlayerMini library
+ * @brief C-compatible wrapper around DFPlayerMini_PlayerMini
  *
  ******************************************************************************/
 
@@ -42,7 +42,7 @@ extern "C"
     bool DFPlayerMini_HandleMessage(const void *const handle, const uint8_t type, const uint16_t parameter);
     bool DFPlayerMini_HandleError(const void *const handle, const uint8_t type, const uint16_t parameter);
     uint8_t DFPlayerMini_ReadCommand(const void *const handle);
-    bool DFPlayerMini_Begin(const void *const handle, void *stream, const bool isACK, const bool doReset);
+    bool DFPlayerMini_Begin(const void *const handle, const bool isACK, const bool doReset);
     bool DFPlayerMini_WaitAvailable(const void *const handle, const uint64_t duration);
     bool DFPlayerMini_Available(const void *const handle);
     uint8_t DFPlayerMini_ReadType(const void *const handle);
