@@ -5,5 +5,5 @@ idf_component_register(
     SRCS ${sources}
     INCLUDE_DIRS ${includes}
     REQUIRES DFPlayerMini
-    PRIV_REQUIRES esp_timer
+    PRIV_REQUIRES esp_timer driver
 )

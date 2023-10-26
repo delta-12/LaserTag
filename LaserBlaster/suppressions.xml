@@ -26,4 +26,14 @@
         <fileName>*/components/BopIt/BopIt.c</fileName>
         <symbolName>commandIndex</symbolName>
     </suppress>
+    <suppress>
+        <id>unusedFunction</id>
+        <fileName>*/components/DFPlayerMini/DFPlayerMini_Arduino.cpp</fileName>
+        <symbolName>millis</symbolName>
+    </suppress>
+    <suppress>
+        <id>unusedFunction</id>
+        <fileName>*/components/DFPlayerMini/DFPlayerMini_Arduino.cpp</fileName>
+        <symbolName>delay</symbolName>
+    </suppress>
 </suppressions>
