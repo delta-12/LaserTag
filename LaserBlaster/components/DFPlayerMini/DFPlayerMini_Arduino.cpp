@@ -89,7 +89,7 @@ size_t Stream::available(void)
 {
     size_t bytesAvailable = 0U;
 
-    ESP_ERROR_CHECK(uart_get_buffered_data_len(uartNum, (size_t *)&bytesAvailable));
+    ESP_ERROR_CHECK(uart_get_buffered_data_len(uartNum, static_cast<size_t *>(&bytesAvailable)));
     vTaskDelay(DFPLAYERMINI_ARDUINO_AVAILABLE_DELAY / portTICK_PERIOD_MS);
 
     /* TODO replace fixed delay with variable backoff delay depending on
@@ -146,12 +146,12 @@ QueueHandle_t Stream::getUartQueueHandle(void)
 
 static void DFPlayerMini_Arduino_UartEventHandlerTask(void *arg)
 {
-    Stream *stream = (Stream *)arg;
+    Stream *stream = static_cast<Stream *>(arg);
     uart_event_t event;
 
     for (;;)
     {
-        if (xQueueReceive(stream->getUartQueueHandle(), (void *)&event, (TickType_t)portMAX_DELAY))
+        if (xQueueReceive(stream->getUartQueueHandle(), static_cast<void *>(&event), (TickType_t)portMAX_DELAY))
         {
             switch (event.type)
             {
