@@ -18,6 +18,7 @@
 #define DFPLAYERMINI_ARDUINO_US_PER_MS 1000ULL
 #define DFPLAYERMINI_ARDUINO_ESP_INTR_FLAG_DEFAULT 0U
 #define DFPLAYERMINI_ARDUINO_UART_QUEUE_SIZE 20U
+#define DFPLAYERMINI_ARDUINO_AVAILABLE_DELAY 10U
 
 /* Function Definitions
  ******************************************************************************/
@@ -79,6 +80,10 @@ size_t Stream::available(void)
     size_t bytesAvailable = 0U;
 
     ESP_ERROR_CHECK(uart_get_buffered_data_len(uartNum, (size_t *)&bytesAvailable));
+    vTaskDelay(DFPLAYERMINI_ARDUINO_AVAILABLE_DELAY / portTICK_PERIOD_MS);
+
+    /* TODO replace fixed delay with variable backoff delay depending on
+    how many times available is called sequentially */
 
     return bytesAvailable;
 }
@@ -95,9 +100,7 @@ uint8_t Stream::read(void)
 uint8_t Stream::read(uint8_t *const buffer, const size_t size)
 {
     int32_t bytesRead = 0U;
-    size_t uartBufferedDatalength = 0U;
-
-    ESP_ERROR_CHECK(uart_get_buffered_data_len(uartNum, (size_t *)&uartBufferedDatalength));
+    size_t uartBufferedDatalength = available();
 
     if (size > uartBufferedDatalength)
     {
