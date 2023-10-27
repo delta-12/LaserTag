@@ -12,8 +12,9 @@
 /* Function Definitions
  ******************************************************************************/
 
-DFPlayerMini_PlayerMini::DFPlayerMini_PlayerMini(const uint32_t rxPin, const uint32_t txPin)
+DFPlayerMini_PlayerMini::DFPlayerMini_PlayerMini(const uart_port_t uart, const uint32_t rxPin, const uint32_t txPin)
 {
+    stream.setUart(uart);
     stream.setPins(rxPin, txPin);
 }
 

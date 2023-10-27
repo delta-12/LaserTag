@@ -18,9 +18,9 @@
 extern "C"
 {
 
-    void *DFPlayerMini_CreateHandle(const uint32_t rxPin, const uint32_t txPin)
+    void *DFPlayerMini_CreateHandle(const uart_port_t uartNum, const uint32_t rxPin, const uint32_t txPin)
     {
-        return (DFPlayerMini_PlayerMini *)new DFPlayerMini_PlayerMini(rxPin, txPin);
+        return (DFPlayerMini_PlayerMini *)new DFPlayerMini_PlayerMini(uartNum, rxPin, txPin);
     }
 
     void DFPlayerMini_FreeHandle(void *handle)

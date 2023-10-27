@@ -10,6 +10,7 @@
 
 /* Includes
  ******************************************************************************/
+#include "driver/uart.h"
 #include <stdint.h>
 
 /* Defines
@@ -37,7 +38,7 @@ extern "C"
 {
 #endif
 
-    void *DFPlayerMini_CreateHandle(const uint32_t rxPin, const uint32_t txPin);
+    void *DFPlayerMini_CreateHandle(const uart_port_t uartNum, const uint32_t rxPin, const uint32_t txPin);
     void DFPlayerMini_FreeHandle(void *handle);
     bool DFPlayerMini_HandleMessage(const void *const handle, const uint8_t type, const uint16_t parameter);
     bool DFPlayerMini_HandleError(const void *const handle, const uint8_t type, const uint16_t parameter);

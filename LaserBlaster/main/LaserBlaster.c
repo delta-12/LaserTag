@@ -1,6 +1,7 @@
 #include "BopIt.h"
 #include "BopItCommands.h"
 #include "DFPlayerMini.h"
+#include "driver/uart.h"
 #include "esp_log.h"
 #include "esp_timer.h"
 #include "EventHandlers.h"
@@ -11,6 +12,7 @@
 #define BOPIT_COMMAND_COUNT 3U
 #define BOPIT_RUN_DELAY 10U
 #define US_PER_MS 1000ULL
+#define UART_NUM UART_NUM_2
 #define UART_RX_PIN GPIO_NUM_16
 #define UART_TX_PIN GPIO_NUM_17
 
@@ -29,7 +31,7 @@ void app_main(void)
     Gpio_RegisterEventHandler(GPIO_TYPE_BUTTON, EventHandlers_ButtonEventHandler);
 
     /* MP3 module must have 5V supply */
-    void *playerMini = DFPlayerMini_CreateHandle(UART_RX_PIN, UART_TX_PIN);
+    void *playerMini = DFPlayerMini_CreateHandle(UART_NUM, UART_RX_PIN, UART_TX_PIN);
     if (!DFPlayerMini_Begin(playerMini, true, true))
     {
         ESP_LOGE(MainTag, "DFPlayerMini failed to begin.");
