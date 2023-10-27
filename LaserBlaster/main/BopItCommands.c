@@ -8,18 +8,32 @@
 /* Includes
  ******************************************************************************/
 #include "BopItCommands.h"
+#include "DFPlayerMini.h"
+#include "driver/uart.h"
 #include "esp_log.h"
+#include "Gpio.h"
 #include <stddef.h>
 
 /* Defines
  ******************************************************************************/
 
 #define BOPITCOMMANDS_SEMPHR_BLOCK_TIME 0U /* Do not wait if mutex cannot be taken */
+#define BOPITCOMMANDS_UART_NUM UART_NUM_2
+#define BOPITCOMMANDS_UART_RX_PIN GPIO_NUM_16
+#define BOPITCOMMANDS_UART_TX_PIN GPIO_NUM_17
+#define BOPITCOMMANDS_PLAYERMINI_IS_ACK true
+#define BOPITCOMMANDS_PLAYERMINI_DO_RESET true
+#define BOPITCOMMANDS_PLAYERMINI_VOLUME 30U
+#define BOPITCOMMANDS_PLAYERMINI_BEGIN_FILE 1U
+#define BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE 3U
+#define BOPITCOMMANDS_PLAYERMINI_FAIL_FILE 2U
 
 /* Globals
  ******************************************************************************/
 
 static const char *BopItCommands_EspLogTag = "BopItCommands"; /* Tag for logging from BopItCommands module */
+
+static void *BopItCommands_PlayerMini = NULL; /* Handle for DFPlayerMini */
 
 bool BopItCommands_Button0InputFlag = false;                  /* Indicates if Button 0 was pressed */
 SemaphoreHandle_t BopItCommands_Button0InputFlagMutex = NULL; /* Mutex for Button 0 flag */
@@ -71,13 +85,36 @@ static void BopItCommands_ResetInputFlags(void);
 /**
  * @brief Perform initialization needed for BopIt commands.  Must be called
  * before calling any other functions in module.  Creates mutexes for button
- * event flags.
+ * event flags and initializes DFPlayerMini.
  ******************************************************************************/
 void BopItCommands_Init(void)
 {
     BopItCommands_Button0InputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_Button0InputFlagMutexBuffer);
     BopItCommands_Button1InputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_Button1InputFlagMutexBuffer);
     BopItCommands_Button2InputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_Button2InputFlagMutexBuffer);
+
+    BopItCommands_PlayerMini = DFPlayerMini_CreateHandle(BOPITCOMMANDS_UART_NUM, BOPITCOMMANDS_UART_RX_PIN, BOPITCOMMANDS_UART_TX_PIN);
+    if (!DFPlayerMini_Begin(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_IS_ACK, BOPITCOMMANDS_PLAYERMINI_DO_RESET))
+    {
+        ESP_LOGE(BopItCommands_EspLogTag, "DFPlayerMini failed to begin.");
+    }
+    else
+    {
+        DFPlayerMini_Volume(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_VOLUME);
+        DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_BEGIN_FILE);
+    }
+}
+
+/**
+ * @brief Perform deinitialization needed for BopIt commands.  Frees handle
+ * for DFPlayerMini.
+ ******************************************************************************/
+void BopItCommands_DeInit(void)
+{
+    if (BopItCommands_PlayerMini != NULL)
+    {
+        DFPlayerMini_FreeHandle(BopItCommands_PlayerMini);
+    }
 }
 
 /**
@@ -95,6 +132,7 @@ void BopItCommands_Button0IssueCommand(void)
 void BopItCommands_Button0SuccessFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Successfully pressed Button 0");
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
 }
 
 /**
@@ -103,6 +141,7 @@ void BopItCommands_Button0SuccessFeedback(void)
 void BopItCommands_Button0FailFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Failed to pressed Button 0");
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
 }
 
 /**
@@ -142,6 +181,7 @@ void BopItCommands_Button1IssueCommand(void)
 void BopItCommands_Button1SuccessFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Successfully pressed Button 1");
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
 }
 
 /**
@@ -150,6 +190,7 @@ void BopItCommands_Button1SuccessFeedback(void)
 void BopItCommands_Button1FailFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Failed to pressed Button 1");
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
 }
 
 /**
@@ -189,6 +230,7 @@ void BopItCommands_Button2IssueCommand(void)
 void BopItCommands_Button2SuccessFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Successfully pressed Button 2");
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
 }
 
 /**
@@ -197,6 +239,7 @@ void BopItCommands_Button2SuccessFeedback(void)
 void BopItCommands_Button2FailFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Failed to pressed Button 2");
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
 }
 
 /**
