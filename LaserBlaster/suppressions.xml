@@ -31,9 +31,9 @@
         <fileName>*/components/DFPlayerMini/DFPlayerMini_Arduino.cpp</fileName>
         <symbolName>millis</symbolName>
     </suppress>
-    <suppress>
+    <!-- <suppress>
         <id>unusedFunction</id>
         <fileName>*/components/DFPlayerMini/DFPlayerMini_Arduino.cpp</fileName>
         <symbolName>delay</symbolName>
-    </suppress>
+    </suppress> -->
 </suppressions>
