@@ -13,9 +13,6 @@
  ******************************************************************************/
 #include "driver/gpio.h"
 #include "driver/uart.h"
-#include <stdbool.h>
-#include <stddef.h>
-#include <stdint.h>
 
 /* Defines
  ******************************************************************************/
@@ -53,6 +50,8 @@ public:
     uint8_t read(void);
     uint8_t read(uint8_t *const buffer, const size_t size);
     size_t write(const uint8_t *const buffer, const size_t size);
+    uart_port_t getUartNum(void);
+    QueueHandle_t getUartQueueHandle(void);
 };
 
 #endif

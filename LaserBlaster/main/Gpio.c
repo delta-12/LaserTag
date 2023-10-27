@@ -104,6 +104,8 @@ static void Gpio_ButtonEventHandlerTask(void *arg)
             (*Gpio_ButtonEventHandler)(gpioNum); /* Assumes Gpio_RegisterButtonEventHandler checked for NULL pointer */
         }
     }
+
+    vTaskDelete(NULL);
 }
 
 /**

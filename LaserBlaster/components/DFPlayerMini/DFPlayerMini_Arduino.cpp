@@ -9,6 +9,7 @@
 /* Includes
  ******************************************************************************/
 #include "Arduino.h"
+#include "freertos/task.h"
 #include "esp_timer.h"
 
 /* Defines
@@ -19,6 +20,13 @@
 #define DFPLAYERMINI_ARDUINO_ESP_INTR_FLAG_DEFAULT 0U
 #define DFPLAYERMINI_ARDUINO_UART_QUEUE_SIZE 20U
 #define DFPLAYERMINI_ARDUINO_AVAILABLE_DELAY 10U
+#define DFPLAYERMINI_ARDUINO_TASK_STACK_DEPTH 2048U
+#define DFPLAYERMINI_ARDUINO_TASK_PRIORITY 10U
+
+/* Function Prototypes
+ ******************************************************************************/
+
+static void DFPlayerMini_Arduino_UartEventHandlerTask(void *arg);
 
 /* Function Definitions
  ******************************************************************************/
@@ -62,6 +70,8 @@ void Stream::begin(void)
     ESP_ERROR_CHECK(uart_driver_install(uartNum, DFPLAYERMINI_ARDUINO_UART_BUFFER_SIZE, DFPLAYERMINI_ARDUINO_UART_BUFFER_SIZE, DFPLAYERMINI_ARDUINO_UART_QUEUE_SIZE, &uartQueueHandle, DFPLAYERMINI_ARDUINO_ESP_INTR_FLAG_DEFAULT));
     ESP_ERROR_CHECK(uart_param_config(uartNum, &uartConfig));
     ESP_ERROR_CHECK(uart_set_pin(uartNum, uartTxPin, uartRxPin, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
+
+    xTaskCreate(DFPlayerMini_Arduino_UartEventHandlerTask, "DFPlayerMini_Arduino_UartEventHandlerTask", DFPLAYERMINI_ARDUINO_TASK_STACK_DEPTH, this, DFPLAYERMINI_ARDUINO_TASK_PRIORITY, NULL);
 }
 
 void Stream::setUart(const uart_port_t uart)
@@ -122,4 +132,42 @@ uint8_t Stream::read(uint8_t *const buffer, const size_t size)
 size_t Stream::write(const uint8_t *const buffer, const size_t size)
 {
     return uart_write_bytes(uartNum, buffer, size);
+}
+
+uart_port_t Stream::getUartNum(void)
+{
+    return uartNum;
+}
+
+QueueHandle_t Stream::getUartQueueHandle(void)
+{
+    return uartQueueHandle;
+}
+
+static void DFPlayerMini_Arduino_UartEventHandlerTask(void *arg)
+{
+    Stream *stream = (Stream *)arg;
+    uart_event_t event;
+
+    for (;;)
+    {
+        if (xQueueReceive(stream->getUartQueueHandle(), (void *)&event, (TickType_t)portMAX_DELAY))
+        {
+            switch (event.type)
+            {
+            case UART_FIFO_OVF:
+                uart_flush_input(stream->getUartNum());
+                xQueueReset(stream->getUartQueueHandle());
+                break;
+            case UART_BUFFER_FULL:
+                uart_flush_input(stream->getUartNum());
+                xQueueReset(stream->getUartQueueHandle());
+                break;
+            default:
+                break;
+            }
+        }
+    }
+
+    vTaskDelete(NULL);
 }
