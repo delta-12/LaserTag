@@ -17,16 +17,16 @@
 /* Defines
  ******************************************************************************/
 
-#define BOPITCOMMANDS_SEMPHR_BLOCK_TIME 0U /* Do not wait if mutex cannot be taken */
-#define BOPITCOMMANDS_UART_NUM UART_NUM_2
-#define BOPITCOMMANDS_UART_RX_PIN GPIO_NUM_16
-#define BOPITCOMMANDS_UART_TX_PIN GPIO_NUM_17
-#define BOPITCOMMANDS_PLAYERMINI_IS_ACK true
-#define BOPITCOMMANDS_PLAYERMINI_DO_RESET true
-#define BOPITCOMMANDS_PLAYERMINI_VOLUME 30U
-#define BOPITCOMMANDS_PLAYERMINI_BEGIN_FILE 1U
-#define BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE 3U
-#define BOPITCOMMANDS_PLAYERMINI_FAIL_FILE 2U
+#define BOPITCOMMANDS_SEMPHR_BLOCK_TIME 0U       /* Do not wait if mutex cannot be taken */
+#define BOPITCOMMANDS_UART_NUM UART_NUM_2        /* Use UART 2 for DFPlayerMini */
+#define BOPITCOMMANDS_UART_RX_PIN GPIO_NUM_16    /* GPIO to use for UART RX */
+#define BOPITCOMMANDS_UART_TX_PIN GPIO_NUM_17    /* GPIO to use for UART RX */
+#define BOPITCOMMANDS_PLAYERMINI_IS_ACK true     /* Enable ACK when initializing DFPlayerMini*/
+#define BOPITCOMMANDS_PLAYERMINI_DO_RESET true   /* Perform a reset when initializing DFPlayerMini*/
+#define BOPITCOMMANDS_PLAYERMINI_VOLUME 30U      /* DFPlayerMini volume */
+#define BOPITCOMMANDS_PLAYERMINI_BEGIN_FILE 1U   /* DFPlayerMini file to play on initialization */
+#define BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE 3U /* DFPlayerMini file to play for success feedback */
+#define BOPITCOMMANDS_PLAYERMINI_FAIL_FILE 2U    /* DFPlayerMini file to play for fail feedback */
 
 /* Globals
  ******************************************************************************/
