@@ -9,10 +9,9 @@
  ******************************************************************************/
 #include "BopItCommands.h"
 #include "DFPlayerMini.h"
+#include "driver/gpio.h"
 #include "driver/uart.h"
 #include "esp_log.h"
-#include "Gpio.h"
-#include <stddef.h>
 
 /* Defines
  ******************************************************************************/

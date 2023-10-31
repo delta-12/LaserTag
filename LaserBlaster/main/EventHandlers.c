@@ -7,6 +7,7 @@
 
 /* Includes
  ******************************************************************************/
+#include "BopItCommands.h"
 #include "EventHandlers.h"
 
 /* Defines

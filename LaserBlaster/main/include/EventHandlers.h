@@ -10,7 +10,6 @@
 
 /* Includes
  ******************************************************************************/
-#include "BopItCommands.h"
 #include "Gpio.h"
 
 /* Function Prototypes
