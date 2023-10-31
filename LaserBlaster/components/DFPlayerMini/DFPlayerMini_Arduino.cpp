@@ -36,11 +36,6 @@ uint64_t millis(void)
     return (uint64_t)(esp_timer_get_time() / DFPLAYERMINI_ARDUINO_US_PER_MS);
 }
 
-// void delay(const uint16_t ms)
-// {
-//     vTaskDelay(ms / portTICK_PERIOD_MS);
-// }
-
 Stream::Stream(const uart_port_t uart, const uint32_t rxPin, const uint32_t txPin, const bool inverseLogic)
 {
     uartConfig.baud_rate = 9600;
