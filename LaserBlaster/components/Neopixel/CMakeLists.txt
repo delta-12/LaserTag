@@ -5,4 +5,5 @@ idf_component_register(
     SRCS ${sources}
     INCLUDE_DIRS ${includes}
     REQUIRES Neopixel
+    PRIV_REQUIRES driver
 )
