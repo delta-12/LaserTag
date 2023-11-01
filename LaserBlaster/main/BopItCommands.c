@@ -12,6 +12,7 @@
 #include "driver/gpio.h"
 #include "driver/uart.h"
 #include "esp_log.h"
+#include "Neopixel.h"
 
 /* Defines
  ******************************************************************************/
@@ -26,6 +27,8 @@
 #define BOPITCOMMANDS_PLAYERMINI_BEGIN_FILE 1U   /* DFPlayerMini file to play on initialization */
 #define BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE 3U /* DFPlayerMini file to play for success feedback */
 #define BOPITCOMMANDS_PLAYERMINI_FAIL_FILE 2U    /* DFPlayerMini file to play for fail feedback */
+#define BOPITCOMMANDS_NEOPIXEL_PIN GPIO_NUM_15   /* GPIO pin for neopixel strip */
+#define BOPITCOMMANDS_NEOPIXEL_COUNT 6U          /* Neopixel strip with 6 pixels */
 
 /* Globals
  ******************************************************************************/
@@ -33,6 +36,15 @@
 static const char *BopItCommands_EspLogTag = "BopItCommands"; /* Tag for logging from BopItCommands module */
 
 static void *BopItCommands_PlayerMini = NULL; /* Handle for DFPlayerMini */
+
+static uint8_t BopItCommands_NeopixelBuffer[NEOPIXEL_PIXEL_BUFFER_SIZE(BOPITCOMMANDS_NEOPIXEL_COUNT)]; /* Buffer for storing neopixel channel code data */
+
+/* Neopixel strip for visual feedback */
+static Neopixel_Strip_t BopItCommands_NeopixelStrip = {
+    .PixelBuffer = BopItCommands_NeopixelBuffer,
+    .PixelCount = BOPITCOMMANDS_NEOPIXEL_COUNT,
+    .GpioNum = BOPITCOMMANDS_NEOPIXEL_PIN,
+};
 
 bool BopItCommands_Button0InputFlag = false;                  /* Indicates if Button 0 was pressed */
 SemaphoreHandle_t BopItCommands_Button0InputFlagMutex = NULL; /* Mutex for Button 0 flag */
@@ -84,7 +96,7 @@ static void BopItCommands_ResetInputFlags(void);
 /**
  * @brief Perform initialization needed for BopIt commands.  Must be called
  * before calling any other functions in module.  Creates mutexes for button
- * event flags and initializes DFPlayerMini.
+ * event flags and initializes DFPlayerMini and neopixel strip.
  ******************************************************************************/
 void BopItCommands_Init(void)
 {
@@ -102,17 +114,21 @@ void BopItCommands_Init(void)
         DFPlayerMini_Volume(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_VOLUME);
         DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_BEGIN_FILE);
     }
+
+    Neopixel_Init(&BopItCommands_NeopixelStrip);
 }
 
 /**
  * @brief Perform deinitialization needed for BopIt commands.  Frees handle
- * for DFPlayerMini.
+ * for DFPlayerMini and clears neopixel strip.
  ******************************************************************************/
 void BopItCommands_DeInit(void)
 {
     if (BopItCommands_PlayerMini != NULL)
     {
         DFPlayerMini_FreeHandle(BopItCommands_PlayerMini);
+        Neopixel_Clear(&BopItCommands_NeopixelStrip);
+        Neopixel_Show(&BopItCommands_NeopixelStrip);
     }
 }
 
@@ -132,6 +148,8 @@ void BopItCommands_Button0SuccessFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Successfully pressed Button 0");
     DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
+    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_GREEN);
+    Neopixel_Show(&BopItCommands_NeopixelStrip);
 }
 
 /**
@@ -141,6 +159,8 @@ void BopItCommands_Button0FailFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Failed to pressed Button 0");
     DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
+    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_RED);
+    Neopixel_Show(&BopItCommands_NeopixelStrip);
 }
 
 /**
@@ -181,6 +201,8 @@ void BopItCommands_Button1SuccessFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Successfully pressed Button 1");
     DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
+    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_GREEN);
+    Neopixel_Show(&BopItCommands_NeopixelStrip);
 }
 
 /**
@@ -190,6 +212,8 @@ void BopItCommands_Button1FailFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Failed to pressed Button 1");
     DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
+    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_RED);
+    Neopixel_Show(&BopItCommands_NeopixelStrip);
 }
 
 /**
@@ -230,6 +254,8 @@ void BopItCommands_Button2SuccessFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Successfully pressed Button 2");
     DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
+    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_GREEN);
+    Neopixel_Show(&BopItCommands_NeopixelStrip);
 }
 
 /**
@@ -239,6 +265,8 @@ void BopItCommands_Button2FailFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Failed to pressed Button 2");
     DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
+    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_RED);
+    Neopixel_Show(&BopItCommands_NeopixelStrip);
 }
 
 /**
