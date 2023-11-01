@@ -67,7 +67,7 @@ void Neopixel_Init(Neopixel_Strip_t *const neopixelStrip);
 void Neopixel_Clear(Neopixel_Strip_t *const neopixelStrip);
 void Neopixel_SetPixelColor(Neopixel_Strip_t *const neopixelStrip, const size_t pixelNum, const Neopixel_Color_t *const color);
 void Neopixel_SetPixelColorName(Neopixel_Strip_t *const neopixelStrip, const size_t pixelNum, const Neopixel_ColorName_t colorName);
-void Neopixel_SetPixelChannels(const Neopixel_Strip_t *const neopixelStrip, const size_t pixelNum, const Neopixel_ChannelIntensity_t red, const Neopixel_ChannelIntensity_t green, const Neopixel_ChannelIntensity_t blue);
+void Neopixel_SetPixelChannels(Neopixel_Strip_t *const neopixelStrip, const size_t pixelNum, const Neopixel_ChannelIntensity_t red, const Neopixel_ChannelIntensity_t green, const Neopixel_ChannelIntensity_t blue);
 void Neopixel_FillColor(Neopixel_Strip_t *const neopixelStrip, const Neopixel_Color_t *const color);
 void Neopixel_FillColorName(Neopixel_Strip_t *const neopixelStrip, const Neopixel_ColorName_t colorName);
 void Neopixel_FillChannels(Neopixel_Strip_t *const neopixelStrip, const Neopixel_ChannelIntensity_t red, const Neopixel_ChannelIntensity_t green, const Neopixel_ChannelIntensity_t blue);

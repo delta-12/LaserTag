@@ -16,4 +16,14 @@
         <fileName>*/components/DFPlayerMini/DFPlayerMini_Arduino.cpp</fileName>
         <symbolName>millis</symbolName>
     </suppress>
+    <suppress>
+        <id>unusedFunction</id>
+        <fileName>*/components/Neopixel/Neopixel.c</fileName>
+    </suppress>
+    <suppress>
+        <id>constParameterPointer</id>
+        <fileName>*/components/Neopixel/Neopixel.c</fileName>
+        <lineNumber>106</lineNumber>
+        <symbolName>neopixelStrip</symbolName>
+    </suppress>
 </suppressions>
