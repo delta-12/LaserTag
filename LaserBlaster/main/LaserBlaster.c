@@ -5,6 +5,7 @@
 #include "EventHandlers.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
+#include "Rmt.h"
 
 #define BOPIT_COMMAND_COUNT 3U
 #define BOPIT_RUN_DELAY 10U
@@ -20,6 +21,7 @@ static BopIt_TimeMs_t BopItTime(void);
 void app_main(void)
 {
     Gpio_Init();
+    Rmt_Init();
 
     Gpio_RegisterEventHandler(GPIO_TYPE_BUTTON, EventHandlers_ButtonEventHandler);
 
