@@ -23,7 +23,6 @@
     <suppress>
         <id>constParameterPointer</id>
         <fileName>*/components/Neopixel/Neopixel.c</fileName>
-        <lineNumber>106</lineNumber>
         <symbolName>neopixelStrip</symbolName>
     </suppress>
 </suppressions>

@@ -26,7 +26,7 @@
  *
  * @param[in] pixelCount Number of pixels in the strip
  ******************************************************************************/
-#define NEOPIXEL_PIXEL_BUFFER_SIZE(pixelCount) (pixelCount * NEOPIXEL_PIXEL_CHANNELS_SIZE)
+#define NEOPIXEL_PIXEL_BUFFER_SIZE(pixelCount) (size_t)(pixelCount * NEOPIXEL_PIXEL_CHANNELS_SIZE)
 
 /* Typedefs
  ******************************************************************************/

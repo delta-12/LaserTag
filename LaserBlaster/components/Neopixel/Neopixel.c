@@ -17,14 +17,20 @@
 #define NEOPIXEL_RED_CHANNEL_OFFSET 4U
 #define NEOPIXEL_GREEN_CHANNEL_OFFSET 0U
 #define NEOPIXEL_BLUE_CHANNEL_OFFSET 8U
-#define NEOPIXEL_WRITE_TIMEOUT_MS 1000U
 #define NEOPIXEL_ZERO_CHANNEL 0x88888888U
 #define NEOPIXEL_ONE_CHANNEL_CODE 0xEU
 #define NEOPIXEL_CHANNEL_INTENSITY_BIT 0x1U
 #define NEOPIXEL_CHANNEL_INTENSITY_BIT_COUNT 8U
 #define NEOPIXEL_BITS_PER_CHANNEL_CODE 4U
-#define NEOPIXEL_TASK_STACK_DEPTH 2048U /* Stack depth for neopixel RTOS tasks */
-#define NEOPIXEL_TASK_PRIORITY 10U      /* Priority for neopixel RTOS tasks */
+#define NEOPIXEL_BYTE_MASK 0xFFU
+#define NEOPIXEL_CHANNEL_CODE_BYTE_0 0U
+#define NEOPIXEL_CHANNEL_CODE_BYTE_1 1U
+#define NEOPIXEL_CHANNEL_CODE_BYTE_2 2U
+#define NEOPIXEL_CHANNEL_CODE_BYTE_3 3U
+#define NEOPIXEL_CHANNEL_CODE_BYTE_0_BIT_SHIFT 24U
+#define NEOPIXEL_CHANNEL_CODE_BYTE_1_BIT_SHIFT 16U
+#define NEOPIXEL_CHANNEL_CODE_BYTE_2_BIT_SHIFT 8U
+#define NEOPIXEL_CHANNEL_CODE_BYTE_3_BIT_SHIFT 0U
 
 /* Globals
  ******************************************************************************/
@@ -167,9 +173,9 @@ static void Neopixel_SetChannelCodes(uint8_t *const channelBuffer, const Neopixe
             }
         }
 
-        *(channelBuffer) = (channelCodes >> (6 * NEOPIXEL_BITS_PER_CHANNEL_CODE)) & 0xFF;
-        *(channelBuffer + 1U) = (channelCodes >> (4 * NEOPIXEL_BITS_PER_CHANNEL_CODE)) & 0xFF;
-        *(channelBuffer + 2U) = (channelCodes >> (2 * NEOPIXEL_BITS_PER_CHANNEL_CODE)) & 0xFF;
-        *(channelBuffer + 3U) = (channelCodes >> (0 * NEOPIXEL_BITS_PER_CHANNEL_CODE)) & 0xFF;
+        *(channelBuffer + NEOPIXEL_CHANNEL_CODE_BYTE_0) = (channelCodes >> NEOPIXEL_CHANNEL_CODE_BYTE_0_BIT_SHIFT) & NEOPIXEL_BYTE_MASK;
+        *(channelBuffer + NEOPIXEL_CHANNEL_CODE_BYTE_1) = (channelCodes >> NEOPIXEL_CHANNEL_CODE_BYTE_1_BIT_SHIFT) & NEOPIXEL_BYTE_MASK;
+        *(channelBuffer + NEOPIXEL_CHANNEL_CODE_BYTE_2) = (channelCodes >> NEOPIXEL_CHANNEL_CODE_BYTE_2_BIT_SHIFT) & NEOPIXEL_BYTE_MASK;
+        *(channelBuffer + NEOPIXEL_CHANNEL_CODE_BYTE_3) = (channelCodes >> NEOPIXEL_CHANNEL_CODE_BYTE_3_BIT_SHIFT) & NEOPIXEL_BYTE_MASK;
     }
 }
