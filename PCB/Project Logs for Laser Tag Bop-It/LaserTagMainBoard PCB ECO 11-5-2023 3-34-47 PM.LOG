@@ -1,0 +1,30 @@
+Change Component Designator: OldDesignator=BAT NewDesignator=Battery
+Change Component Designator: OldDesignator=DS NewDesignator=Display Screen
+Change Component Designator: OldDesignator=IRE NewDesignator=IR Emitter
+Change Component Designator: OldDesignator=Laser NewDesignator=Laser Pointer
+Change Component Designator: OldDesignator=MP3M NewDesignator=MP3 Module
+Change Component Designator: OldDesignator=NP NewDesignator=Neopixels 3V
+Change Component Designator: OldDesignator=RST NewDesignator=Reset
+Change Component Designator: OldDesignator=SPKR NewDesignator=Speaker Socket
+Change Component Designator: OldDesignator=Trig NewDesignator=Trigger
+Added Component: Designator=.1uF(KEMT-1206-2_M)
+Add component (AddParameter): Name = "Capacitance"; Value = "0.1µF"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Capacitance Tolerance"; Value = "±10%"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Capacitor Case Style"; Value = "1206[3216Metric]"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Datasheet URL"; Value = "https://datasheet.ciiva.com/6125/1725438-6125494.pdf"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Datasheet Version"; Value = "Jul-13"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Dielectric Characteristic"; Value = "X7R"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer"; Value = "Kemet"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Manufacturer URL"; Value = "http://www.kemet.com/"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Operating Temperature Max"; Value = "125degC"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Operating Temperature Min"; Value = "-55degC"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Description"; Value = "2-Leads SMD, Body 3.2 x 1.6 mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package Reference"; Value = "1206-2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Tape&Reel"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Product Range"; Value = "KEMET-CSeries"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SVHC"; Value = "ToBeAdvised"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "50V"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=BAT Pin=.1uF-1
+Added Pin To Net: NetName=GND Pin=.1uF-2
+Added Member To Class: ClassName=LaserTagMainBoard Member=Component .1uF C1206C104K5RACTU
+Added Room: Name=LaserTagMainBoard

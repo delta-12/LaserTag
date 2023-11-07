@@ -1,0 +1,267 @@
+Removed Pin From Net: NetName=JS1 Pin=4.7K-2
+Removed Pin From Net: NetName=JS2 Pin=4.7K-2
+Removed Pin From Net: NetName=JS3 Pin=4.7K-2
+Removed Pin From Net: NetName=JS4 Pin=4.7K-2
+Removed Pin From Net: NetName=JS5 Pin=4.7K-2
+Added Component: Designator=BAT(FP-B02B-PASK-1_LF_SN-MFG)
+Add component (AddParameter): Name = "Color"; Value = "Natural"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Connector Type"; Value = "Header"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Finish - Mating"; Value = "TIN"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Material"; Value = "Copper Alloy"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Mating Length"; Value = "0.126inch"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Plating"; Value = "Tin"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Shape"; Value = "Square"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Type"; Value = "Male Pin"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current Rating"; Value = "3A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Fastening Type"; Value = "Ramp"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Flammability Rating"; Value = "UL94 V-0"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Gender"; Value = "Male"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Housing Color"; Value = "White"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Insulation Color"; Value = "Natural"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Insulation Material"; Value = "PBT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Insulation Resistance"; Value = "1GR"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Lead Free"; Value = "Lead Free"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mated Stacking Heights"; Value = "14.9mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Material"; Value = "Polybutylene"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "85°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-25°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Through Hole"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Contacts"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Positions"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Rows"; Value = "1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Orientation"; Value = "Straight"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Bulk"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pitch"; Value = "2mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Series"; Value = "PA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Termination"; Value = "Solder"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "250V"; VariantName = "[No Variations]"
+Added Component: Designator=IRR(FP-B03B-PASK-1_LF_SN-MFG)
+Add component (AddParameter): Name = "Color"; Value = "Natural"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Connector Type"; Value = "Header"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Finish - Mating"; Value = "TIN"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Material"; Value = "Copper Alloy"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Mating Length"; Value = "0.126inch"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Plating"; Value = "Tin"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Shape"; Value = "Square"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Type"; Value = "Male Pin"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current Rating"; Value = "3A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Fastening Type"; Value = "Ramp"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Flammability Rating"; Value = "UL94 V-0"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Housing Color"; Value = "White"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Insulation Color"; Value = "Natural"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Insulation Material"; Value = "PBT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Lead Free"; Value = "Lead Free"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mated Stacking Heights"; Value = "14.9mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Through Hole"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Contacts"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Positions"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Rows"; Value = "1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Orientation"; Value = "Straight"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Bulk"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pitch"; Value = "2mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Series"; Value = "PA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Termination"; Value = "Solder"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "250V"; VariantName = "[No Variations]"
+Added Component: Designator=NP1(LED_1655)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "1655"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=NP2(LED_1655)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "1655"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=NP3(LED_1655)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "1655"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=NPB1(LED_1655)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "1655"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=NPB2(LED_1655)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "1655"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=NPB3(LED_1655)
+Add component (AddParameter): Name = "Availability"; Value = "Unavailable"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = ""; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "1655"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Price"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=NPIN(FP-B03B-PASK-1_LF_SN-MFG)
+Add component (AddParameter): Name = "Color"; Value = "Natural"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Connector Type"; Value = "Header"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Finish - Mating"; Value = "TIN"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Material"; Value = "Copper Alloy"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Mating Length"; Value = "0.126inch"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Plating"; Value = "Tin"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Shape"; Value = "Square"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Type"; Value = "Male Pin"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current Rating"; Value = "3A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Fastening Type"; Value = "Ramp"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Flammability Rating"; Value = "UL94 V-0"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Housing Color"; Value = "White"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Insulation Color"; Value = "Natural"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Insulation Material"; Value = "PBT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Lead Free"; Value = "Lead Free"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mated Stacking Heights"; Value = "14.9mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Through Hole"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Contacts"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Positions"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Rows"; Value = "1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Orientation"; Value = "Straight"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Bulk"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pitch"; Value = "2mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Series"; Value = "PA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Termination"; Value = "Solder"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "250V"; VariantName = "[No Variations]"
+Added Component: Designator=NPOUT(FP-B03B-PASK-1_LF_SN-MFG)
+Add component (AddParameter): Name = "Color"; Value = "Natural"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Connector Type"; Value = "Header"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Finish - Mating"; Value = "TIN"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Material"; Value = "Copper Alloy"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Mating Length"; Value = "0.126inch"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Plating"; Value = "Tin"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Shape"; Value = "Square"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Type"; Value = "Male Pin"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current Rating"; Value = "3A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Fastening Type"; Value = "Ramp"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Flammability Rating"; Value = "UL94 V-0"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Housing Color"; Value = "White"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Insulation Color"; Value = "Natural"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Insulation Material"; Value = "PBT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Lead Free"; Value = "Lead Free"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mated Stacking Heights"; Value = "14.9mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Through Hole"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Contacts"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Positions"; Value = "3"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Rows"; Value = "1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Orientation"; Value = "Straight"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Bulk"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pitch"; Value = "2mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Series"; Value = "PA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Termination"; Value = "Solder"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "250V"; VariantName = "[No Variations]"
+Added Component: Designator=S(SW_JS1400BFQ)
+Add component (AddParameter): Name = "Digi-Key_Part_Number"; Value = "EG5858-ND"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MF"; Value = "E-Switch"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "MP"; Value = "JS1400BFQ"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Package"; Value = "None"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "SnapEDA_Link"; Value = "https://www.snapeda.com/parts/JS1400BFQ/E-Switch/view-part/2768291/?ref=snap"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Value"; Value = ""; VariantName = "[No Variations]"
+Added Component: Designator=TPMC(TinyPICO)
+Added Component: Designator=VB(FP-B02B-PASK-1_LF_SN-MFG)
+Add component (AddParameter): Name = "Color"; Value = "Natural"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Connector Type"; Value = "Header"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Finish - Mating"; Value = "TIN"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Material"; Value = "Copper Alloy"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Mating Length"; Value = "0.126inch"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Plating"; Value = "Tin"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Shape"; Value = "Square"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Contact Type"; Value = "Male Pin"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Current Rating"; Value = "3A"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Fastening Type"; Value = "Ramp"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Flammability Rating"; Value = "UL94 V-0"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Gender"; Value = "Male"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Housing Color"; Value = "White"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Insulation Color"; Value = "Natural"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Insulation Material"; Value = "PBT"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Insulation Resistance"; Value = "1GR"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Lead Free"; Value = "Lead Free"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mated Stacking Heights"; Value = "14.9mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Material"; Value = "Polybutylene"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Max Operating Temperature"; Value = "85°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Min Operating Temperature"; Value = "-25°C"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Mount"; Value = "Through Hole"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Contacts"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Positions"; Value = "2"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Number of Rows"; Value = "1"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Orientation"; Value = "Straight"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Packaging"; Value = "Bulk"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Pitch"; Value = "2mm"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Series"; Value = "PA"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Termination"; Value = "Solder"; VariantName = "[No Variations]"
+Add component (AddParameter): Name = "Voltage Rating"; Value = "250V"; VariantName = "[No Variations]"
+Added Pin To Net: NetName=JS1 Pin=4.7K-1
+Added Pin To Net: NetName=3VESP Pin=4.7K-2
+Added Pin To Net: NetName=JS2 Pin=4.7K-1
+Added Pin To Net: NetName=3VESP Pin=4.7K-2
+Added Pin To Net: NetName=JS3 Pin=4.7K-1
+Added Pin To Net: NetName=3VESP Pin=4.7K-2
+Added Pin To Net: NetName=JS4 Pin=4.7K-1
+Added Pin To Net: NetName=3VESP Pin=4.7K-2
+Added Pin To Net: NetName=JS5 Pin=4.7K-1
+Added Pin To Net: NetName=3VESP Pin=4.7K-2
+Added Pin To Net: NetName=BAT Pin=BAT-1
+Added Pin To Net: NetName=GND Pin=BAT-2
+Added Pin To Net: NetName=GND Pin=IRR-3
+Added Pin To Net: NetName=JS1 Pin=JS-1
+Added Pin To Net: NetName=JS2 Pin=JS-2
+Added Pin To Net: NetName=JS3 Pin=JS-3
+Added Pin To Net: NetName=JS4 Pin=JS-4
+Added Pin To Net: NetName=JS5 Pin=JS-5
+Added Pin To Net: NetName=GND Pin=NP1-1
+Added Pin To Net: NetName=BAT Pin=NP1-3
+Added Pin To Net: NetName=GND Pin=NP2-1
+Added Pin To Net: NetName=BAT Pin=NP2-3
+Added Pin To Net: NetName=GND Pin=NP3-1
+Added Pin To Net: NetName=BAT Pin=NP3-3
+Added Pin To Net: NetName=GND Pin=NPB1-1
+Added Pin To Net: NetName=BAT Pin=NPB1-3
+Added Pin To Net: NetName=GND Pin=NPB2-1
+Added Pin To Net: NetName=BAT Pin=NPB2-3
+Added Pin To Net: NetName=GND Pin=NPB3-1
+Added Pin To Net: NetName=BAT Pin=NPB3-3
+Added Pin To Net: NetName=BAT Pin=NPIN-1
+Added Pin To Net: NetName=GND Pin=NPIN-3
+Added Pin To Net: NetName=BAT Pin=NPOUT-1
+Added Pin To Net: NetName=GND Pin=NPOUT-3
+Added Pin To Net: NetName=BAT Pin=TPMC-BAT
+Added Pin To Net: NetName=GND Pin=TPMC-GND1
+Added Pin To Net: NetName=GND Pin=VB-2
+Add Class Member: Failed to add class member : Component 4.7K PDR RC1206FR-074K7L
+Add Class Member: Failed to add class member : Component 4.7K PDR Trigger RC1206FR-074K7L
+Add Class Member: Failed to add class member : Component 4.7K PUR Clip RC1206FR-074K7L
+Add Class Member: Failed to add class member : Component 4.7K PUR JS1 RC1206FR-074K7L
+Add Class Member: Failed to add class member : Component 4.7K PUR JS2 RC1206FR-074K7L
+Add Class Member: Failed to add class member : Component 4.7K PUR JS4 RC1206FR-074K7L
+Add Class Member: Failed to add class member : Component 4.7K PUR JS5 RC1206FR-074K7L
+Add Class Member: Failed to add class member : Component 4.7K PUR Primer RC1206FR-074K7L
+Add Class Member: Failed to add class member : Component Battery B02B-PASK-1(LF)(SN)
+Added Member To Class: ClassName=LaserTagTargetBoard Member=Component BAT B02B-PASK-1(LF)(SN)
+Add Class Member: Failed to add class member : Component Display Screen B04B-PASK-1(LF)(SN)
+Add Class Member: Failed to add class member : Component IR Emitter B02B-PASK-1(LF)(SN)
+Added Member To Class: ClassName=LaserTagTargetBoard Member=Component IRR B03B-PASK-1(LF)(SN)
+Add Class Member: Failed to add class member : Component Neopixels 3V B03B-PASK-1(LF)(SN)
+Added Member To Class: ClassName=LaserTagTargetBoard Member=Component NP1 1655
+Added Member To Class: ClassName=LaserTagTargetBoard Member=Component NP2 1655
+Added Member To Class: ClassName=LaserTagTargetBoard Member=Component NP3 1655
+Added Member To Class: ClassName=LaserTagNeopixelBoard Member=Component NPB1 1655
+Added Member To Class: ClassName=LaserTagNeopixelBoard Member=Component NPB2 1655
+Added Member To Class: ClassName=LaserTagNeopixelBoard Member=Component NPB3 1655
+Added Member To Class: ClassName=LaserTagNeopixelBoard Member=Component NPIN B03B-PASK-1(LF)(SN)
+Added Member To Class: ClassName=LaserTagNeopixelBoard Member=Component NPOUT B03B-PASK-1(LF)(SN)
+Add Class Member: Failed to add class member : Component Primer B02B-PASK-1(LF)(SN)
+Add Class Member: Failed to add class member : Component Rails B02B-PASK-1(LF)(SN)
+Add Class Member: Failed to add class member : Component Speaker Socket B02B-PASK-1(LF)(SN)
+Added Member To Class: ClassName=Sheet1 Member=Component S JS1400BFQ
+Added Member To Class: ClassName=LaserTagTargetBoard Member=Component TPMC TinyPICO
+Add Class Member: Failed to add class member : Component Trigger B02B-PASK-1(LF)(SN)
+Added Member To Class: ClassName=LaserTagTargetBoard Member=Component VB B02B-PASK-1(LF)(SN)
+Added Room: Name=LaserTagMainBoard
