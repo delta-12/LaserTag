@@ -1,0 +1,20 @@
+Output: Gerber X2 Files
+Type  : GerberX2
+From  : Variant [[No Variations]] of Project [Laser Tag Bop-It.PrjPcb]
+   Generated File[LaserTagTargetBoard_Copper_Signal_Top.gbr]
+   Generated File[LaserTagTargetBoard_Copper_Signal_Bot.gbr]
+   Generated File[LaserTagTargetBoard_Legend_Top.gbr]
+   Generated File[LaserTagTargetBoard_Legend_Bot.gbr]
+   Generated File[LaserTagTargetBoard_Soldermask_Top.gbr]
+   Generated File[LaserTagTargetBoard_Soldermask_Bot.gbr]
+   Generated File[LaserTagTargetBoard_Paste_Top.gbr]
+   Generated File[LaserTagTargetBoard_Paste_Bot.gbr]
+   Generated File[LaserTagJoystickBoard_Profile.gbr]
+   Generated File[LaserTagTargetBoard.EXTREP]
+   Generated File[LaserTagTargetBoard.REP]
+
+
+Files Generated   : 11
+Documents Printed : 0
+
+Finished Output Generation At 10:28:03 PM On 11/5/2023
