@@ -1,0 +1,4 @@
+Record=TopLevelDocument|FileName=LaserTagJoystickBoard.SchDoc|SheetNumber=4
+Record=NoMainPathDocument|SourceDocument=LaserTagJoystickBoard.SchDoc|FileName=LaserTagMainBoard.SchDoc|SheetNumber=1
+Record=NoMainPathDocument|SourceDocument=LaserTagJoystickBoard.SchDoc|FileName=LaserTagNeopixelBoard.SchDoc|SheetNumber=3
+Record=NoMainPathDocument|SourceDocument=LaserTagJoystickBoard.SchDoc|FileName=LaserTagTargetBoard.SchDoc|SheetNumber=2
