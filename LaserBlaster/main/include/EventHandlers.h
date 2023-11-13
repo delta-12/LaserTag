@@ -15,6 +15,7 @@
 /* Function Prototypes
  ******************************************************************************/
 
+void EventHandlers_Init(void);
 void EventHandlers_ButtonEventHandler(const Gpio_GpioNum_t gpioNum);
 
 #endif
