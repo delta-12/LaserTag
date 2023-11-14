@@ -38,13 +38,7 @@ static const char *BopItCommands_EspLogTag = "BopItCommands"; /* Tag for logging
 static void *BopItCommands_PlayerMini = NULL; /* Handle for DFPlayerMini */
 
 static uint8_t BopItCommands_NeopixelBuffer[NEOPIXEL_PIXEL_BUFFER_SIZE(BOPITCOMMANDS_NEOPIXEL_COUNT)]; /* Buffer for storing neopixel channel code data */
-
-/* Neopixel strip for visual feedback */
-static Neopixel_Strip_t BopItCommands_NeopixelStrip = {
-    .PixelBuffer = BopItCommands_NeopixelBuffer,
-    .PixelCount = BOPITCOMMANDS_NEOPIXEL_COUNT,
-    .GpioNum = BOPITCOMMANDS_NEOPIXEL_PIN,
-};
+static Neopixel_Strip_t BopItCommands_NeopixelStrip; /* Neopixel strip for visual feedback */
 
 bool BopItCommands_Button0InputFlag = false;                  /* Indicates if Button 0 was pressed */
 SemaphoreHandle_t BopItCommands_Button0InputFlagMutex = NULL; /* Mutex for Button 0 flag */
@@ -115,7 +109,7 @@ void BopItCommands_Init(void)
         DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_BEGIN_FILE);
     }
 
-    Neopixel_Init(&BopItCommands_NeopixelStrip);
+    Neopixel_Init(&BopItCommands_NeopixelStrip, BopItCommands_NeopixelBuffer, BOPITCOMMANDS_NEOPIXEL_COUNT, BOPITCOMMANDS_NEOPIXEL_PIN);
 }
 
 /**
