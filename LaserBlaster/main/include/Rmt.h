@@ -10,14 +10,12 @@
 
 /* Includes
  ******************************************************************************/
-
-/* Defines
- ******************************************************************************/
+#include "esp_err.h"
 
 /* Typedefs
  ******************************************************************************/
 
-typedef void (*Rmt_RxEventHandler_t)(uint8_t *const data, const size_t size);
+typedef void (*Rmt_RxEventHandler_t)(const uint8_t *const data, const size_t size);
 
 /* Function Prototypes
  ******************************************************************************/

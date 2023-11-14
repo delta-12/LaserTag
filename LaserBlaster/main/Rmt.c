@@ -41,21 +41,23 @@
 /* Globals
  ******************************************************************************/
 
-static rmt_channel_handle_t Rmt_IrRxChannelHandle = NULL;
-static StaticQueue_t Rmt_RxEventQueue;
-static uint8_t Rmt_RxEventQueueBuffer[RMT_RX_EVENT_QUEUE_SIZE * sizeof(rmt_rx_done_event_data_t)];
-static QueueHandle_t Rmt_RxEventQueueHandle = NULL;
-static rmt_symbol_word_t Rmt_RxBuffer[RMT_RX_BUFFER_SIZE];
+static rmt_channel_handle_t Rmt_IrRxChannelHandle = NULL;                                          /* Handle for RMT RX channel */
+static StaticQueue_t Rmt_RxEventQueue;                                                             /* Queue for storing RMT RX events */
+static uint8_t Rmt_RxEventQueueBuffer[RMT_RX_EVENT_QUEUE_SIZE * sizeof(rmt_rx_done_event_data_t)]; /* Statically allocated buffer for RMT RX done event queue's storage area */
+static QueueHandle_t Rmt_RxEventQueueHandle = NULL;                                                /* Handle for queue storing RMT RX events */
+static rmt_symbol_word_t Rmt_RxBuffer[RMT_RX_BUFFER_SIZE];                                         /* Buffer to receive RMT symbol words */
+static uint8_t Rmt_RxDecodeBuffer[RMT_RX_DECODE_BUFFER_SIZE];                                      /* Buffer to store bytes from decoded RMT symbols */
+static Rmt_RxEventHandler_t Rmt_RxEventHandler = NULL;                                             /* RMT RX done event handler registered by client, not be called directly */
+
+/* Configuration for the mininum and maximum range for receiving IR signals */
 static rmt_receive_config_t Rmt_RxConfig = {
     .signal_range_min_ns = RMT_RX_SIGNAL_RANGE_MIN_NS,
     .signal_range_max_ns = RMT_RX_SIGNAL_RANGE_MAX_NS,
 };
-static uint8_t Rmt_RxDecodeBuffer[RMT_RX_DECODE_BUFFER_SIZE];
-static Rmt_RxEventHandler_t Rmt_RxEventHandler = NULL;
 
-static rmt_channel_handle_t Rmt_IrTxChannelHandle = NULL;
-static rmt_encoder_handle_t Rmt_IrEncoderHandle = NULL;
-static IrEncoder_t Rmt_IrEncoder;
+static rmt_channel_handle_t Rmt_IrTxChannelHandle = NULL; /* Handle for RMT TX channel */
+static rmt_encoder_handle_t Rmt_IrEncoderHandle = NULL;   /* RMT handle for IR encoder used when transmitting */
+static IrEncoder_t Rmt_IrEncoder;                         /* IR encoder used when transmitting */
 
 /* Function Prototypes
  ******************************************************************************/
@@ -66,22 +68,25 @@ static void Rmt_RxEventHandlerTask(void *arg);
 /* Function Definitions
  ******************************************************************************/
 
+/**
+ * @brief Initialize all required RMT peripherals for receiving IR data.
+ ******************************************************************************/
 void Rmt_RxInit(void)
 {
     /* Configure RX channel */
     rmt_rx_channel_config_t rxChannelConfig = {
-        .clk_src = RMT_CLK_SRC_DEFAULT,
-        .gpio_num = RMT_GPIO_IR_RECEIVER,
-        .mem_block_symbols = RMT_MEM_BLOCK_SYMBOLS,
-        .resolution_hz = RMT_CLK_RESOLUTION_HZ,
-        .flags.invert_in = false,
-        .flags.with_dma = false,
+        .clk_src = RMT_CLK_SRC_DEFAULT,             /* Set source clock */
+        .gpio_num = RMT_GPIO_IR_RECEIVER,           /* GPIO number of receiver */
+        .mem_block_symbols = RMT_MEM_BLOCK_SYMBOLS, /* Memory block size */
+        .resolution_hz = RMT_CLK_RESOLUTION_HZ,     /* Tick resolution */
+        .flags.invert_in = false,                   /* Do not invert output signal */
+        .flags.with_dma = false,                    /* DMA backend not supported */
     };
     ESP_ERROR_CHECK(rmt_new_rx_channel(&rxChannelConfig, &Rmt_IrRxChannelHandle));
 
     /* Register callback to handle RX done events */
     rmt_rx_event_callbacks_t rxEventCallbacks = {
-        .on_recv_done = Rmt_RxDoneCallback,
+        .on_recv_done = Rmt_RxDoneCallback, /* Set callback for “receive-done” event */
     };
     ESP_ERROR_CHECK(rmt_rx_register_event_callbacks(Rmt_IrRxChannelHandle, &rxEventCallbacks, &Rmt_RxEventQueueHandle));
 
@@ -96,14 +101,14 @@ void Rmt_RxInit(void)
 }
 
 /**
- * @brief Initialize all required RMT peripherals.
+ * @brief Initialize all required RMT peripherals for transmitting IR data.
  ******************************************************************************/
 void Rmt_TxInit(void)
 {
     /* Configure TX channel */
     rmt_tx_channel_config_t txChannelConfig = {
         .clk_src = RMT_CLK_SRC_DEFAULT,             /* Set source clock */
-        .gpio_num = RMT_GPIO_IR_TRANSMITTER,        /* GPIO number */
+        .gpio_num = RMT_GPIO_IR_TRANSMITTER,        /* GPIO number of transmitter */
         .mem_block_symbols = RMT_MEM_BLOCK_SYMBOLS, /* Memory block size */
         .resolution_hz = RMT_CLK_RESOLUTION_HZ,     /* Tick resolution */
         .trans_queue_depth = RMT_TRANS_QUEUE_DEPTH, /* Number of transactions that can pend in the background */
@@ -128,6 +133,11 @@ void Rmt_TxInit(void)
     ESP_ERROR_CHECK(rmt_enable(Rmt_IrTxChannelHandle));
 }
 
+/**
+ * @brief Register handler for data from RMT receive events.
+ *
+ * @param[in] rxEventHandler Handler for RMT receive event data
+ ******************************************************************************/
 void Rmt_RegisterRxEventHandler(Rmt_RxEventHandler_t rxEventHandler)
 {
     if (rxEventHandler != NULL)
@@ -136,6 +146,14 @@ void Rmt_RegisterRxEventHandler(Rmt_RxEventHandler_t rxEventHandler)
     }
 }
 
+/**
+ * @brief Transmit IR data.
+ *
+ * @param[in] data Pointer to bytes to transmit
+ * @param[in] size Number of bytes to transmit
+ *
+ * @return esp_err_t Result of RMT transmit
+ ******************************************************************************/
 esp_err_t Rmt_Transmit(const uint8_t *const data, const size_t size)
 {
     rmt_transmit_config_t transmitConfig = {
@@ -145,6 +163,17 @@ esp_err_t Rmt_Transmit(const uint8_t *const data, const size_t size)
     return rmt_transmit(Rmt_IrTxChannelHandle, Rmt_IrEncoderHandle, data, size, &transmitConfig);
 }
 
+/**
+ * @brief Callback for RMT RX done event.
+ *
+ * @param[in] data Pointer to bytes to transmit
+ * @param[in] size Number of bytes to transmit
+ *
+ * @return bool  Whether a high priority task has been woken up by this
+ *               function
+ * @retval true  A high priority task has been woken up by this function
+ * @retval false A high priority task has not been woken up by this function
+ ******************************************************************************/
 static bool IRAM_ATTR Rmt_RxDoneCallback(rmt_channel_handle_t rxChannelHandle, const rmt_rx_done_event_data_t *const rmtEventData, void *arg)
 {
     BaseType_t highTaskWakeup = pdFALSE;
@@ -155,6 +184,11 @@ static bool IRAM_ATTR Rmt_RxDoneCallback(rmt_channel_handle_t rxChannelHandle, c
     return highTaskWakeup == pdTRUE;
 }
 
+/**
+ * @brief Task to handle RMT RX done events in the RX event queue.
+ *
+ * @param[in] arg UNUSED
+ ******************************************************************************/
 static void Rmt_RxEventHandlerTask(void *arg)
 {
     rmt_rx_done_event_data_t rxData;
