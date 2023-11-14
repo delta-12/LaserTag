@@ -166,9 +166,9 @@ void BopItCommands_Button0FailFeedback(void)
 /**
  * @brief Check if Button 0 was pressed.
  *
- * @return Whether Button 0 was pressed or not
+ * @return bool Whether Button 0 was pressed or not
  *
- * @retval true Button 0 was pressed
+ * @retval true  Button 0 was pressed
  * @retval false Button 0 was not pressed
  ******************************************************************************/
 bool BopItCommands_Button0GetInput(void)
@@ -219,9 +219,9 @@ void BopItCommands_Button1FailFeedback(void)
 /**
  * @brief Check if Button 1 was pressed.
  *
- * @return Whether Button 1 was pressed or not
+ * @return bool Whether Button 1 was pressed or not
  *
- * @retval true Button 1 was pressed
+ * @retval true  Button 1 was pressed
  * @retval false Button 1 was not pressed
  ******************************************************************************/
 bool BopItCommands_Button1GetInput(void)
@@ -272,9 +272,9 @@ void BopItCommands_Button2FailFeedback(void)
 /**
  * @brief Check if Button 2 was pressed.
  *
- * @return Whether Button 2 was pressed or not
+ * @return bool Whether Button 2 was pressed or not
  *
- * @retval true Button 2 was pressed
+ * @retval true  Button 2 was pressed
  * @retval false Button 2 was not pressed
  ******************************************************************************/
 bool BopItCommands_Button2GetInput(void)
