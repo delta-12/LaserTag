@@ -118,13 +118,13 @@ esp_err_t IrEncoder_InitRmtEncoder(rmt_encoder_handle_t *const rmtEncoderHandle,
 
 size_t IrEncoder_RmtDecode(rmt_symbol_word_t *const rmtSymbols, const size_t symbolCount, uint8_t *const decodeBuffer, const size_t bufferSize)
 {
-    rmt_symbol_word_t *currentRmtSymbol = rmtSymbols;
-    size_t decodedDataSymbols = 0U;
     size_t decodedDataBytes = 0U;
     bool validSymbols = true;
 
     if (symbolCount >= IRENCODER_NEC_CODES_SYMBOL_LENGTH)
     {
+        rmt_symbol_word_t *currentRmtSymbol = rmtSymbols;
+
         /* Verify NEC leader code */
         if (!(IrEncoder_NecCheckInRange(currentRmtSymbol->duration0, IRENCODER_NEC_LEADERCODE_DURATION_0) && IrEncoder_NecCheckInRange(currentRmtSymbol->duration1, IRENCODER_NEC_LEADERCODE_DURATION_1)))
         {
@@ -133,6 +133,7 @@ size_t IrEncoder_RmtDecode(rmt_symbol_word_t *const rmtSymbols, const size_t sym
         currentRmtSymbol++;
 
         /* Decode data RMT symbols */
+        size_t decodedDataSymbols = 0U;
         while (validSymbols && decodedDataBytes < bufferSize && decodedDataSymbols < (symbolCount - IRENCODER_NEC_CODES_SYMBOL_LENGTH))
         {
             *(decodeBuffer + decodedDataBytes) = 0U;
