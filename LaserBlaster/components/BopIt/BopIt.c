@@ -140,10 +140,10 @@ void BopIt_Run(BopIt_GameContext_t *const gameContext)
  ******************************************************************************/
 static void BopIt_Log(const char *const format, ...)
 {
-    va_list args;
-
     if (format != NULL)
     {
+        va_list args;
+
         va_start(args, format);
         vsnprintf(BopIt_LogBuffer, BOPIT_LOG_BUFFER_SIZE, format, args);
         va_end(args);
@@ -279,11 +279,11 @@ static void BopIt_HandleCommand(BopIt_GameContext_t *const gameContext)
  ******************************************************************************/
 static void BopIt_HandleWait(BopIt_GameContext_t *const gameContext)
 {
-    BopIt_Command_t *command;
-    uint32_t commandIndex = 0U;
 
     if (gameContext != NULL)
     {
+        uint32_t commandIndex = 0U;
+
         /* Check if the player is out of time to complete the issued command */
         if (BopIt_GetElapsedTime(gameContext->WaitStart) > gameContext->WaitTime)
         {
@@ -294,7 +294,7 @@ static void BopIt_HandleWait(BopIt_GameContext_t *const gameContext)
         /* Check if the player made the correct input and no other inputs */
         while (commandIndex < gameContext->CommandCount && gameContext->GameState != BOPIT_GAMESTATE_FAIL)
         {
-            command = *(BopIt_Command_t **)(gameContext->Commands + commandIndex);
+            BopIt_Command_t *command = *(BopIt_Command_t **)(gameContext->Commands + commandIndex);
 
             if ((*command->GetInput)())
             {

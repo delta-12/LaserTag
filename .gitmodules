@@ -1,3 +1,6 @@
 [submodule "tools/cppcheck"]
 	path = tools/cppcheck
 	url = git@github.com:danmar/cppcheck.git
+[submodule "LaserBlaster/components/DFPlayerMini/DFRobotDFPlayerMini"]
+	path = LaserBlaster/components/DFPlayerMini/DFRobotDFPlayerMini
+	url = git@github.com:DFRobot/DFRobotDFPlayerMini.git
