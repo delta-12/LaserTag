@@ -171,7 +171,7 @@ esp_err_t Rmt_Transmit(const uint8_t *const data, const size_t size)
  *
  * @return bool Whether a high priority task has been woken up by this
  *              function
- * 
+ *
  * @retval true  A high priority task has been woken up by this function
  * @retval false A high priority task has not been woken up by this function
  ******************************************************************************/
