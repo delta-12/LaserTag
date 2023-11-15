@@ -16,7 +16,7 @@
 /* Defines
  ******************************************************************************/
 
-#define ADC_ADC2_CHANNEL ADC_CHANNEL_0
+#define ADC_ADC2_CHANNEL ADC_CHANNEL_6
 #define ADC_ATTEN_DB ADC_ATTEN_DB_11
 
 /* Globals
