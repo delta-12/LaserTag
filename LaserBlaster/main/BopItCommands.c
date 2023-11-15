@@ -7,6 +7,7 @@
 
 /* Includes
  ******************************************************************************/
+#include "Adc.h"
 #include "BopItCommands.h"
 #include "DFPlayerMini.h"
 #include "driver/gpio.h"
@@ -19,15 +20,15 @@
 
 #define BOPITCOMMANDS_SEMPHR_BLOCK_TIME 0U       /* Do not wait if mutex cannot be taken */
 #define BOPITCOMMANDS_UART_NUM UART_NUM_2        /* Use UART 2 for DFPlayerMini */
-#define BOPITCOMMANDS_UART_RX_PIN GPIO_NUM_16    /* GPIO to use for UART RX */
-#define BOPITCOMMANDS_UART_TX_PIN GPIO_NUM_17    /* GPIO to use for UART RX */
+#define BOPITCOMMANDS_UART_RX_PIN GPIO_NUM_23    /* GPIO to use for UART RX */
+#define BOPITCOMMANDS_UART_TX_PIN GPIO_NUM_19    /* GPIO to use for UART RX */
 #define BOPITCOMMANDS_PLAYERMINI_IS_ACK true     /* Enable ACK when initializing DFPlayerMini*/
 #define BOPITCOMMANDS_PLAYERMINI_DO_RESET true   /* Perform a reset when initializing DFPlayerMini*/
 #define BOPITCOMMANDS_PLAYERMINI_VOLUME 30U      /* DFPlayerMini volume */
 #define BOPITCOMMANDS_PLAYERMINI_BEGIN_FILE 1U   /* DFPlayerMini file to play on initialization */
 #define BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE 3U /* DFPlayerMini file to play for success feedback */
 #define BOPITCOMMANDS_PLAYERMINI_FAIL_FILE 2U    /* DFPlayerMini file to play for fail feedback */
-#define BOPITCOMMANDS_NEOPIXEL_PIN GPIO_NUM_15   /* GPIO pin for neopixel strip */
+#define BOPITCOMMANDS_NEOPIXEL_PIN GPIO_NUM_4    /* GPIO pin for neopixel strip */
 #define BOPITCOMMANDS_NEOPIXEL_COUNT 6U          /* Neopixel strip with 6 pixels */
 
 /* Globals
@@ -46,43 +47,44 @@ static Neopixel_Strip_t BopItCommands_NeopixelStrip = {
     .GpioNum = BOPITCOMMANDS_NEOPIXEL_PIN,
 };
 
-bool BopItCommands_Button0InputFlag = false;                  /* Indicates if Button 0 was pressed */
-SemaphoreHandle_t BopItCommands_Button0InputFlagMutex = NULL; /* Mutex for Button 0 flag */
-StaticSemaphore_t BopItCommands_Button0InputFlagMutexBuffer;  /* Buffer to store mutex for Button 0 flag */
+bool BopItCommands_TriggerInputFlag = false;                  /* Indicates if Trigger was pressed */
+SemaphoreHandle_t BopItCommands_TriggerInputFlagMutex = NULL; /* Mutex for Trigger flag */
+StaticSemaphore_t BopItCommands_TriggerInputFlagMutexBuffer;  /* Buffer to store mutex for Trigger flag */
 
-/* BopIt command for Button 0 */
-BopIt_Command_t BopItCommands_Button0 = {
-    .Name = "Button 0 Command",
-    .IssueCommand = BopItCommands_Button0IssueCommand,
-    .SuccessFeedback = BopItCommands_Button0SuccessFeedback,
-    .FailFeedback = BopItCommands_Button0FailFeedback,
-    .GetInput = BopItCommands_Button0GetInput,
+/* BopIt command for Trigger */
+BopIt_Command_t BopItCommands_Trigger = {
+    .Name = "Trigger Command",
+    .IssueCommand = BopItCommands_TriggerIssueCommand,
+    .SuccessFeedback = BopItCommands_TriggerSuccessFeedback,
+    .FailFeedback = BopItCommands_TriggerFailFeedback,
+    .GetInput = BopItCommands_TriggerGetInput,
 };
 
-bool BopItCommands_Button1InputFlag = false;                  /* Indicates if Button 1 was pressed */
-SemaphoreHandle_t BopItCommands_Button1InputFlagMutex = NULL; /* Mutex for Button 1 flag */
-StaticSemaphore_t BopItCommands_Button1InputFlagMutexBuffer;  /* Buffer to store mutex for Button 1 flag */
+bool BopItCommands_PrimeInputFlag = false;                  /* Indicates if Prime was done */
+SemaphoreHandle_t BopItCommands_PrimeInputFlagMutex = NULL; /* Mutex for Prime flag */
+StaticSemaphore_t BopItCommands_PrimeInputFlagMutexBuffer;  /* Buffer to store mutex for Prime flag */
 
-/* BopIt command for Button 1 */
-BopIt_Command_t BopItCommands_Button1 = {
-    .Name = "Button 1 Command",
-    .IssueCommand = BopItCommands_Button1IssueCommand,
-    .SuccessFeedback = BopItCommands_Button1SuccessFeedback,
-    .FailFeedback = BopItCommands_Button1FailFeedback,
-    .GetInput = BopItCommands_Button1GetInput,
+/* BopIt command for Prime */
+BopIt_Command_t BopItCommands_Prime = {
+    .Name = "Prime Command",
+    .IssueCommand = BopItCommands_PrimeIssueCommand,
+    .SuccessFeedback = BopItCommands_PrimeSuccessFeedback,
+    .FailFeedback = BopItCommands_PrimeFailFeedback,
+    .GetInput = BopItCommands_PrimeGetInput,
 };
 
-bool BopItCommands_Button2InputFlag = false;                  /* Indicates if Button 2 was pressed */
-SemaphoreHandle_t BopItCommands_Button2InputFlagMutex = NULL; /* Mutex for Button 2 flag */
-StaticSemaphore_t BopItCommands_Button2InputFlagMutexBuffer;  /* Buffer to store mutex for Button 2 flag */
+/* BopIt command for Reload */
+bool BopItCommands_ReloadInputFlag = false;                  /* Indicates if Reload was done */
+SemaphoreHandle_t BopItCommands_ReloadInputFlagMutex = NULL; /* Mutex for Reload flag */
+StaticSemaphore_t BopItCommands_ReloadInputFlagMutexBuffer;  /* Buffer to store mutex for Reload flag */
 
-/* BopIt command for Button 2 */
-BopIt_Command_t BopItCommands_Button2 = {
-    .Name = "Button 2 Command",
-    .IssueCommand = BopItCommands_Button2IssueCommand,
-    .SuccessFeedback = BopItCommands_Button2SuccessFeedback,
-    .FailFeedback = BopItCommands_Button2FailFeedback,
-    .GetInput = BopItCommands_Button2GetInput,
+/* BopIt command for Reload */
+BopIt_Command_t BopItCommands_Reload = {
+    .Name = "Reload Command",
+    .IssueCommand = BopItCommands_ReloadIssueCommand,
+    .SuccessFeedback = BopItCommands_ReloadSuccessFeedback,
+    .FailFeedback = BopItCommands_ReloadFailFeedback,
+    .GetInput = BopItCommands_ReloadGetInput,
 };
 
 /* Function Prototypes
@@ -100,9 +102,9 @@ static void BopItCommands_ResetInputFlags(void);
  ******************************************************************************/
 void BopItCommands_Init(void)
 {
-    BopItCommands_Button0InputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_Button0InputFlagMutexBuffer);
-    BopItCommands_Button1InputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_Button1InputFlagMutexBuffer);
-    BopItCommands_Button2InputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_Button2InputFlagMutexBuffer);
+    BopItCommands_TriggerInputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_TriggerInputFlagMutexBuffer);
+    BopItCommands_PrimeInputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_PrimeInputFlagMutexBuffer);
+    BopItCommands_ReloadInputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_ReloadInputFlagMutexBuffer);
 
     BopItCommands_PlayerMini = DFPlayerMini_CreateHandle(BOPITCOMMANDS_UART_NUM, BOPITCOMMANDS_UART_RX_PIN, BOPITCOMMANDS_UART_TX_PIN);
     if (!DFPlayerMini_Begin(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_IS_ACK, BOPITCOMMANDS_PLAYERMINI_DO_RESET))
@@ -116,6 +118,7 @@ void BopItCommands_Init(void)
     }
 
     Neopixel_Init(&BopItCommands_NeopixelStrip);
+    Adc_Init();
 }
 
 /**
@@ -127,165 +130,168 @@ void BopItCommands_DeInit(void)
     if (BopItCommands_PlayerMini != NULL)
     {
         DFPlayerMini_FreeHandle(BopItCommands_PlayerMini);
-        Neopixel_Clear(&BopItCommands_NeopixelStrip);
-        Neopixel_Show(&BopItCommands_NeopixelStrip);
     }
+
+    Neopixel_Clear(&BopItCommands_NeopixelStrip);
+    Neopixel_Show(&BopItCommands_NeopixelStrip);
+
+    Adc_DeInit();
 }
 
 /**
- * @brief Issue command to press Button 0.
+ * @brief Issue command to press Trigger.
  ******************************************************************************/
-void BopItCommands_Button0IssueCommand(void)
+void BopItCommands_TriggerIssueCommand(void)
 {
     BopItCommands_ResetInputFlags();
-    ESP_LOGI(BopItCommands_EspLogTag, "Press Button 0");
+    ESP_LOGI(BopItCommands_EspLogTag, "Press Trigger");
 }
 
 /**
- * @brief Provide feedback to indicate Button 0 was successfully pressed.
+ * @brief Provide feedback to indicate Trigger was successfully pressed.
  ******************************************************************************/
-void BopItCommands_Button0SuccessFeedback(void)
+void BopItCommands_TriggerSuccessFeedback(void)
 {
-    ESP_LOGI(BopItCommands_EspLogTag, "Successfully pressed Button 0");
+    ESP_LOGI(BopItCommands_EspLogTag, "Successfully pressed Trigger");
     DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
     Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_GREEN);
     Neopixel_Show(&BopItCommands_NeopixelStrip);
 }
 
 /**
- * @brief Provide feedback to indicate failure to press Button 0.
+ * @brief Provide feedback to indicate failure to press Trigger.
  ******************************************************************************/
-void BopItCommands_Button0FailFeedback(void)
+void BopItCommands_TriggerFailFeedback(void)
 {
-    ESP_LOGI(BopItCommands_EspLogTag, "Failed to pressed Button 0");
+    ESP_LOGI(BopItCommands_EspLogTag, "Failed to pressed Trigger");
     DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
     Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_RED);
     Neopixel_Show(&BopItCommands_NeopixelStrip);
 }
 
 /**
- * @brief Check if Button 0 was pressed.
+ * @brief Check if Trigger was pressed.
  *
- * @return bool Whether Button 0 was pressed or not
+ * @return bool Whether Trigger was pressed or not
  *
- * @retval true  Button 0 was pressed
- * @retval false Button 0 was not pressed
+ * @retval true  Trigger was pressed
+ * @retval false Trigger was not pressed
  ******************************************************************************/
-bool BopItCommands_Button0GetInput(void)
+bool BopItCommands_TriggerGetInput(void)
 {
     bool input = false;
 
-    if (xSemaphoreTake(BopItCommands_Button0InputFlagMutex, BOPITCOMMANDS_SEMPHR_BLOCK_TIME) == pdTRUE)
+    if (xSemaphoreTake(BopItCommands_TriggerInputFlagMutex, BOPITCOMMANDS_SEMPHR_BLOCK_TIME) == pdTRUE)
     {
-        input = BopItCommands_Button0InputFlag;
-        BopItCommands_Button0InputFlag = false;
-        xSemaphoreGive(BopItCommands_Button0InputFlagMutex);
-    }
-
-    return input;
-}
-
-/**
- * @brief Issue command to press Button 1.
- ******************************************************************************/
-void BopItCommands_Button1IssueCommand(void)
-{
-    BopItCommands_ResetInputFlags();
-    ESP_LOGI(BopItCommands_EspLogTag, "Press Button 1");
-}
-
-/**
- * @brief Provide feedback to indicate Button 1 was successfully pressed.
- ******************************************************************************/
-void BopItCommands_Button1SuccessFeedback(void)
-{
-    ESP_LOGI(BopItCommands_EspLogTag, "Successfully pressed Button 1");
-    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
-    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_GREEN);
-    Neopixel_Show(&BopItCommands_NeopixelStrip);
-}
-
-/**
- * @brief Provide feedback to indicate failure to press Button 1.
- ******************************************************************************/
-void BopItCommands_Button1FailFeedback(void)
-{
-    ESP_LOGI(BopItCommands_EspLogTag, "Failed to pressed Button 1");
-    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
-    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_RED);
-    Neopixel_Show(&BopItCommands_NeopixelStrip);
-}
-
-/**
- * @brief Check if Button 1 was pressed.
- *
- * @return bool Whether Button 1 was pressed or not
- *
- * @retval true  Button 1 was pressed
- * @retval false Button 1 was not pressed
- ******************************************************************************/
-bool BopItCommands_Button1GetInput(void)
-{
-    bool input = false;
-
-    if (xSemaphoreTake(BopItCommands_Button1InputFlagMutex, BOPITCOMMANDS_SEMPHR_BLOCK_TIME) == pdTRUE)
-    {
-        input = BopItCommands_Button1InputFlag;
-        BopItCommands_Button1InputFlag = false;
-        xSemaphoreGive(BopItCommands_Button1InputFlagMutex);
+        input = BopItCommands_TriggerInputFlag;
+        BopItCommands_TriggerInputFlag = false;
+        xSemaphoreGive(BopItCommands_TriggerInputFlagMutex);
     }
 
     return input;
 }
 
 /**
- * @brief Issue command to press Button 2.
+ * @brief Issue command to Prime.
  ******************************************************************************/
-void BopItCommands_Button2IssueCommand(void)
+void BopItCommands_PrimeIssueCommand(void)
 {
     BopItCommands_ResetInputFlags();
-    ESP_LOGI(BopItCommands_EspLogTag, "Press Button 2");
+    ESP_LOGI(BopItCommands_EspLogTag, "Prime the blaster");
 }
 
 /**
- * @brief Provide feedback to indicate Button 2 was successfully pressed.
+ * @brief Provide feedback to indicate Prime was successfully pressed.
  ******************************************************************************/
-void BopItCommands_Button2SuccessFeedback(void)
+void BopItCommands_PrimeSuccessFeedback(void)
 {
-    ESP_LOGI(BopItCommands_EspLogTag, "Successfully pressed Button 2");
+    ESP_LOGI(BopItCommands_EspLogTag, "Successfully Primed");
     DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
     Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_GREEN);
     Neopixel_Show(&BopItCommands_NeopixelStrip);
 }
 
 /**
- * @brief Provide feedback to indicate failure to press Button 2.
+ * @brief Provide feedback to indicate failure to press Prime.
  ******************************************************************************/
-void BopItCommands_Button2FailFeedback(void)
+void BopItCommands_PrimeFailFeedback(void)
 {
-    ESP_LOGI(BopItCommands_EspLogTag, "Failed to pressed Button 2");
+    ESP_LOGI(BopItCommands_EspLogTag, "Failed to Prime");
     DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
     Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_RED);
     Neopixel_Show(&BopItCommands_NeopixelStrip);
 }
 
 /**
- * @brief Check if Button 2 was pressed.
+ * @brief Check if Prime was pressed.
  *
- * @return bool Whether Button 2 was pressed or not
+ * @return bool Whether Prime was pressed or not
  *
- * @retval true  Button 2 was pressed
- * @retval false Button 2 was not pressed
+ * @retval true  Prime was pressed
+ * @retval false Prime was not pressed
  ******************************************************************************/
-bool BopItCommands_Button2GetInput(void)
+bool BopItCommands_PrimeGetInput(void)
 {
     bool input = false;
 
-    if (xSemaphoreTake(BopItCommands_Button2InputFlagMutex, BOPITCOMMANDS_SEMPHR_BLOCK_TIME) == pdTRUE)
+    if (xSemaphoreTake(BopItCommands_PrimeInputFlagMutex, BOPITCOMMANDS_SEMPHR_BLOCK_TIME) == pdTRUE)
     {
-        input = BopItCommands_Button2InputFlag;
-        BopItCommands_Button2InputFlag = false;
-        xSemaphoreGive(BopItCommands_Button2InputFlagMutex);
+        input = BopItCommands_PrimeInputFlag;
+        BopItCommands_PrimeInputFlag = false;
+        xSemaphoreGive(BopItCommands_PrimeInputFlagMutex);
+    }
+
+    return input;
+}
+
+/**
+ * @brief Issue command to Reload.
+ ******************************************************************************/
+void BopItCommands_ReloadIssueCommand(void)
+{
+    BopItCommands_ResetInputFlags();
+    ESP_LOGI(BopItCommands_EspLogTag, "Press Reload");
+}
+
+/**
+ * @brief Provide feedback to indicate Reload was successfully done.
+ ******************************************************************************/
+void BopItCommands_ReloadSuccessFeedback(void)
+{
+    ESP_LOGI(BopItCommands_EspLogTag, "Successfully Reloaded");
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
+    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_GREEN);
+    Neopixel_Show(&BopItCommands_NeopixelStrip);
+}
+
+/**
+ * @brief Provide feedback to indicate failure to Reload.
+ ******************************************************************************/
+void BopItCommands_ReloadFailFeedback(void)
+{
+    ESP_LOGI(BopItCommands_EspLogTag, "Failed to Reload");
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
+    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_RED);
+    Neopixel_Show(&BopItCommands_NeopixelStrip);
+}
+
+/**
+ * @brief Check if Reload was done.
+ *
+ * @return bool Whether Reload was done or not
+ *
+ * @retval true  Reload was done
+ * @retval false Reload was not done
+ ******************************************************************************/
+bool BopItCommands_ReloadGetInput(void)
+{
+    bool input = false;
+
+    if (xSemaphoreTake(BopItCommands_ReloadInputFlagMutex, BOPITCOMMANDS_SEMPHR_BLOCK_TIME) == pdTRUE)
+    {
+        input = BopItCommands_ReloadInputFlag;
+        BopItCommands_ReloadInputFlag = false;
+        xSemaphoreGive(BopItCommands_ReloadInputFlagMutex);
     }
 
     return input;
@@ -297,21 +303,21 @@ bool BopItCommands_Button2GetInput(void)
  ******************************************************************************/
 static void BopItCommands_ResetInputFlags(void)
 {
-    if (xSemaphoreTake(BopItCommands_Button0InputFlagMutex, portMAX_DELAY) == pdTRUE)
+    if (xSemaphoreTake(BopItCommands_TriggerInputFlagMutex, portMAX_DELAY) == pdTRUE)
     {
-        BopItCommands_Button0InputFlag = false;
-        xSemaphoreGive(BopItCommands_Button0InputFlagMutex);
+        BopItCommands_TriggerInputFlag = false;
+        xSemaphoreGive(BopItCommands_TriggerInputFlagMutex);
     }
 
-    if (xSemaphoreTake(BopItCommands_Button1InputFlagMutex, portMAX_DELAY) == pdTRUE)
+    if (xSemaphoreTake(BopItCommands_PrimeInputFlagMutex, portMAX_DELAY) == pdTRUE)
     {
-        BopItCommands_Button1InputFlag = false;
-        xSemaphoreGive(BopItCommands_Button1InputFlagMutex);
+        BopItCommands_PrimeInputFlag = false;
+        xSemaphoreGive(BopItCommands_PrimeInputFlagMutex);
     }
 
-    if (xSemaphoreTake(BopItCommands_Button2InputFlagMutex, portMAX_DELAY) == pdTRUE)
+    if (xSemaphoreTake(BopItCommands_ReloadInputFlagMutex, portMAX_DELAY) == pdTRUE)
     {
-        BopItCommands_Button2InputFlag = false;
-        xSemaphoreGive(BopItCommands_Button2InputFlagMutex);
+        BopItCommands_ReloadInputFlag = false;
+        xSemaphoreGive(BopItCommands_ReloadInputFlagMutex);
     }
 }

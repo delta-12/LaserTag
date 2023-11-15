@@ -14,7 +14,7 @@
 
 static const char *BopItTag = "BopIt";
 
-static BopIt_Command_t *BopItCommands[BOPIT_COMMAND_COUNT] = {&BopItCommands_Button0, &BopItCommands_Button1, &BopItCommands_Button2};
+static BopIt_Command_t *BopItCommands[BOPIT_COMMAND_COUNT] = {&BopItCommands_Trigger, &BopItCommands_Prime, &BopItCommands_Reload};
 
 static void BopItLogger(const char *const message);
 static BopIt_TimeMs_t BopItTime(void);
@@ -28,8 +28,8 @@ void app_main(void)
 
     Gpio_RegisterEventHandler(GPIO_TYPE_BUTTON, EventHandlers_ButtonEventHandler);
 
-    Rmt_RxInit();
-    Rmt_RegisterRxEventHandler(TestParser);
+    // Rmt_RxInit();
+    // Rmt_RegisterRxEventHandler(TestParser);
 
     /* Test RMT and IR encoder */
     while (1)
