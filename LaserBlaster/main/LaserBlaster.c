@@ -18,7 +18,6 @@ static BopIt_Command_t *BopItCommands[BOPIT_COMMAND_COUNT] = {&BopItCommands_Tri
 
 static void BopItLogger(const char *const message);
 static BopIt_TimeMs_t BopItTime(void);
-static void TestParser(const uint8_t *const buffer, const size_t size);
 
 void app_main(void)
 {
@@ -27,16 +26,6 @@ void app_main(void)
     EventHandlers_Init();
 
     Gpio_RegisterEventHandler(GPIO_TYPE_BUTTON, EventHandlers_ButtonEventHandler);
-
-    // Rmt_RxInit();
-    // Rmt_RegisterRxEventHandler(TestParser);
-
-    /* Test RMT and IR encoder */
-    while (1)
-    {
-        // Rmt_Transmit(data, 4U);
-        vTaskDelay(2000U / portTICK_PERIOD_MS);
-    }
 
     BopIt_GameContext_t bopItGameContext = {
         .Commands = BopItCommands,
@@ -68,14 +57,4 @@ static void BopItLogger(const char *const message)
 static BopIt_TimeMs_t BopItTime(void)
 {
     return (BopIt_TimeMs_t)(esp_timer_get_time() / US_PER_MS);
-}
-
-static void TestParser(const uint8_t *const buffer, const size_t size)
-{
-    ESP_LOGI("TEST PARSER", "Shot received!");
-    for (size_t i = 0U; i < size; i++)
-    {
-        printf("%x ", *(buffer + i));
-    }
-    printf("\n");
 }
