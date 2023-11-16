@@ -18,8 +18,7 @@
 
 #define GPIO_BUTTON_TRIGGER GPIO_NUM_18
 #define GPIO_BUTTON_PRIME GPIO_NUM_5
-#define GPIO_BUTTON_2 GPIO_NUM_21
-#define GPIO_BUTTON_PIN_SEL ((1UL << GPIO_BUTTON_TRIGGER) | (1UL << GPIO_BUTTON_PRIME) | (1UL << GPIO_BUTTON_2))
+#define GPIO_BUTTON_PIN_SEL ((1UL << GPIO_BUTTON_TRIGGER) | (1UL << GPIO_BUTTON_PRIME))
 
 /* Typedefs
  ******************************************************************************/

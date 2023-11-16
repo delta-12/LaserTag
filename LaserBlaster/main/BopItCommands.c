@@ -18,18 +18,32 @@
 /* Defines
  ******************************************************************************/
 
-#define BOPITCOMMANDS_SEMPHR_BLOCK_TIME 0U       /* Do not wait if mutex cannot be taken */
-#define BOPITCOMMANDS_UART_NUM UART_NUM_2        /* Use UART 2 for DFPlayerMini */
-#define BOPITCOMMANDS_UART_RX_PIN GPIO_NUM_23    /* GPIO to use for UART RX */
-#define BOPITCOMMANDS_UART_TX_PIN GPIO_NUM_19    /* GPIO to use for UART RX */
-#define BOPITCOMMANDS_PLAYERMINI_IS_ACK true     /* Enable ACK when initializing DFPlayerMini*/
-#define BOPITCOMMANDS_PLAYERMINI_DO_RESET true   /* Perform a reset when initializing DFPlayerMini*/
-#define BOPITCOMMANDS_PLAYERMINI_VOLUME 30U      /* DFPlayerMini volume */
-#define BOPITCOMMANDS_PLAYERMINI_BEGIN_FILE 1U   /* DFPlayerMini file to play on initialization */
-#define BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE 3U /* DFPlayerMini file to play for success feedback */
-#define BOPITCOMMANDS_PLAYERMINI_FAIL_FILE 2U    /* DFPlayerMini file to play for fail feedback */
-#define BOPITCOMMANDS_NEOPIXEL_PIN GPIO_NUM_4    /* GPIO pin for neopixel strip */
-#define BOPITCOMMANDS_NEOPIXEL_COUNT 6U          /* Neopixel strip with 6 pixels */
+#define BOPITCOMMANDS_SEMPHR_BLOCK_TIME 0U            /* Do not wait if mutex cannot be taken */
+#define BOPITCOMMANDS_UART_NUM UART_NUM_2             /* Use UART 2 for DFPlayerMini */
+#define BOPITCOMMANDS_UART_RX_PIN GPIO_NUM_23         /* GPIO to use for UART RX */
+#define BOPITCOMMANDS_UART_TX_PIN GPIO_NUM_19         /* GPIO to use for UART RX */
+#define BOPITCOMMANDS_PLAYERMINI_IS_ACK true          /* Enable ACK when initializing DFPlayerMini*/
+#define BOPITCOMMANDS_PLAYERMINI_DO_RESET true        /* Perform a reset when initializing DFPlayerMini*/
+#define BOPITCOMMANDS_PLAYERMINI_VOLUME 30U           /* DFPlayerMini volume */
+#define BOPITCOMMANDS_PLAYERMINI_BEGIN_FILE 1U        /* DFPlayerMini file to play on initialization */
+#define BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE 3U      /* DFPlayerMini file to play for success feedback */
+#define BOPITCOMMANDS_PLAYERMINI_FAIL_FILE 2U         /* DFPlayerMini file to play for fail feedback */
+#define BOPITCOMMANDS_NEOPIXEL_PIN GPIO_NUM_4         /* GPIO pin for neopixel strip */
+#define BOPITCOMMANDS_NEOPIXEL_COUNT 6U               /* Neopixel strip with 6 pixels */
+#define BOPITCOMMANDS_CLIP0_VOLTAGE_LOWER_BOUND 1500U /* Lower bound for voltage that should be read for clip 0 */
+#define BOPITCOMMANDS_CLIP0_VOLTAGE_UPPER_BOUND 1800U /* Upper bound for voltage that should be read for clip 0 */
+#define BOPITCOMMANDS_CLIP1_VOLTAGE_LOWER_BOUND 2950U /* Lower bound for voltage that should be read for clip 1 */
+#define BOPITCOMMANDS_CLIP1_VOLTAGE_UPPER_BOUND 3050U /* Upper bound for voltage that should be read for clip 1 */
+
+/* Typedefs
+ ******************************************************************************/
+
+typedef enum
+{
+    BOPITCOMMANDS_CLIPNUMBER_0,         /* Clip 0 inserted */
+    BOPITCOMMANDS_CLIPNUMBER_1,         /* Clip 1 inserted */
+    BOPITCOMMANDS_CLIPNUMBER_UNDEFINED, /* Unknown clip inserted */
+} BopItCommands_ClipNumber_t;           /* Number for each clip */
 
 /* Globals
  ******************************************************************************/
@@ -74,9 +88,7 @@ BopIt_Command_t BopItCommands_Prime = {
 };
 
 /* BopIt command for Reload */
-bool BopItCommands_ReloadInputFlag = false;                  /* Indicates if Reload was done */
-SemaphoreHandle_t BopItCommands_ReloadInputFlagMutex = NULL; /* Mutex for Reload flag */
-StaticSemaphore_t BopItCommands_ReloadInputFlagMutexBuffer;  /* Buffer to store mutex for Reload flag */
+static BopItCommands_ClipNumber_t BopItCommands_InsertedClip = BOPITCOMMANDS_CLIPNUMBER_0; /* Clip curremtly inserted */
 
 /* BopIt command for Reload */
 BopIt_Command_t BopItCommands_Reload = {
@@ -104,7 +116,6 @@ void BopItCommands_Init(void)
 {
     BopItCommands_TriggerInputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_TriggerInputFlagMutexBuffer);
     BopItCommands_PrimeInputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_PrimeInputFlagMutexBuffer);
-    BopItCommands_ReloadInputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_ReloadInputFlagMutexBuffer);
 
     BopItCommands_PlayerMini = DFPlayerMini_CreateHandle(BOPITCOMMANDS_UART_NUM, BOPITCOMMANDS_UART_RX_PIN, BOPITCOMMANDS_UART_TX_PIN);
     if (!DFPlayerMini_Begin(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_IS_ACK, BOPITCOMMANDS_PLAYERMINI_DO_RESET))
@@ -118,6 +129,7 @@ void BopItCommands_Init(void)
     }
 
     Neopixel_Init(&BopItCommands_NeopixelStrip);
+
     Adc_Init();
 }
 
@@ -250,7 +262,7 @@ bool BopItCommands_PrimeGetInput(void)
 void BopItCommands_ReloadIssueCommand(void)
 {
     BopItCommands_ResetInputFlags();
-    ESP_LOGI(BopItCommands_EspLogTag, "Press Reload");
+    ESP_LOGI(BopItCommands_EspLogTag, "Reload the blaster");
 }
 
 /**
@@ -286,12 +298,25 @@ void BopItCommands_ReloadFailFeedback(void)
 bool BopItCommands_ReloadGetInput(void)
 {
     bool input = false;
+    int voltage = 0U;
+    BopItCommands_ClipNumber_t insertedClip = BOPITCOMMANDS_CLIPNUMBER_UNDEFINED;
 
-    if (xSemaphoreTake(BopItCommands_ReloadInputFlagMutex, BOPITCOMMANDS_SEMPHR_BLOCK_TIME) == pdTRUE)
+    if (Adc_OneshotRead(&voltage) == ESP_OK)
     {
-        input = BopItCommands_ReloadInputFlag;
-        BopItCommands_ReloadInputFlag = false;
-        xSemaphoreGive(BopItCommands_ReloadInputFlagMutex);
+        if (voltage >= BOPITCOMMANDS_CLIP0_VOLTAGE_LOWER_BOUND && voltage < BOPITCOMMANDS_CLIP0_VOLTAGE_UPPER_BOUND)
+        {
+            insertedClip = BOPITCOMMANDS_CLIPNUMBER_0;
+        }
+        else if (voltage >= BOPITCOMMANDS_CLIP1_VOLTAGE_LOWER_BOUND && voltage < BOPITCOMMANDS_CLIP1_VOLTAGE_UPPER_BOUND)
+        {
+            insertedClip = BOPITCOMMANDS_CLIPNUMBER_0;
+        }
+
+        if (insertedClip != BOPITCOMMANDS_CLIPNUMBER_UNDEFINED && insertedClip != BopItCommands_InsertedClip)
+        {
+            input = true;
+        }
+        BopItCommands_InsertedClip = insertedClip;
     }
 
     return input;
@@ -313,11 +338,5 @@ static void BopItCommands_ResetInputFlags(void)
     {
         BopItCommands_PrimeInputFlag = false;
         xSemaphoreGive(BopItCommands_PrimeInputFlagMutex);
-    }
-
-    if (xSemaphoreTake(BopItCommands_ReloadInputFlagMutex, portMAX_DELAY) == pdTRUE)
-    {
-        BopItCommands_ReloadInputFlag = false;
-        xSemaphoreGive(BopItCommands_ReloadInputFlagMutex);
     }
 }

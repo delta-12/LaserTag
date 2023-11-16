@@ -132,6 +132,5 @@ static void Gpio_RegisterButtonEventHandler(Gpio_EventHandler_t eventHandler)
         /* Hook ISR handlers for specific GPIO pins */
         gpio_isr_handler_add(GPIO_BUTTON_TRIGGER, Gpio_ButtonIsrHandler, (void *)GPIO_BUTTON_TRIGGER);
         gpio_isr_handler_add(GPIO_BUTTON_PRIME, Gpio_ButtonIsrHandler, (void *)GPIO_BUTTON_PRIME);
-        gpio_isr_handler_add(GPIO_BUTTON_2, Gpio_ButtonIsrHandler, (void *)GPIO_BUTTON_2);
     }
 }

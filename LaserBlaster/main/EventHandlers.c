@@ -21,7 +21,6 @@
 
 void EventHandlers_TriggerEventHandler(void);
 void EventHandlers_PrimeEventHandler(void);
-void EventHandlers_ReloadEventHandler(void);
 
 /* Function Definitions
  ******************************************************************************/
@@ -50,9 +49,6 @@ void EventHandlers_ButtonEventHandler(const Gpio_GpioNum_t gpioNum)
         break;
     case GPIO_BUTTON_PRIME:
         EventHandlers_PrimeEventHandler();
-        break;
-    case GPIO_BUTTON_2:
-        EventHandlers_ReloadEventHandler();
         break;
     default:
         break;
@@ -88,19 +84,5 @@ void EventHandlers_PrimeEventHandler(void)
     {
         BopItCommands_PrimeInputFlag = true;
         xSemaphoreGive(BopItCommands_PrimeInputFlagMutex);
-    }
-}
-
-/**
- * @brief Update Reload input flag to indicate Reload was done.
- *
- * @note BopItCommands must have been initialized to create the mutex.
- ******************************************************************************/
-void EventHandlers_ReloadEventHandler(void)
-{
-    if (xSemaphoreTake(BopItCommands_ReloadInputFlagMutex, EVENTHANDLERS_SEMPHR_BLOCK_TIME) == pdTRUE)
-    {
-        BopItCommands_ReloadInputFlag = true;
-        xSemaphoreGive(BopItCommands_ReloadInputFlagMutex);
     }
 }
