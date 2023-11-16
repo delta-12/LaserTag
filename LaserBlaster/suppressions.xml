@@ -25,4 +25,14 @@
         <fileName>*/components/Neopixel/Neopixel.c</fileName>
         <symbolName>neopixelStrip</symbolName>
     </suppress>
+    <suppress>
+        <id>unusedFunction</id>
+        <fileName>*/main/Rmt.c</fileName>
+        <symbolName>Rmt_RxInit</symbolName>
+    </suppress>
+    <suppress>
+        <id>unusedFunction</id>
+        <fileName>*/main/Rmt.c</fileName>
+        <symbolName>Rmt_RegisterRxEventHandler</symbolName>
+    </suppress>
 </suppressions>
