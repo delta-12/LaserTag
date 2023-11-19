@@ -6,8 +6,6 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 
-#include "Rmt.h"
-
 #define BOPIT_COMMAND_COUNT 3U
 #define BOPIT_RUN_DELAY 10U
 #define US_PER_MS 1000ULL
@@ -26,6 +24,9 @@ void app_main(void)
     EventHandlers_Init();
 
     Gpio_RegisterEventHandler(GPIO_TYPE_BUTTON, EventHandlers_ButtonEventHandler);
+
+    /* TODO Testing */
+    Gpio_RegisterEventHandler(GPIO_TYPE_JOYSTICK, EventHandlers_JoystickEventHandler);
 
     BopIt_GameContext_t bopItGameContext = {
         .Commands = BopItCommands,
