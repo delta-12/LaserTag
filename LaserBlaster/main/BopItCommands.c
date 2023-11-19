@@ -87,8 +87,7 @@ BopIt_Command_t BopItCommands_Prime = {
     .GetInput = BopItCommands_PrimeGetInput,
 };
 
-/* BopIt command for Reload */
-static BopItCommands_ClipNumber_t BopItCommands_InsertedClip = BOPITCOMMANDS_CLIPNUMBER_0; /* Clip curremtly inserted */
+static BopItCommands_ClipNumber_t BopItCommands_InsertedClip = BOPITCOMMANDS_CLIPNUMBER_0; /* Clip currently inserted */
 
 /* BopIt command for Reload */
 BopIt_Command_t BopItCommands_Reload = {
@@ -110,7 +109,7 @@ static void BopItCommands_ResetInputFlags(void);
 /**
  * @brief Perform initialization needed for BopIt commands.  Must be called
  * before calling any other functions in module.  Creates mutexes for button
- * event flags and initializes DFPlayerMini and neopixel strip.
+ * event flags and initializes DFPlayerMini, neopixel strip, and ADC.
  ******************************************************************************/
 void BopItCommands_Init(void)
 {
@@ -135,7 +134,7 @@ void BopItCommands_Init(void)
 
 /**
  * @brief Perform deinitialization needed for BopIt commands.  Frees handle
- * for DFPlayerMini and clears neopixel strip.
+ * for DFPlayerMini, clears neopixel strip, and deinitializes ADC.
  ******************************************************************************/
 void BopItCommands_DeInit(void)
 {
@@ -213,7 +212,7 @@ void BopItCommands_PrimeIssueCommand(void)
 }
 
 /**
- * @brief Provide feedback to indicate Prime was successfully pressed.
+ * @brief Provide feedback to indicate Prime was successfully done.
  ******************************************************************************/
 void BopItCommands_PrimeSuccessFeedback(void)
 {
@@ -224,7 +223,7 @@ void BopItCommands_PrimeSuccessFeedback(void)
 }
 
 /**
- * @brief Provide feedback to indicate failure to press Prime.
+ * @brief Provide feedback to indicate failure to Prime.
  ******************************************************************************/
 void BopItCommands_PrimeFailFeedback(void)
 {
@@ -235,12 +234,12 @@ void BopItCommands_PrimeFailFeedback(void)
 }
 
 /**
- * @brief Check if Prime was pressed.
+ * @brief Check if Prime was done.
  *
- * @return bool Whether Prime was pressed or not
+ * @return bool Whether Prime was done or not
  *
- * @retval true  Prime was pressed
- * @retval false Prime was not pressed
+ * @retval true  Prime was done
+ * @retval false Prime was not done
  ******************************************************************************/
 bool BopItCommands_PrimeGetInput(void)
 {
