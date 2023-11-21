@@ -12,28 +12,17 @@
         <symbolName>app_main</symbolName>
     </suppress>
     <suppress>
-        <id>variableScope</id>
-        <fileName>*/components/BopIt/BopIt.c</fileName>
-        <symbolName>args</symbolName>
-    </suppress>
-    <suppress>
-        <id>variableScope</id>
-        <fileName>*/components/BopIt/BopIt.c</fileName>
-        <symbolName>command</symbolName>
-    </suppress>
-    <suppress>
-        <id>variableScope</id>
-        <fileName>*/components/BopIt/BopIt.c</fileName>
-        <symbolName>commandIndex</symbolName>
-    </suppress>
-    <suppress>
         <id>unusedFunction</id>
         <fileName>*/components/DFPlayerMini/DFPlayerMini_Arduino.cpp</fileName>
         <symbolName>millis</symbolName>
     </suppress>
-    <!-- <suppress>
+    <suppress>
         <id>unusedFunction</id>
-        <fileName>*/components/DFPlayerMini/DFPlayerMini_Arduino.cpp</fileName>
-        <symbolName>delay</symbolName>
-    </suppress> -->
+        <fileName>*/components/Neopixel/Neopixel.c</fileName>
+    </suppress>
+    <suppress>
+        <id>constParameterPointer</id>
+        <fileName>*/components/Neopixel/Neopixel.c</fileName>
+        <symbolName>neopixelStrip</symbolName>
+    </suppress>
 </suppressions>
