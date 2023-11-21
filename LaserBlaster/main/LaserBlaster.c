@@ -5,8 +5,6 @@
 #include "EventHandlers.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
-#include "Gpio.h"
-#include <stdio.h>
 
 #define BOPIT_COMMAND_COUNT 3U
 #define BOPIT_RUN_DELAY 10U
@@ -44,6 +42,9 @@ void app_main(void)
         vTaskDelay(BOPIT_RUN_DELAY / portTICK_PERIOD_MS);
     }
     BopIt_Run(&bopItGameContext);
+    vTaskDelay(BOPIT_RUN_DELAY / portTICK_PERIOD_MS);
+
+    BopItCommands_DeInit();
 }
 
 static void BopItLogger(const char *const message)

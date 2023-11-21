@@ -23,10 +23,10 @@
 /* Globals
  ******************************************************************************/
 
-static StaticQueue_t Gpio_ButtonEventQueue;                                          /* Queue for storing button interrupt events */
-uint8_t Gpio_ButtonEventQueueBuffer[GPIO_EVENT_QUEUE_SIZE * sizeof(Gpio_GpioNum_t)]; /* Statically allocated buffer for button interrupt event queue's storage area */
-static QueueHandle_t Gpio_ButtonEventQueueHandle = NULL;                             /* Handle for queue storing button interrupt events */
-static Gpio_EventHandler_t Gpio_ButtonEventHandler = NULL;                           /* Button event handler registered by client, not be called directly */
+static StaticQueue_t Gpio_ButtonEventQueue;                                                 /* Queue for storing button interrupt events */
+static uint8_t Gpio_ButtonEventQueueBuffer[GPIO_EVENT_QUEUE_SIZE * sizeof(Gpio_GpioNum_t)]; /* Statically allocated buffer for button interrupt event queue's storage area */
+static QueueHandle_t Gpio_ButtonEventQueueHandle = NULL;                                    /* Handle for queue storing button interrupt events */
+static Gpio_EventHandler_t Gpio_ButtonEventHandler = NULL;                                  /* Button event handler registered by client, not be called directly */
 
 /* Function Prototypes
  ******************************************************************************/
@@ -104,6 +104,8 @@ static void Gpio_ButtonEventHandlerTask(void *arg)
             (*Gpio_ButtonEventHandler)(gpioNum); /* Assumes Gpio_RegisterButtonEventHandler checked for NULL pointer */
         }
     }
+
+    vTaskDelete(NULL);
 }
 
 /**

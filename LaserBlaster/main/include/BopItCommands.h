@@ -36,6 +36,7 @@ extern BopIt_Command_t BopItCommands_Button2;
  ******************************************************************************/
 
 void BopItCommands_Init(void);
+void BopItCommands_DeInit(void);
 
 void BopItCommands_Button0IssueCommand(void);
 void BopItCommands_Button0SuccessFeedback(void);

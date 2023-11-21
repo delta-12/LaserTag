@@ -42,6 +42,7 @@ endforeach()
 add_custom_target(
         cppcheck
         ${${CPPCHECK_NAME}_BIN}
+        -i${CMAKE_SOURCE_DIR}/components/DFPlayerMini/DFRobotDFPlayerMini
         --enable=all
         --suppress-xml=../suppressions.xml
         --error-exitcode=2
