@@ -1,0 +1,1 @@
+Python tool to convert all image files in a directory to a bool matrix for use with an ssd1306
