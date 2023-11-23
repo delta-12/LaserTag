@@ -1,4 +1,4 @@
-#include "BlePrph.h"
+#include "BlePeripheral.h"
 #include "nvs_flash.h"
 
 void app_main(void)
@@ -12,5 +12,5 @@ void app_main(void)
     }
     ESP_ERROR_CHECK(ret);
 
-    BlePrph_Init();
+    BlePeripheral_Init();
 }

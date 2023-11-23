@@ -1,5 +1,5 @@
 /**
- * @file BlePrph.h
+ * @file BlePeripheral.h
  *
  * @brief Simple BLE peripheral using Bluetooth controller and NimBLE stack.
  * Creates a GATT server, advertises, and waits to be connected to a GATT
@@ -13,6 +13,6 @@
 /* Function Prototypes
  ******************************************************************************/
 
-void BlePrph_Init(void);
+void BlePeripheral_Init(void);
 
 #endif
