@@ -28,16 +28,16 @@
  ******************************************************************************/
 
 static const char *BlePeripheral_LogTag = "BlePeripheral";
-static const char *BlePeripheral_GapDeviceName = "BLE Target";
+static const char *BlePeripheral_GapDeviceName = "Laser Tag";
 
 static const ble_uuid128_t BlePeripheral_GattServerServiceUuid =
-    BLE_UUID128_INIT(0X32U, 0X69U, 0X5AU, 0XC2U, 0X4DU, 0X4BU, 0X49U, 0XB5U,
-                     0XAAU, 0XF4U, 0X49U, 0XE9U, 0X30U, 0XA8U, 0X45U, 0XDDU);
+    BLE_UUID128_INIT(0x32U, 0x69U, 0x5AU, 0xC2U, 0x4DU, 0x4BU, 0x49U, 0xB5U,
+                     0xAAU, 0xF4U, 0x49U, 0xE9U, 0x30U, 0xA8U, 0x45U, 0xDDU);
 
 static uint16_t BlePeripheral_GattServerCharacteristicValHandle;
 static const ble_uuid128_t BlePeripheral_GattServerCharacteristicUuid =
-    BLE_UUID128_INIT(0X90U, 0X12U, 0XB4U, 0X5EU, 0X62U, 0X87U, 0X42U, 0X32U,
-                     0X9BU, 0X36U, 0X99U, 0X85U, 0XCBU, 0XB8U, 0XA8U, 0X3A);
+    BLE_UUID128_INIT(0x90U, 0x12U, 0xB4U, 0x5EU, 0x62U, 0x87U, 0x42U, 0x32U,
+                     0x9BU, 0x36U, 0x99U, 0x85U, 0xCBU, 0xB8U, 0xA8U, 0x3A);
 
 static char BlePeripheral_UuidStringBuffer[BLE_UUID_STR_LEN];
 
@@ -134,13 +134,13 @@ static void BlePeripheral_GattServerRegisterCallback(struct ble_gatt_register_ct
                  context->svc.handle);
         break;
     case BLE_GATT_REGISTER_OP_CHR:
-        ESP_LOGD(BlePeripheral_LogTag, "registering characteristic %s with def_handle %d and val_handle %d",
+        ESP_LOGD(BlePeripheral_LogTag, "Registering characteristic %s with def_handle %d and val_handle %d",
                  ble_uuid_to_str(context->chr.chr_def->uuid, BlePeripheral_UuidStringBuffer),
                  context->chr.def_handle,
                  context->chr.val_handle);
         break;
     case BLE_GATT_REGISTER_OP_DSC:
-        ESP_LOGD(BlePeripheral_LogTag, "registering descriptor %s with handle %d",
+        ESP_LOGD(BlePeripheral_LogTag, "Registering descriptor %s with handle %d",
                  ble_uuid_to_str(context->dsc.dsc_def->uuid, BlePeripheral_UuidStringBuffer),
                  context->dsc.handle);
         break;
@@ -170,9 +170,9 @@ static int BlePeripheral_GattServerAccess(uint16_t connHandle, uint16_t attrHand
             {
                 len = sizeof(data);
             }
-            assert(os_mbuf_copydata(om, 0, len, data) == BLEPERIPHERAL_OK);
+            assert(os_mbuf_copydata(om, 0U, len, data) == BLEPERIPHERAL_OK);
             ESP_LOG_BUFFER_HEX(BlePeripheral_LogTag, data, len);
-            returnCode = 0U;
+            returnCode = BLEPERIPHERAL_OK;
         }
         break;
     default:
@@ -199,7 +199,7 @@ static void BlePeripheral_OnSync(void)
 
 static void BlePeripheral_OnReset(const int reason)
 {
-    ESP_LOGE(BlePeripheral_LogTag, "Resetting state; reason=%d\n", reason);
+    ESP_LOGE(BlePeripheral_LogTag, "Resetting state. Reason: %d", reason);
 }
 
 static void BlePeripheral_Advertise(void)
