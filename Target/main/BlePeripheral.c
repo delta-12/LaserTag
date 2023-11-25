@@ -42,6 +42,8 @@ static const ble_uuid128_t BlePeripheral_GattServerCharacteristicUuid =
 
 static char BlePeripheral_UuidStringBuffer[BLE_UUID_STR_LEN];
 
+static bool BlePeripheral_Connected = false;
+
 /* Function Prototypes
  ******************************************************************************/
 
@@ -106,6 +108,11 @@ void BlePeripheral_Init(void)
     ble_store_config_init();
 
     nimble_port_freertos_init(BlePeripheral_HostTask);
+}
+
+bool BlePeripheral_IsConnected(void)
+{
+    return BlePeripheral_Connected;
 }
 
 /* TODO move into BlePeripheral_Init? */
@@ -301,6 +308,8 @@ static int BlePeripheral_HandleConnect(const struct ble_gap_event *const event)
     {
         /* A new connection was established. */
         ESP_LOGI(BlePeripheral_LogTag, "Connection established. Handle: %d", event->connect.conn_handle);
+
+        BlePeripheral_Connected = true;
     }
     else
     {
@@ -314,6 +323,8 @@ static int BlePeripheral_HandleConnect(const struct ble_gap_event *const event)
 static int BlePeripheral_HandleDisconnect(const struct ble_gap_event *const event)
 {
     ESP_LOGI(BlePeripheral_LogTag, "Disconnected. Handle: %d, Reason: %d", event->disconnect.conn.conn_handle, event->disconnect.reason);
+
+    BlePeripheral_Connected = false;
 
     /* Connection terminated; resume advertising. */
     BlePeripheral_Advertise();

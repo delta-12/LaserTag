@@ -10,9 +10,14 @@
 #ifndef BLE_PRPH_H
 #define BLE_PRPH_H
 
+/* Includes
+ ******************************************************************************/
+#include <stdbool.h>
+
 /* Function Prototypes
  ******************************************************************************/
 
 void BlePeripheral_Init(void);
+bool BlePeripheral_IsConnected(void);
 
 #endif
