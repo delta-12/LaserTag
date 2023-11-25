@@ -24,6 +24,7 @@
 #define BLEPERIPHERAL_PRESENT 1U
 #define BLEPERIPHERAL_COMPLETE 1U
 #define BLEPERIPHERAL_TARGET_SERVICE 0x4C54U
+#define BLEPERIPHERAL_CHARACTERISTIC_VAL_SIZE 128U
 
 /* Globals
  ******************************************************************************/
@@ -35,10 +36,15 @@ static const ble_uuid128_t BlePeripheral_GattServerServiceUuid =
     BLE_UUID128_INIT(0x32U, 0x69U, 0x5AU, 0xC2U, 0x4DU, 0x4BU, 0x49U, 0xB5U,
                      0xAAU, 0xF4U, 0x49U, 0xE9U, 0x30U, 0xA8U, 0x45U, 0xDDU);
 
+static uint8_t BlePeripheral_GattServerCharacteristicVal[BLEPERIPHERAL_CHARACTERISTIC_VAL_SIZE];
 static uint16_t BlePeripheral_GattServerCharacteristicValHandle;
 static const ble_uuid128_t BlePeripheral_GattServerCharacteristicUuid =
     BLE_UUID128_INIT(0x90U, 0x12U, 0xB4U, 0x5EU, 0x62U, 0x87U, 0x42U, 0x32U,
                      0x9BU, 0x36U, 0x99U, 0x85U, 0xCBU, 0xB8U, 0xA8U, 0x3A);
+
+static const ble_uuid128_t BlePeripheral_GattServerDescriptorUuid =
+    BLE_UUID128_INIT(0xA2U, 0x17U, 0x98U, 0xEAU, 0xC0U, 0x79U, 0x4FU, 0x2AU,
+                     0xA6U, 0xE0U, 0x6AU, 0x69U, 0xB1U, 0x63U, 0x81U, 0x09U);
 
 static char BlePeripheral_UuidStringBuffer[BLE_UUID_STR_LEN];
 
@@ -51,8 +57,8 @@ static bool BlePeripheral_Connected = false;
 void ble_store_config_init(void);
 
 static int BlePeripheral_GattServerInit(void);
-static void BlePeripheral_GattServerRegisterCallback(struct ble_gatt_register_ctxt *ctxt, void *arg);
-static int BlePeripheral_GattServerAccess(uint16_t conn_handle, uint16_t attr_handle, struct ble_gatt_access_ctxt *ctxt, void *arg);
+static void BlePeripheral_GattServerRegisterCallback(struct ble_gatt_register_ctxt *context, void *arg);
+static int BlePeripheral_GattServerAccess(uint16_t connHandle, uint16_t attrHandle, struct ble_gatt_access_ctxt *context, void *arg);
 static void BlePeripheral_HostTask(void *arg);
 static void BlePeripheral_OnSync(void);
 static void BlePeripheral_OnReset(const int reason);
@@ -66,15 +72,26 @@ static int BlePeripheral_HandlePathlossThreshold(const struct ble_gap_event *con
 /* TODO move struct to globals */
 static const struct ble_gatt_svc_def BlePeripheral_GattServerServices[] = {
     {
-        /*** Service ***/
+        /* Service */
         .type = BLE_GATT_SVC_TYPE_PRIMARY,
         .uuid = &BlePeripheral_GattServerServiceUuid.u,
         .characteristics = (struct ble_gatt_chr_def[]){
             {
                 .uuid = &BlePeripheral_GattServerCharacteristicUuid.u,
                 .access_cb = BlePeripheral_GattServerAccess,
-                .flags = BLE_GATT_CHR_F_WRITE,
+                .flags = BLE_GATT_CHR_F_READ | BLE_GATT_CHR_F_NOTIFY | BLE_GATT_CHR_F_INDICATE,
                 .val_handle = &BlePeripheral_GattServerCharacteristicValHandle,
+                .descriptors = (struct ble_gatt_dsc_def[]){
+                    {
+
+                        .uuid = &BlePeripheral_GattServerDescriptorUuid.u,
+                        .att_flags = BLE_ATT_F_READ,
+                        .access_cb = BlePeripheral_GattServerAccess,
+                    },
+                    {
+                        0U, /* No more descriptors in this characteristic */
+                    }},
+
             },
             {
                 0U, /* No more characteristics in this service. */
@@ -113,6 +130,21 @@ void BlePeripheral_Init(void)
 bool BlePeripheral_IsConnected(void)
 {
     return BlePeripheral_Connected;
+}
+
+void BlePeripheral_Notify(uint8_t *const data, const size_t size)
+{
+    if (BlePeripheral_Connected)
+    {
+        size_t i = 0U;
+        while (i < size && i < sizeof(BlePeripheral_GattServerCharacteristicVal))
+        {
+            BlePeripheral_GattServerCharacteristicVal[i] = *(data + i);
+            i++;
+        }
+
+        ble_gatts_chr_updated(BlePeripheral_GattServerCharacteristicValHandle);
+    }
 }
 
 /* TODO move into BlePeripheral_Init? */
@@ -160,28 +192,30 @@ static void BlePeripheral_GattServerRegisterCallback(struct ble_gatt_register_ct
 
 static int BlePeripheral_GattServerAccess(uint16_t connHandle, uint16_t attrHandle, struct ble_gatt_access_ctxt *context, void *arg)
 {
-    /* TODO fix static buffers */
-    static uint8_t data[10];
-    static uint8_t len;
-    static struct os_mbuf *om;
     int returnCode = BLE_ATT_ERR_UNLIKELY;
 
     switch (context->op)
     {
-    case BLE_GATT_ACCESS_OP_WRITE_CHR:
-        ESP_LOGI(BlePeripheral_LogTag, "Characteristic write. conn_handle: %d", connHandle);
+    case BLE_GATT_ACCESS_OP_READ_CHR:
+        if (connHandle != BLE_HS_CONN_HANDLE_NONE)
+        {
+            ESP_LOGI(BlePeripheral_LogTag, "Characteristic read. conn_handle: %d attr_handle: %d", connHandle, attrHandle);
+        }
+        else
+        {
+            ESP_LOGI(BlePeripheral_LogTag, "Characteristic read by NimBLE stack. attr_handle: %d", attrHandle);
+        }
+
         if (attrHandle == BlePeripheral_GattServerCharacteristicValHandle)
         {
-            om = context->om;
-            len = os_mbuf_len(om);
-            if (len >= sizeof(data))
+            returnCode = os_mbuf_append(context->om, &BlePeripheral_GattServerCharacteristicVal, sizeof(BlePeripheral_GattServerCharacteristicVal));
+
+            if (returnCode != BLEPERIPHERAL_OK)
             {
-                len = sizeof(data);
+                returnCode = BLE_ATT_ERR_INSUFFICIENT_RES;
             }
-            assert(os_mbuf_copydata(om, 0U, len, data) == BLEPERIPHERAL_OK);
-            ESP_LOG_BUFFER_HEX(BlePeripheral_LogTag, data, len);
-            returnCode = BLEPERIPHERAL_OK;
         }
+
         break;
     default:
         break;

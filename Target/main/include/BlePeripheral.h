@@ -13,11 +13,14 @@
 /* Includes
  ******************************************************************************/
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 /* Function Prototypes
  ******************************************************************************/
 
 void BlePeripheral_Init(void);
 bool BlePeripheral_IsConnected(void);
+void BlePeripheral_Notify(uint8_t *const data, const size_t size);
 
 #endif

@@ -7,9 +7,9 @@ dependencies:
   nimble_central_utils:
     component_hash: null
     source:
-      path: /opt/esp/idf/examples/bluetooth/nimble/common/nimble_central_utils
+      path: /home/delta12/esp/esp-idf/examples/bluetooth/nimble/common/nimble_central_utils
       type: local
     version: '*'
-manifest_hash: 513fb67412e21a96c069dbdfd5dceff79c4d4615bbf157a921547643c1aeee1f
+manifest_hash: 97c73ca6da4be862326d0f4325a2a240b0435c9a5b835efb6cf5228154c1d532
 target: esp32
 version: 1.0.0
