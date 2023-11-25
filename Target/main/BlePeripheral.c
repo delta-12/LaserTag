@@ -23,12 +23,13 @@
 #define BLEPERIPHERAL_OK 0U
 #define BLEPERIPHERAL_PRESENT 1U
 #define BLEPERIPHERAL_COMPLETE 1U
+#define BLEPERIPHERAL_TARGET_SERVICE 0x4C54U
 
 /* Globals
  ******************************************************************************/
 
 static const char *BlePeripheral_LogTag = "BlePeripheral";
-static const char *BlePeripheral_GapDeviceName = "Laser Tag";
+static const char *BlePeripheral_GapDeviceName = "Laser Target";
 
 static const ble_uuid128_t BlePeripheral_GattServerServiceUuid =
     BLE_UUID128_INIT(0x32U, 0x69U, 0x5AU, 0xC2U, 0x4DU, 0x4BU, 0x49U, 0xB5U,
@@ -242,6 +243,10 @@ static void BlePeripheral_Advertise(void)
         fields.name = (uint8_t *)gapDeviceName;
         fields.name_len = strlen(gapDeviceName);
         fields.name_is_complete = BLEPERIPHERAL_COMPLETE;
+
+        fields.uuids16 = (ble_uuid16_t[]){BLE_UUID16_INIT(BLEPERIPHERAL_TARGET_SERVICE)};
+        fields.num_uuids16 = BLEPERIPHERAL_PRESENT;
+        fields.uuids16_is_complete = BLEPERIPHERAL_COMPLETE;
 
         if (ble_gap_adv_set_fields(&fields) != BLEPERIPHERAL_OK)
         {
