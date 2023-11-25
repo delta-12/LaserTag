@@ -27,6 +27,8 @@
 /* Globals
  ******************************************************************************/
 
+static bool Gpio_IsrServiceInstalled = false; /* Flag set if ISR service was installed */
+
 static StaticQueue_t Gpio_ButtonEventQueue;                                                 /* Queue for storing button interrupt events */
 static uint8_t Gpio_ButtonEventQueueBuffer[GPIO_EVENT_QUEUE_SIZE * sizeof(Gpio_GpioNum_t)]; /* Statically allocated buffer for button interrupt event queue's storage area */
 static QueueHandle_t Gpio_ButtonEventQueueHandle = NULL;                                    /* Handle for queue storing button interrupt events */
@@ -153,7 +155,11 @@ static void Gpio_RegisterButtonEventHandler(Gpio_EventHandler_t eventHandler)
         xTaskCreate(Gpio_ButtonEventHandlerTask, "Gpio_ButtonEventHandlerTask", GPIO_TASK_STACK_DEPTH, NULL, GPIO_TASK_PRIORITY, NULL);
 
         /* Install GPIO ISR service */
-        gpio_install_isr_service(GPIO_ESP_INTR_FLAG_DEFAULT);
+        if (!Gpio_IsrServiceInstalled)
+        {
+            gpio_install_isr_service(GPIO_ESP_INTR_FLAG_DEFAULT);
+            Gpio_IsrServiceInstalled = true;
+        }
 
         /* Hook ISR handlers for specific GPIO pins */
         gpio_isr_handler_add(GPIO_BUTTON_TRIGGER, Gpio_ButtonIsrHandler, (void *)GPIO_BUTTON_TRIGGER);
@@ -213,7 +219,11 @@ static void Gpio_RegisterJoystickEventHandler(Gpio_EventHandler_t eventHandler)
         xTaskCreate(Gpio_JoystickEventHandlerTask, "Gpio_JoystickEventHandlerTask", GPIO_TASK_STACK_DEPTH, NULL, GPIO_TASK_PRIORITY, NULL);
 
         /* Install GPIO ISR service */
-        gpio_install_isr_service(GPIO_ESP_INTR_FLAG_DEFAULT);
+        if (!Gpio_IsrServiceInstalled)
+        {
+            gpio_install_isr_service(GPIO_ESP_INTR_FLAG_DEFAULT);
+            Gpio_IsrServiceInstalled = true;
+        }
 
         /* Hook ISR handlers for specific GPIO pins */
         gpio_isr_handler_add(GPIO_JOYSTICK_UP, Gpio_JoystickIsrHandler, (void *)GPIO_JOYSTICK_UP);
