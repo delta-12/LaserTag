@@ -31,6 +31,7 @@
 typedef uint32_t Gpio_GpioNum_t;                                   /* GPIO number */
 typedef void (*Gpio_EventHandler_t)(const Gpio_GpioNum_t gpioNum); /* GPIO event handler */
 
+/* Type of physical device or sensor connected to GPIO */
 typedef enum
 {
     GPIO_TYPE_BUTTON,   /* GPIO input for buttons */
