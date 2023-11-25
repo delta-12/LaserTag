@@ -31,41 +31,44 @@
 /* Typedefs
  ******************************************************************************/
 
-typedef uint8_t Neopixel_ChannelIntensity_t;
+typedef uint8_t Neopixel_ChannelIntensity_t; /* Intensity of a single RGB channel */
 
+/* Select RGB values by name of color */
 typedef enum
 {
-    NEOPIXEL_COLORNAME_BLACK,
-    NEOPIXEL_COLORNAME_WHITE,
-    NEOPIXEL_COLORNAME_RED,
-    NEOPIXEL_COLORNAME_GREEN,
-    NEOPIXEL_COLORNAME_BLUE,
-    NEOPIXEL_COLORNAME_YELLOW,
-    NEOPIXEL_COLORNAME_ORANGE,
-    NEOPIXEL_COLORNAME_MAGENTA
+    NEOPIXEL_COLORNAME_BLACK,  /* Select RGB values for black */
+    NEOPIXEL_COLORNAME_WHITE,  /* Select RGB values for white */
+    NEOPIXEL_COLORNAME_RED,    /* Select RGB values for red */
+    NEOPIXEL_COLORNAME_GREEN,  /* Select RGB values for green */
+    NEOPIXEL_COLORNAME_BLUE,   /* Select RGB values for blue */
+    NEOPIXEL_COLORNAME_YELLOW, /* Select RGB values for yellow */
+    NEOPIXEL_COLORNAME_ORANGE, /* Select RGB values for orange */
+    NEOPIXEL_COLORNAME_MAGENTA /* Select RGB values for magenta */
 } Neopixel_ColorName_t;
 
+/* RGB channel values */
 typedef struct
 {
-    Neopixel_ChannelIntensity_t Red;
-    Neopixel_ChannelIntensity_t Green;
-    Neopixel_ChannelIntensity_t Blue;
+    Neopixel_ChannelIntensity_t Red;   /* Intensity of red channel */
+    Neopixel_ChannelIntensity_t Green; /* Intensity of green channel */
+    Neopixel_ChannelIntensity_t Blue;  /* Intensity of blue channel */
 } Neopixel_Color_t;
 
+/* Handle for strip of neopixels */
 typedef struct
 {
-    uint8_t *PixelBuffer;
-    size_t PixelCount;
-    gpio_num_t GpioNum;
-    i2s_chan_handle_t I2sChannelHandle;
+    uint8_t *PixelBuffer;               /* I2S TX buffer to store pixel RGB values */
+    size_t PixelCount;                  /* Number of pixels in strip, must not exceed the number of RGB values that can be stored in PixelBuffer */
+    gpio_num_t GpioNum;                 /* GPIO pin strip is attached to */
+    i2s_chan_handle_t I2sChannelHandle; /* Handle for I2S channel used to control strip */
 } Neopixel_Strip_t;
 
 /* Function Prototypes
  ******************************************************************************/
 
-void Neopixel_Init(Neopixel_Strip_t *const neopixelStrip);
+void Neopixel_Init(Neopixel_Strip_t *const neopixelStrip, uint8_t *const pixelBuffer, const size_t pixelCount, const gpio_num_t gpioNum);
 void Neopixel_Clear(Neopixel_Strip_t *const neopixelStrip);
-void Neopixel_SetPixelColor(Neopixel_Strip_t *const neopixelStrip, const size_t pixelNum, const Neopixel_Color_t *const color);
+void Neopixel_SetPixelColor(Neopixel_Strip_t *const neopixelStrip, const size_t pixelNum, const Neopixel_Color_t color);
 void Neopixel_SetPixelColorName(Neopixel_Strip_t *const neopixelStrip, const size_t pixelNum, const Neopixel_ColorName_t colorName);
 void Neopixel_SetPixelChannels(Neopixel_Strip_t *const neopixelStrip, const size_t pixelNum, const Neopixel_ChannelIntensity_t red, const Neopixel_ChannelIntensity_t green, const Neopixel_ChannelIntensity_t blue);
 void Neopixel_FillColor(Neopixel_Strip_t *const neopixelStrip, const Neopixel_Color_t *const color);
