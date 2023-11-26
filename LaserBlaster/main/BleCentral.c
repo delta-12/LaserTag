@@ -30,8 +30,9 @@
 #define BLECENTRAL_MAX_CHARACTERISTICS 64U
 #define BLECENTRAL_MAX_DESCRIPTORS 64U
 #define BLECENTRAL_ADVERTISER_CONNECT_TIMEOUT_MS 30000U
-#define BLECENTRAL_TARGET_SERVICE 0x4C54U
 #define BLECENTRAL_STRINGBUFFER_LENGTH 18U
+
+#define BLECENTRAL_TARGET_SERVICE_UUID 0x4C54U
 
 /* Globals
  ******************************************************************************/
@@ -40,13 +41,14 @@ static const char *BleCentral_LogTag = "BleCentral";
 static const char *BleCentral_GapDeviceName = "Laser Blaster";
 
 static const ble_uuid_t *BleCentral_GattServerServiceUuid =
-    BLE_UUID128_DECLARE(0xD1U, 0xAFU, 0x96U, 0x88U, 0x7AU, 0x1DU, 0x4BU, 0x26U,
-                        0x80U, 0x56U, 0xEFU, 0xCBU, 0x37U, 0x2AU, 0x9FU, 0x0DU);
+    BLE_UUID128_DECLARE(0x32U, 0x69U, 0x5AU, 0xC2U, 0x4DU, 0x4BU, 0x49U, 0xB5U,
+                        0xAAU, 0xF4U, 0x49U, 0xE9U, 0x30U, 0xA8U, 0x45U, 0xDDU);
 
-// static uint16_t BleCentral_GattServerCharacteristicValHandle;
 static const ble_uuid_t *BleCentral_GattServerCharacteristicUuid =
-    BLE_UUID128_DECLARE(0xBAU, 0xB5U, 0x70U, 0xCAU, 0x13U, 0x61U, 0x44U, 0xC4U,
-                        0x98U, 0x01U, 0x5CU, 0xFCU, 0x42U, 0xBAU, 0xE9U, 0xFAU);
+    BLE_UUID128_DECLARE(0x90U, 0x12U, 0xB4U, 0x5EU, 0x62U, 0x87U, 0x42U, 0x32U,
+                        0x9BU, 0x36U, 0x99U, 0x85U, 0xCBU, 0xB8U, 0xA8U, 0x3A);
+
+static uint8_t BleCentral_SubscriptionCode[] = {0x01U, 0x00U};
 
 static char BleCentral_StringBuffer[BLECENTRAL_STRINGBUFFER_LENGTH];
 
@@ -68,6 +70,7 @@ static void BleCentral_Scan(void);
 static bool BleCentral_ShouldConnect(const struct ble_gap_disc_desc *const disc);
 static void BleCentral_Connect(const void *const disc);
 static void BleCentral_OnDiscComplete(const struct peer *peer, int status, void *arg);
+static void Blecentral_Subscribe(const struct peer *const peer);
 static int BleCentral_HandleGapEvent(struct ble_gap_event *event, void *arg);
 static int BleCentral_HandleDisc(const struct ble_gap_event *const event);
 static int BleCentral_HandleConnect(const struct ble_gap_event *const event);
@@ -179,15 +182,15 @@ static bool BleCentral_ShouldConnect(const struct ble_gap_disc_desc *const disc)
     struct ble_hs_adv_fields fields;
     bool shouldConnect = false;
 
-    /* The device has to be advertising connectability. */
+    /* The device has to be advertising connectability */
     if (disc->event_type == BLE_HCI_ADV_RPT_EVTYPE_ADV_IND || disc->event_type == BLE_HCI_ADV_RPT_EVTYPE_DIR_IND)
     {
         if (ble_hs_adv_parse_fields(&fields, disc->data, disc->length_data) == BLECENTRAL_OK)
         {
-            /* The device has to advertise support for the custom service */
+            /* The device has to advertise support for the Laser Target service */
             for (uint32_t i = 0U; i < fields.num_uuids16; i++)
             {
-                if (ble_uuid_u16(&fields.uuids16[i].u) == BLECENTRAL_TARGET_SERVICE)
+                if (ble_uuid_u16(&fields.uuids16[i].u) == BLECENTRAL_TARGET_SERVICE_UUID)
                 {
                     shouldConnect = true;
                 }
@@ -243,20 +246,57 @@ static void BleCentral_OnDiscComplete(const struct peer *peer, int status, void 
 {
     if (status == BLECENTRAL_OK)
     {
-        /* Service discovery has completed successfully, obtained complete list of services, characteristics, and descriptors that the peer supports. */
+        /* Service discovery has completed successfully, obtained complete list of services, characteristics, and descriptors that the peer supports */
         ESP_LOGI(BleCentral_LogTag, "Service discovery complete. Status: %d, conn_handle: %d", status, peer->conn_handle);
 
-        /* TODO change GATT procedures for target */
-        /* Now perform three GATT procedures against the peer: read,
-         * write, and subscribe to notifications for the ANS service.
-         */
-        // blecent_read_write_subscribe(peer);
+        /* Perform subscribe GATT procedures against the peer */
+        Blecentral_Subscribe(peer);
     }
     else
     {
         /* Service discovery failed */
         ESP_LOGE(BleCentral_LogTag, "Service discovery failed. Status :%d, conn_handle: %d", status, peer->conn_handle);
 
+        /* Terminate the connection */
+        ble_gap_terminate(peer->conn_handle, BLE_ERR_REM_USER_CONN_TERM);
+    }
+}
+
+static void Blecentral_Subscribe(const struct peer *const peer)
+{
+    bool error = false;
+
+    /* Read the Laser Target characteristic */
+    const struct peer_chr *chr = peer_chr_find_uuid(peer, BleCentral_GattServerServiceUuid, BleCentral_GattServerCharacteristicUuid);
+
+    if (chr == NULL)
+    {
+        ESP_LOGE(BleCentral_LogTag, "Peer doesn't support the Laser Target characteristic");
+        error = true;
+    }
+    else
+    {
+        const struct peer_dsc *dsc;
+
+        dsc = peer_dsc_find_uuid(peer, BleCentral_GattServerServiceUuid, BleCentral_GattServerCharacteristicUuid, BLE_UUID16_DECLARE(BLE_GATT_DSC_CLT_CFG_UUID16));
+        if (dsc == NULL)
+        {
+            MODLOG_DFLT(ERROR, "Error: Peer lacks a CCCD for the subscribable characterstic\n");
+            error = true;
+        }
+        else
+        {
+            /* Write subscription code to the CCCD */
+            if (ble_gattc_write_flat(peer->conn_handle, dsc->dsc.handle, BleCentral_SubscriptionCode, sizeof(BleCentral_SubscriptionCode), NULL, NULL) != BLECENTRAL_OK)
+            {
+                ESP_LOGE(BleCentral_LogTag, "Failed to subscribe to the subscribable characteristic");
+                error = true;
+            }
+        }
+    }
+
+    if (error)
+    {
         /* Terminate the connection */
         ble_gap_terminate(peer->conn_handle, BLE_ERR_REM_USER_CONN_TERM);
     }
@@ -377,7 +417,7 @@ static int BleCentral_HandleConnect(const struct ble_gap_event *const event)
     else
     {
         /* Connection attempt failed */
-        ESP_LOGE(BleCentral_LogTag, "Connection failed. Status=%d", event->connect.status);
+        ESP_LOGE(BleCentral_LogTag, "Connection failed. Status: %d", event->connect.status);
 
         /* Resume scanning */
         BleCentral_Scan();
@@ -428,11 +468,13 @@ static int BleCentral_HandleEncChange(const struct ble_gap_event *const event)
 static int BleCentral_HandleNotifyRx(const struct ble_gap_event *const event)
 {
     /* Peer sent a notification or indication */
-    ESP_LOGI(BleCentral_LogTag, "Received: %s; conn_handle: %d, attr_handle: %d, attr_len=%d",
+    ESP_LOGI(BleCentral_LogTag, "Received: %s; conn_handle: %d, attr_handle: %d, attr_len: %d",
              event->notify_rx.indication ? "indication" : "notification",
              event->notify_rx.conn_handle,
              event->notify_rx.attr_handle,
              OS_MBUF_PKTLEN(event->notify_rx.om));
+
+    print_mbuf(event->notify_rx.om);
 
     return BLECENTRAL_OK;
 }

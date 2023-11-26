@@ -58,7 +58,11 @@ void app_main(void)
     }
 
     static uint8_t testBuf[10U] = {0x00, 0x01, 0x02, 0x03, 0x04, 0x05, 0x06, 0x07, 0x08, 0x09};
-    BlePeripheral_Notify(testBuf, sizeof(testBuf));
+    while (BlePeripheral_IsConnected())
+    {
+        BlePeripheral_Notify(testBuf, sizeof(testBuf));
+        vTaskDelay(5000U / portTICK_PERIOD_MS);
+    }
 
     Rmt_RxInit();
     Rmt_RegisterRxEventHandler(rmtRxEventHandler);
