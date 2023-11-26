@@ -16,10 +16,14 @@
 /* Defines
  ******************************************************************************/
 
-#define GPIO_BUTTON_0 GPIO_NUM_18
-#define GPIO_BUTTON_1 GPIO_NUM_19
-#define GPIO_BUTTON_2 GPIO_NUM_21
-#define GPIO_BUTTON_PIN_SEL ((1UL << GPIO_BUTTON_0) | (1UL << GPIO_BUTTON_1) | (1UL << GPIO_BUTTON_2))
+#define GPIO_BUTTON_TRIGGER GPIO_NUM_18 /* GPIO pin for trigger button */
+#define GPIO_BUTTON_PRIME GPIO_NUM_5    /* GPIO pin for prime button */
+
+#define GPIO_JOYSTICK_UP GPIO_NUM_26     /* GPIO pin for joystick up */
+#define GPIO_JOYSTICK_DOWN GPIO_NUM_25   /* GPIO pin for joystick down */
+#define GPIO_JOYSTICK_LEFT GPIO_NUM_32   /* GPIO pin for joystick left */
+#define GPIO_JOYSTICK_RIGHT GPIO_NUM_27  /* GPIO pin for joystick right */
+#define GPIO_JOYSTICK_CENTER GPIO_NUM_33 /* GPIO pin for joystick center */
 
 /* Typedefs
  ******************************************************************************/
@@ -30,8 +34,9 @@ typedef void (*Gpio_EventHandler_t)(const Gpio_GpioNum_t gpioNum); /* GPIO event
 /* Type of physical device or sensor connected to GPIO */
 typedef enum
 {
-    GPIO_TYPE_BUTTON, /* GPIO input for buttons */
-} Gpio_Type_t;
+    GPIO_TYPE_BUTTON,   /* GPIO input for buttons */
+    GPIO_TYPE_JOYSTICK, /* GPIO input type for joystick */
+} Gpio_Type_t;          /* Type of physical device or sensor connected to GPIO */
 
 /* Function Prototypes
  ******************************************************************************/
