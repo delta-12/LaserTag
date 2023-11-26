@@ -4,3 +4,4 @@
 # ESP-IDF
 sdkconfig.*
 build
+dependencies.lock
