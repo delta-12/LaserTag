@@ -34,6 +34,7 @@
 #define BOPITCOMMANDS_CLIP0_VOLTAGE_UPPER_BOUND 1800U /* Upper bound for voltage that should be read for clip 0 */
 #define BOPITCOMMANDS_CLIP1_VOLTAGE_LOWER_BOUND 2950U /* Lower bound for voltage that should be read for clip 1 */
 #define BOPITCOMMANDS_CLIP1_VOLTAGE_UPPER_BOUND 3050U /* Upper bound for voltage that should be read for clip 1 */
+#define BOPITCOMMANDS_FEEDBACK_DELAY_MS 1000U         /* 1000ms delay after providing feedback */
 
 /* Typedefs
  ******************************************************************************/
@@ -95,6 +96,8 @@ BopIt_Command_t BopItCommands_Reload = {
 /* Function Prototypes
  ******************************************************************************/
 
+static void BopItCommands_SuccessFeedback(void);
+static void BopItCommands_FailFeedback(void);
 static void BopItCommands_ResetInputFlags(void);
 
 /* Function Definitions
@@ -158,9 +161,7 @@ void BopItCommands_TriggerIssueCommand(void)
 void BopItCommands_TriggerSuccessFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Successfully pressed Trigger");
-    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
-    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_GREEN);
-    Neopixel_Show(&BopItCommands_NeopixelStrip);
+    BopItCommands_SuccessFeedback();
 }
 
 /**
@@ -169,9 +170,7 @@ void BopItCommands_TriggerSuccessFeedback(void)
 void BopItCommands_TriggerFailFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Failed to pressed Trigger");
-    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
-    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_RED);
-    Neopixel_Show(&BopItCommands_NeopixelStrip);
+    BopItCommands_FailFeedback();
 }
 
 /**
@@ -211,9 +210,7 @@ void BopItCommands_PrimeIssueCommand(void)
 void BopItCommands_PrimeSuccessFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Successfully Primed");
-    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
-    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_GREEN);
-    Neopixel_Show(&BopItCommands_NeopixelStrip);
+    BopItCommands_SuccessFeedback();
 }
 
 /**
@@ -222,9 +219,7 @@ void BopItCommands_PrimeSuccessFeedback(void)
 void BopItCommands_PrimeFailFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Failed to Prime");
-    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
-    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_RED);
-    Neopixel_Show(&BopItCommands_NeopixelStrip);
+    BopItCommands_FailFeedback();
 }
 
 /**
@@ -264,9 +259,7 @@ void BopItCommands_ReloadIssueCommand(void)
 void BopItCommands_ReloadSuccessFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Successfully Reloaded");
-    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
-    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_GREEN);
-    Neopixel_Show(&BopItCommands_NeopixelStrip);
+    BopItCommands_SuccessFeedback();
 }
 
 /**
@@ -275,9 +268,7 @@ void BopItCommands_ReloadSuccessFeedback(void)
 void BopItCommands_ReloadFailFeedback(void)
 {
     ESP_LOGI(BopItCommands_EspLogTag, "Failed to Reload");
-    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
-    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_RED);
-    Neopixel_Show(&BopItCommands_NeopixelStrip);
+    BopItCommands_FailFeedback();
 }
 
 /**
@@ -313,6 +304,34 @@ bool BopItCommands_ReloadGetInput(void)
     }
 
     return input;
+}
+
+/**
+ * @brief Provide feedback to indicate command was successfully completed.
+ * Common to all BopIt commands.
+ ******************************************************************************/
+static void BopItCommands_SuccessFeedback(void)
+{
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE);
+    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_GREEN);
+    Neopixel_Show(&BopItCommands_NeopixelStrip);
+    vTaskDelay(BOPITCOMMANDS_FEEDBACK_DELAY_MS / portTICK_PERIOD_MS);
+    Neopixel_Clear(&BopItCommands_NeopixelStrip);
+    Neopixel_Show(&BopItCommands_NeopixelStrip);
+}
+
+/**
+ * @brief Provide feedback to indicate command was not successfully completed.
+ * Common to all BopIt commands.
+ ******************************************************************************/
+static void BopItCommands_FailFeedback(void)
+{
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_FAIL_FILE);
+    Neopixel_FillColorName(&BopItCommands_NeopixelStrip, NEOPIXEL_COLORNAME_RED);
+    Neopixel_Show(&BopItCommands_NeopixelStrip);
+    vTaskDelay(BOPITCOMMANDS_FEEDBACK_DELAY_MS / portTICK_PERIOD_MS);
+    Neopixel_Clear(&BopItCommands_NeopixelStrip);
+    Neopixel_Show(&BopItCommands_NeopixelStrip);
 }
 
 /**
