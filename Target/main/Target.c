@@ -2,6 +2,7 @@
 #include "driver/gpio.h"
 #include "esp_log.h"
 #include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
 #include "Neopixel.h"
 #include "nvs_flash.h"
 #include "Rmt.h"
@@ -12,11 +13,17 @@
 #define PAIRING_COMPLETE_DELAY_MS 100U  /* Wait 100ms when updating the pairing complete sequence */
 #define PAIRING_COMPLETE_BLINK_COUNT 3U /* Blink neopixel three times when pairing complete */
 #define CHECK_CONNECTION_DELAY_MS 50U   /* Check connection every 50ms after pairing complete */
+#define SHOT_RECEIVED_BLINK_DELAY 50U
+#define SHOT_RECEIVED_BLINK_COUNT 10U
+#define SHOT_RECEIVED_TASK_STACK_DEPTH 2048U /* Stack depth for Shot Received RTOS tasks */
+#define SHOT_RECEIVED_TASK_PRIORITY 10U      /* Priority for Shot Received RTOS tasks */
 
 static uint8_t NeopixelBuffer[NEOPIXEL_PIXEL_BUFFER_SIZE(NEOPIXEL_COUNT)]; /* Buffer for storing neopixel channel code data */
 static Neopixel_Strip_t NeopixelStrip;
+static size_t PixelNum;
 
 void RmtRxEventHandler(const uint8_t *const data, const size_t size);
+void ShotReceivedTask(void *arg);
 
 void app_main(void)
 {
@@ -35,19 +42,18 @@ void app_main(void)
     Rmt_RxInit();
     Rmt_RegisterRxEventHandler(RmtRxEventHandler);
 
-    size_t pixelNum;
     while (true)
     {
         /* Display pairing sequence, blink neopixels orange sequentially */
-        pixelNum = 0U;
+        PixelNum = 0U;
         while (!BlePeripheral_IsConnected())
         {
             Neopixel_Clear(&NeopixelStrip);
-            Neopixel_SetPixelColorName(&NeopixelStrip, pixelNum, NEOPIXEL_COLORNAME_ORANGE);
+            Neopixel_SetPixelColorName(&NeopixelStrip, PixelNum, NEOPIXEL_COLORNAME_ORANGE);
             Neopixel_Show(&NeopixelStrip);
 
-            pixelNum++;
-            pixelNum %= NEOPIXEL_COUNT;
+            PixelNum++;
+            PixelNum %= NEOPIXEL_COUNT;
 
             vTaskDelay(PAIRING_SEQUENCE_DELAY_MS / portTICK_PERIOD_MS);
         }
@@ -87,4 +93,32 @@ void RmtRxEventHandler(const uint8_t *const data, const size_t size)
     uint8_t *dataPtr = (uint8_t *)(uint32_t)data;
 
     BlePeripheral_Notify(dataPtr, size);
+
+    xTaskCreate(ShotReceivedTask, "ShotReceivedTask", SHOT_RECEIVED_TASK_STACK_DEPTH, NULL, SHOT_RECEIVED_TASK_PRIORITY, NULL);
+}
+
+void ShotReceivedTask(void *arg)
+{
+    uint16_t blinkCount = 0U;
+
+    PixelNum = 0U;
+
+    while (blinkCount < SHOT_RECEIVED_BLINK_COUNT)
+    {
+        Neopixel_Clear(&NeopixelStrip);
+        Neopixel_SetPixelColorName(&NeopixelStrip, PixelNum, NEOPIXEL_COLORNAME_GREEN);
+        Neopixel_Show(&NeopixelStrip);
+
+        PixelNum++;
+        PixelNum %= NEOPIXEL_COUNT;
+
+        vTaskDelay(SHOT_RECEIVED_BLINK_DELAY / portTICK_PERIOD_MS);
+
+        blinkCount++;
+    }
+
+    Neopixel_Clear(&NeopixelStrip);
+    Neopixel_Show(&NeopixelStrip);
+
+    vTaskDelete(NULL);
 }

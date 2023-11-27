@@ -30,7 +30,7 @@
 /* TODO Adjust signal ranges for Laser Tag signals */
 #define RMT_RX_SIGNAL_RANGE_MIN_NS 1250U     /* Shortest duration for received signal valid not to be treated as noise */
 #define RMT_RX_SIGNAL_RANGE_MAX_NS 12000000U /* Longest duration for the receive not be stopped early */
-#define RMT_GPIO_IR_TRANSMITTER GPIO_NUM_2   /* GPIO pin with IR transmitter */
+#define RMT_GPIO_IR_TRANSMITTER GPIO_NUM_15  /* GPIO pin with IR transmitter */
 #define RMT_CLK_RESOLUTION_HZ 1000000U       /* 1MHz resolution, 1 tick = 1us */
 #define RMT_TRANS_QUEUE_DEPTH 4U             /* Number of RMT transactions that can pend in the background */
 #define RMT_CARRIER_DUTY_CYCLE 0.33F         /* 33% duty cycle */

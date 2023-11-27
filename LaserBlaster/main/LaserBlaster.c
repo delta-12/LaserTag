@@ -65,6 +65,21 @@ void app_main(void)
         BopIt_Run(&bopItGameContext);
 
         /* TODO check if trigger was pressed and state is success, then wait for shot be received in remaining time to complete command */
+        // if (bopItGameContext.CurrentCommand == &BopItCommands_Trigger && bopItGameContext.GameState == BOPIT_GAMESTATE_SUCCESS)
+        // {
+        //     bool shotReceived = false;
+        //     while ((BopItTime() - bopItGameContext.WaitStart) < bopItGameContext.WaitTime && !shotReceived && BleCentral_IsConnected())
+        //     {
+        //         /* TODO check for shot received */
+        //         shotReceived = true;
+        //     }
+
+        //     if (!shotReceived)
+        //     {
+        //         bopItGameContext.GameState = BOPIT_GAMESTATE_FAIL;
+        //     }
+
+        // }
 
         vTaskDelay(BOPIT_RUN_DELAY_MS / portTICK_PERIOD_MS);
     }
