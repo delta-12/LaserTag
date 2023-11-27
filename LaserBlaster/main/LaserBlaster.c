@@ -9,7 +9,7 @@
 #include "nvs_flash.h"
 
 #define BOPIT_COMMAND_COUNT 3U
-#define BOPIT_RUN_DELAY 10U
+#define BOPIT_RUN_DELAY_MS 10U
 #define US_PER_MS 1000ULL
 
 static const char *BopItTag = "BopIt";
@@ -56,17 +56,20 @@ void app_main(void)
     /* Wait for BLE connection to Target */
     while (!BleCentral_IsConnected())
     {
-        vTaskDelay(BOPIT_RUN_DELAY / portTICK_PERIOD_MS);
+        vTaskDelay(BOPIT_RUN_DELAY_MS / portTICK_PERIOD_MS);
     }
 
     /* Run BopIt game */
     while (bopItGameContext.GameState != BOPIT_GAMESTATE_END)
     {
         BopIt_Run(&bopItGameContext);
-        vTaskDelay(BOPIT_RUN_DELAY / portTICK_PERIOD_MS);
+
+        /* TODO check if trigger was pressed and state is success, then wait for shot be received in remaining time to complete command */
+
+        vTaskDelay(BOPIT_RUN_DELAY_MS / portTICK_PERIOD_MS);
     }
     BopIt_Run(&bopItGameContext);
-    vTaskDelay(BOPIT_RUN_DELAY / portTICK_PERIOD_MS);
+    vTaskDelay(BOPIT_RUN_DELAY_MS / portTICK_PERIOD_MS);
 
     /* De-initialization */
     BopItCommands_DeInit();
