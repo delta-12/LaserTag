@@ -10,10 +10,15 @@
 #ifndef BLECENTRAL_H
 #define BLECENTRAL_H
 
+/* Includes
+ ******************************************************************************/
+#include <stdbool.h>
+
 /* Function Prototypes
  ******************************************************************************/
 
 void BleCentral_Init(void);
 void BleCentral_DeInit(void);
+bool BleCentral_IsConnected(void);
 
 #endif

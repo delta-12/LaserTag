@@ -22,36 +22,44 @@ static BopIt_TimeMs_t BopItTime(void);
 void app_main(void)
 {
     /* Initialize NVS — it is used to store PHY calibration data */
-    esp_err_t ret = nvs_flash_init();
-    if (ret == ESP_ERR_NVS_NO_FREE_PAGES || ret == ESP_ERR_NVS_NEW_VERSION_FOUND)
+    esp_err_t err = nvs_flash_init();
+    if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND)
     {
         ESP_ERROR_CHECK(nvs_flash_erase());
-        ret = nvs_flash_init();
+        err = nvs_flash_init();
     }
-    ESP_ERROR_CHECK(ret);
+    ESP_ERROR_CHECK(err);
 
-    BleCentral_Init();
-
+    /* Initialize peripherals and modules */
     Gpio_Init();
     BopItCommands_Init();
     EventHandlers_Init();
+    BleCentral_Init();
 
+    /* Register handlers for GPIO inputs */
     Gpio_RegisterEventHandler(GPIO_TYPE_BUTTON, EventHandlers_ButtonEventHandler);
 
     /* TODO Testing */
     Gpio_RegisterEventHandler(GPIO_TYPE_JOYSTICK, EventHandlers_JoystickEventHandler);
 
+    /* Initialize BopIt game */
     BopIt_GameContext_t bopItGameContext = {
         .Commands = BopItCommands,
         .CommandCount = BOPIT_COMMAND_COUNT,
         .OnGameStart = NULL,
         .OnGameEnd = NULL,
     };
-
     BopIt_RegisterLogger(BopItLogger);
     BopIt_RegisterTime(BopItTime);
     BopIt_Init(&bopItGameContext);
 
+    /* Wait for BLE connection to Target */
+    while (!BleCentral_IsConnected())
+    {
+        vTaskDelay(BOPIT_RUN_DELAY / portTICK_PERIOD_MS);
+    }
+
+    /* Run BopIt game */
     while (bopItGameContext.GameState != BOPIT_GAMESTATE_END)
     {
         BopIt_Run(&bopItGameContext);
@@ -60,7 +68,9 @@ void app_main(void)
     BopIt_Run(&bopItGameContext);
     vTaskDelay(BOPIT_RUN_DELAY / portTICK_PERIOD_MS);
 
+    /* De-initialization */
     BopItCommands_DeInit();
+    BleCentral_DeInit();
 }
 
 static void BopItLogger(const char *const message)

@@ -16,7 +16,7 @@
 static uint8_t NeopixelBuffer[NEOPIXEL_PIXEL_BUFFER_SIZE(NEOPIXEL_COUNT)]; /* Buffer for storing neopixel channel code data */
 static Neopixel_Strip_t NeopixelStrip;
 
-void rmtRxEventHandler(const uint8_t *const data, const size_t size);
+void RmtRxEventHandler(const uint8_t *const data, const size_t size);
 
 void app_main(void)
 {
@@ -33,7 +33,7 @@ void app_main(void)
     Neopixel_Init(&NeopixelStrip, NeopixelBuffer, NEOPIXEL_COUNT, NEOPIXEL_PIN);
     BlePeripheral_Init();
     Rmt_RxInit();
-    Rmt_RegisterRxEventHandler(rmtRxEventHandler);
+    Rmt_RegisterRxEventHandler(RmtRxEventHandler);
 
     size_t pixelNum;
     while (true)
@@ -72,7 +72,7 @@ void app_main(void)
     }
 }
 
-void rmtRxEventHandler(const uint8_t *const data, const size_t size)
+void RmtRxEventHandler(const uint8_t *const data, const size_t size)
 {
     ESP_LOGI("Target", "RMT RX EVENT");
 

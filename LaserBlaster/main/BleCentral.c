@@ -52,6 +52,8 @@ static uint8_t BleCentral_SubscriptionCode[] = {0x01U, 0x00U};
 
 static char BleCentral_StringBuffer[BLECENTRAL_STRINGBUFFER_LENGTH];
 
+static bool BleCentral_Connected = false;
+
 /* Typedefs
  ******************************************************************************/
 
@@ -120,6 +122,11 @@ void BleCentral_DeInit(void)
     {
         ESP_LOGE(BleCentral_LogTag, "Nimble port stop failed");
     }
+}
+
+bool BleCentral_IsConnected(void)
+{
+    return BleCentral_Connected;
 }
 
 static void BleCentral_OnReset(const int reason)
@@ -373,6 +380,8 @@ static int BleCentral_HandleConnect(const struct ble_gap_event *const event)
 
         assert(ble_gap_conn_find(event->connect.conn_handle, &desc) == BLECENTRAL_OK);
 
+        BleCentral_Connected = true;
+
         /* Remember peer */
         if (peer_add(event->connect.conn_handle) == BLECENTRAL_OK)
         {
@@ -434,6 +443,8 @@ static int BleCentral_HandleDisconnect(const struct ble_gap_event *const event)
     /* Forget about peer */
     peer_delete(event->disconnect.conn.conn_handle);
 
+    BleCentral_Connected = false;
+
     /* Resume scanning */
     BleCentral_Scan();
 
@@ -474,6 +485,7 @@ static int BleCentral_HandleNotifyRx(const struct ble_gap_event *const event)
              event->notify_rx.attr_handle,
              OS_MBUF_PKTLEN(event->notify_rx.om));
 
+    /* TODO callback registered by client */
     print_mbuf(event->notify_rx.om);
 
     return BLECENTRAL_OK;
