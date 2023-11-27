@@ -6,6 +6,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "ssd1306.h"
+#include "MenuScreens.h"
 
 #define BOPIT_COMMAND_COUNT 3U
 #define BOPIT_RUN_DELAY_MS 10U
@@ -22,6 +23,7 @@ static BopIt_Command_t *BopItCommands[BOPIT_COMMAND_COUNT] = {&BopItCommands_Tri
 static ssd1306_handle_t ssd1306Handle = NULL;
 
 static void Ssd1306Init(void);
+static void Ssd1306StartGame(void);
 static void Ssd1306SetScore(const uint8_t score);
 static void Ssd1306SetLives(const uint8_t lives);
 static void BopItLogger(const char *const message);
@@ -39,6 +41,12 @@ void app_main(void)
     /* TODO Testing */
     Gpio_RegisterEventHandler(GPIO_TYPE_JOYSTICK, EventHandlers_JoystickEventHandler);
 
+
+	//Main Menu Screen Held until Selected
+	//while(!Joystick.Center){}
+	//Ssd1306StartGame();
+	Ssd1306StartGame();
+
     BopIt_GameContext_t bopItGameContext = {
         .Commands = BopItCommands,
         .CommandCount = BOPIT_COMMAND_COUNT,
@@ -53,7 +61,7 @@ void app_main(void)
     while (bopItGameContext.GameState != BOPIT_GAMESTATE_END)
     {
         BopIt_Run(&bopItGameContext);
-
+		ssd1306_clear_screen(ssd1306Handle, 0x00U);
         Ssd1306SetScore(bopItGameContext.Score);
         Ssd1306SetLives(bopItGameContext.Lives);
 
@@ -84,28 +92,112 @@ static void Ssd1306Init(void)
     ssd1306Handle = ssd1306_create(I2C_MASTER_NUM, SSD1306_I2C_ADDRESS);
     ssd1306_refresh_gram(ssd1306Handle);
     ssd1306_clear_screen(ssd1306Handle, 0x00U);
-
-    ssd1306_draw_bitmap(ssd1306Handle, 0, 2, &c_chSingal816[0], 16, 8);
-    ssd1306_draw_bitmap(ssd1306Handle, 24, 2, &c_chBluetooth88[0], 8, 8);
-    ssd1306_draw_bitmap(ssd1306Handle, 40, 2, &c_chMsg816[0], 16, 8);
-    ssd1306_draw_bitmap(ssd1306Handle, 64, 2, &c_chGPRS88[0], 8, 8);
-    ssd1306_draw_bitmap(ssd1306Handle, 90, 2, &c_chAlarm88[0], 8, 8);
-    ssd1306_draw_bitmap(ssd1306Handle, 112, 2, &c_chBat816[0], 16, 8);
-    ssd1306_refresh_gram(ssd1306Handle);
+    
+    //hold for 5 secs
+    ssd1306_draw_bitmap(ssd1306Handle, 0, 0, &mainscreen[0], 128, 64);	
+	ssd1306_refresh_gram(ssd1306Handle);
+	
+	vTaskDelay(5000/portTICK_PERIOD_MS);
 
     static char data_str[10] = {0};
     sprintf(data_str, "Score: ");
-    ssd1306_draw_string(ssd1306Handle, 0, 16, (const uint8_t *)data_str, 16, 1);
+    //ssd1306_draw_string(ssd1306Handle, 0, 16, (const uint8_t *)data_str, 16, 1);
     sprintf(data_str, "Lives: ");
-    ssd1306_draw_string(ssd1306Handle, 0, 32, (const uint8_t *)data_str, 16, 1);
+    //ssd1306_draw_string(ssd1306Handle, 0, 32, (const uint8_t *)data_str, 16, 1);
     ssd1306_refresh_gram(ssd1306Handle);
+}
+
+static void Ssd1306StartGame(void)
+{
+	ssd1306_clear_screen(ssd1306Handle, 0x00U);
+	ssd1306_draw_bitmap(ssd1306Handle, 108, 4, &fullheart[0], 16, 16);
+	ssd1306_draw_bitmap(ssd1306Handle, 108, 24, &fullheart[0], 16, 16);
+	ssd1306_draw_bitmap(ssd1306Handle, 108, 44, &fullheart[0], 16, 16);
+	
+	ssd1306_draw_bitmap(ssd1306Handle, 30, 4, &zero[0], 32, 56);
+	ssd1306_draw_bitmap(ssd1306Handle, 66, 4, &zero[0], 32, 56);
+	
+	ssd1306_refresh_gram(ssd1306Handle);
 }
 
 static void Ssd1306SetScore(const uint8_t score)
 {
     static char data_str[10] = {0};
     itoa(score, data_str, 10);
-    ssd1306_draw_string(ssd1306Handle, 56, 16, (const uint8_t *)data_str, 16, 1);
+    
+    //Dummy var for testing screen score
+    //uint8_t scores = 97;
+    
+    uint8_t tens = score/10;
+    uint8_t ones = score % 10;
+    
+    switch(tens){
+		case 0:
+			ssd1306_draw_bitmap(ssd1306Handle, 30, 4, &zero[0], 32, 56);
+			break;
+		case 1:
+			ssd1306_draw_bitmap(ssd1306Handle, 30, 4, &one[0], 32, 56);
+			break;
+		case 2:
+			ssd1306_draw_bitmap(ssd1306Handle, 30, 4, &two[0], 32, 56);
+			break;
+		case 3:
+			ssd1306_draw_bitmap(ssd1306Handle, 30, 4, &three[0], 32, 56);
+			break;
+		case 4:
+			ssd1306_draw_bitmap(ssd1306Handle, 30, 4, &four[0], 32, 56);
+			break;
+		case 5:
+			ssd1306_draw_bitmap(ssd1306Handle, 30, 4, &five[0], 32, 56);
+			break;
+		case 6:
+			ssd1306_draw_bitmap(ssd1306Handle, 30, 4, &six[0], 32, 56);
+			break;
+		case 7:
+			ssd1306_draw_bitmap(ssd1306Handle, 30, 4, &seven[0], 32, 56);
+			break;
+		case 8:
+			ssd1306_draw_bitmap(ssd1306Handle, 30, 4, &eight[0], 32, 56);
+			break;
+		case 9:
+			ssd1306_draw_bitmap(ssd1306Handle, 30, 4, &nine[0], 32, 56);
+			break;
+	}
+	
+	switch(ones){
+		case 0:
+			ssd1306_draw_bitmap(ssd1306Handle, 66, 4, &zero[0], 32, 56);
+			break;
+		case 1:
+			ssd1306_draw_bitmap(ssd1306Handle, 66, 4, &one[0], 32, 56);
+			break;
+		case 2:
+			ssd1306_draw_bitmap(ssd1306Handle, 66, 4, &two[0], 32, 56);
+			break;
+		case 3:
+			ssd1306_draw_bitmap(ssd1306Handle, 66, 4, &three[0], 32, 56);
+			break;
+		case 4:
+			ssd1306_draw_bitmap(ssd1306Handle, 66, 4, &four[0], 32, 56);
+			break;
+		case 5:
+			ssd1306_draw_bitmap(ssd1306Handle, 66, 4, &five[0], 32, 56);
+			break;
+		case 6:
+			ssd1306_draw_bitmap(ssd1306Handle, 66, 4, &six[0], 32, 56);
+			break;
+		case 7:
+			ssd1306_draw_bitmap(ssd1306Handle, 66, 4, &seven[0], 32, 56);
+			break;
+		case 8:
+			ssd1306_draw_bitmap(ssd1306Handle, 66, 4, &eight[0], 32, 56);
+			break;
+		case 9:
+			ssd1306_draw_bitmap(ssd1306Handle, 66, 4, &nine[0], 32, 56);
+			break;
+	}
+
+    //ssd1306_draw_string(ssd1306Handle, 56, 16, (const uint8_t *)data_str, 16, 1);
     ssd1306_refresh_gram(ssd1306Handle);
 }
 
@@ -113,7 +205,33 @@ static void Ssd1306SetLives(const uint8_t lives)
 {
     static char data_str[10] = {0};
     itoa(lives, data_str, 10);
-    ssd1306_draw_string(ssd1306Handle, 56, 32, (const uint8_t *)data_str, 16, 1);
+    
+    if(lives == 3){
+		ssd1306_draw_bitmap(ssd1306Handle, 108, 4, &fullheart[0], 16, 16);
+		ssd1306_draw_bitmap(ssd1306Handle, 108, 24, &fullheart[0], 16, 16);
+		ssd1306_draw_bitmap(ssd1306Handle, 108, 44, &fullheart[0], 16, 16);
+	}
+    
+    if(lives == 2){
+		ssd1306_draw_bitmap(ssd1306Handle, 108, 4, &fullheart[0], 16, 16);
+		ssd1306_draw_bitmap(ssd1306Handle, 108, 24, &fullheart[0], 16, 16);
+		ssd1306_draw_bitmap(ssd1306Handle, 108, 44, &brokenheart[0], 16, 16);
+	}
+	
+	if(lives == 1){
+		ssd1306_draw_bitmap(ssd1306Handle, 108, 4, &fullheart[0], 16, 16);
+		ssd1306_draw_bitmap(ssd1306Handle, 108, 24, &brokenheart[0], 16, 16);
+		ssd1306_draw_bitmap(ssd1306Handle, 108, 44, &brokenheart[0], 16, 16);
+	}
+	
+	if(lives == 0){
+		ssd1306_draw_bitmap(ssd1306Handle, 108, 4, &brokenheart[0], 16, 16);
+		ssd1306_draw_bitmap(ssd1306Handle, 108, 24, &brokenheart[0], 16, 16);
+		ssd1306_draw_bitmap(ssd1306Handle, 108, 44, &brokenheart[0], 16, 16);
+	}
+		
+    
+    //ssd1306_draw_string(ssd1306Handle, 56, 32, (const uint8_t *)data_str, 16, 1);
     ssd1306_refresh_gram(ssd1306Handle);
 }
 
