@@ -25,9 +25,12 @@
 #define BOPITCOMMANDS_PLAYERMINI_IS_ACK true          /* Enable ACK when initializing DFPlayerMini*/
 #define BOPITCOMMANDS_PLAYERMINI_DO_RESET true        /* Perform a reset when initializing DFPlayerMini*/
 #define BOPITCOMMANDS_PLAYERMINI_VOLUME 30U           /* DFPlayerMini volume */
-#define BOPITCOMMANDS_PLAYERMINI_BEGIN_FILE 1U        /* DFPlayerMini file to play on initialization */
-#define BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE 3U      /* DFPlayerMini file to play for success feedback */
-#define BOPITCOMMANDS_PLAYERMINI_FAIL_FILE 2U         /* DFPlayerMini file to play for fail feedback */
+#define BOPITCOMMANDS_PLAYERMINI_BEGIN_FILE 5U        /* DFPlayerMini file to play on initialization */
+#define BOPITCOMMANDS_PLAYERMINI_SUCCESS_FILE 2U      /* DFPlayerMini file to play for success feedback */
+#define BOPITCOMMANDS_PLAYERMINI_FAIL_FILE 1U         /* DFPlayerMini file to play for fail feedback */
+#define BOPITCOMMANDS_PLAYERMINI_RELOAD_FILE 3U       /* DFPlayerMini file to play for Reload command */
+#define BOPITCOMMANDS_PLAYERMINI_PRIME_FILE 4U        /* DFPlayerMini file to play for Prime command */
+#define BOPITCOMMANDS_PLAYERMINI_TRIGGER_FILE 6U      /* DFPlayerMini file to play for Trigger command */
 #define BOPITCOMMANDS_NEOPIXEL_PIN GPIO_NUM_4         /* GPIO pin for neopixel strip */
 #define BOPITCOMMANDS_NEOPIXEL_COUNT 6U               /* Neopixel strip with 6 pixels */
 #define BOPITCOMMANDS_CLIP0_VOLTAGE_LOWER_BOUND 1500U /* Lower bound for voltage that should be read for clip 0 */
@@ -153,6 +156,7 @@ void BopItCommands_TriggerIssueCommand(void)
 {
     BopItCommands_ResetInputFlags();
     ESP_LOGI(BopItCommands_EspLogTag, "Press Trigger");
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_TRIGGER_FILE);
 }
 
 /**
@@ -202,6 +206,7 @@ void BopItCommands_PrimeIssueCommand(void)
 {
     BopItCommands_ResetInputFlags();
     ESP_LOGI(BopItCommands_EspLogTag, "Prime the blaster");
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_PRIME_FILE);
 }
 
 /**
@@ -251,6 +256,7 @@ void BopItCommands_ReloadIssueCommand(void)
 {
     BopItCommands_ResetInputFlags();
     ESP_LOGI(BopItCommands_EspLogTag, "Reload the blaster");
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_RELOAD_FILE);
 }
 
 /**
@@ -293,7 +299,7 @@ bool BopItCommands_ReloadGetInput(void)
         }
         else if (voltage >= BOPITCOMMANDS_CLIP1_VOLTAGE_LOWER_BOUND && voltage < BOPITCOMMANDS_CLIP1_VOLTAGE_UPPER_BOUND)
         {
-            insertedClip = BOPITCOMMANDS_CLIPNUMBER_0;
+            insertedClip = BOPITCOMMANDS_CLIPNUMBER_1;
         }
 
         if (insertedClip != BOPITCOMMANDS_CLIPNUMBER_UNDEFINED && insertedClip != BopItCommands_InsertedClip)
