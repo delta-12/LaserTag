@@ -293,7 +293,7 @@ bool BopItCommands_ReloadGetInput(void)
         }
         else if (voltage >= BOPITCOMMANDS_CLIP1_VOLTAGE_LOWER_BOUND && voltage < BOPITCOMMANDS_CLIP1_VOLTAGE_UPPER_BOUND)
         {
-            insertedClip = BOPITCOMMANDS_CLIPNUMBER_0;
+            insertedClip = BOPITCOMMANDS_CLIPNUMBER_1;
         }
 
         if (insertedClip != BOPITCOMMANDS_CLIPNUMBER_UNDEFINED && insertedClip != BopItCommands_InsertedClip)
