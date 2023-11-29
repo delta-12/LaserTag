@@ -17,6 +17,5 @@
 
 void EventHandlers_Init(void);
 void EventHandlers_ButtonEventHandler(const Gpio_GpioNum_t gpioNum);
-void EventHandlers_JoystickEventHandler(const Gpio_GpioNum_t gpioNum);
 
 #endif
