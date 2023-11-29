@@ -31,6 +31,7 @@
 #define BOPITCOMMANDS_PLAYERMINI_RELOAD_FILE 3U       /* DFPlayerMini file to play for Reload command */
 #define BOPITCOMMANDS_PLAYERMINI_PRIME_FILE 4U        /* DFPlayerMini file to play for Prime command */
 #define BOPITCOMMANDS_PLAYERMINI_TRIGGER_FILE 6U      /* DFPlayerMini file to play for Trigger command */
+#define BOPITCOMMANDS_PLAYERMINI_GAME_OVER_FILE 7U    /* DFPlayerMini file to play on de-initialization */
 #define BOPITCOMMANDS_NEOPIXEL_PIN GPIO_NUM_4         /* GPIO pin for neopixel strip */
 #define BOPITCOMMANDS_NEOPIXEL_COUNT 6U               /* Neopixel strip with 6 pixels */
 #define BOPITCOMMANDS_CLIP0_VOLTAGE_LOWER_BOUND 2950U /* Lower bound for voltage that should be read for clip 0 */
@@ -138,6 +139,9 @@ void BopItCommands_Init(void)
  ******************************************************************************/
 void BopItCommands_DeInit(void)
 {
+    DFPlayerMini_Play(BopItCommands_PlayerMini, BOPITCOMMANDS_PLAYERMINI_GAME_OVER_FILE);
+    vTaskDelay(BOPITCOMMANDS_FEEDBACK_DELAY_MS / portTICK_PERIOD_MS);
+
     if (BopItCommands_PlayerMini != NULL)
     {
         DFPlayerMini_FreeHandle(BopItCommands_PlayerMini);

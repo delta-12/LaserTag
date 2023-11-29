@@ -31,6 +31,7 @@ static void JoystickEventHandler(const Gpio_GpioNum_t gpioNum);
 
 static void Ssd1306Init(void);
 static void Ssd1306MainScreen(void);
+static void Ssd1306WaitForBleConnectScreen(void);
 static void Ssd1306StartGameScreen(void);
 static void Ssd1306SInitGameScreen(void);
 static void Ssd1306SetScore(const uint8_t score);
@@ -144,6 +145,14 @@ static void Ssd1306MainScreen(void)
 	ssd1306_refresh_gram(Ssd1306Handle);
 
 	vTaskDelay(5000U / portTICK_PERIOD_MS);
+}
+
+static void Ssd1306WaitForBleConnectScreen(void)
+{
+	ssd1306_clear_screen(Ssd1306Handle, 0x00U);
+
+	ssd1306_draw_bitmap(Ssd1306Handle, 0, 0, &waitforBTconnect[0], 128, 64);
+	ssd1306_refresh_gram(Ssd1306Handle);
 }
 
 static void Ssd1306StartGameScreen(void)
