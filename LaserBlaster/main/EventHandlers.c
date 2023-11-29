@@ -15,6 +15,18 @@
  ******************************************************************************/
 
 #define EVENTHANDLERS_SEMPHR_BLOCK_TIME (1U / portTICK_PERIOD_MS) /* Wait for up to 1ms when taking mutex */
+#define EVENTHANDLERS_SHOT_HEADER_HI 0x4CU                        /* Shot header HI 'L' */
+#define EVENTHANDLERS_SHOT_HEADER_LO 0x54U                        /* Shot header LO 'T' */
+#define EVENTHANDLERS_3_BYTE_BIT_SHIFT 24U                        /* Bit shift to get byte 3 */
+#define EVENTHADNLERS_2_BYTE_BIT_SHIFT 16U                        /* Bit shift to get byte 2 */
+#define EVENTHADNLERS_1_BYTE_BIT_SHIFT 8U                         /* Bit shift to get byte 1 */
+#define EVENTHADNLERS_BYTE_MASK 0xFFU                             /* Mask a byte */
+
+/* Defines
+ ******************************************************************************/
+
+static uint32_t EventHandlers_ShotCount = 0U;
+static uint8_t EventHandlers_ShotData[] = {EVENTHANDLERS_SHOT_HEADER_HI, EVENTHANDLERS_SHOT_HEADER_LO, 0x00U, 0x00U, 0x00U, 0x00U, 0x00U};
 
 /* Function Prototypes
  ******************************************************************************/
@@ -63,8 +75,27 @@ void EventHandlers_ButtonEventHandler(const Gpio_GpioNum_t gpioNum)
  ******************************************************************************/
 void EventHandlers_TriggerEventHandler(void)
 {
-    static uint8_t data[] = {0xAAU, 0xBBU, 0xEEU, 0xFFU, 0x00, 0x11, 0x22, 0x33, 0x44};
-    Rmt_Transmit(data, sizeof(data));
+    bool triggerCommandIssued = false;
+
+    if (xSemaphoreTake(BopItCommands_TriggerCommandIssuedFlagMutex, EVENTHANDLERS_SEMPHR_BLOCK_TIME) == pdTRUE)
+    {
+        triggerCommandIssued = BopItCommands_TriggerCommandIssuedFlag;
+        xSemaphoreGive(BopItCommands_TriggerCommandIssuedFlagMutex);
+    }
+
+    printf("Trigger cmd issued: %d\n", (uint8_t)triggerCommandIssued);
+
+    if (triggerCommandIssued)
+    {
+        EventHandlers_ShotCount++;
+
+        EventHandlers_ShotData[3U] = (EventHandlers_ShotCount << 24U) & 0xFFU;
+        EventHandlers_ShotData[4U] = (EventHandlers_ShotCount << 16U) & 0xFFU;
+        EventHandlers_ShotData[5U] = (EventHandlers_ShotCount << 8U) & 0xFFU;
+        EventHandlers_ShotData[6U] = EventHandlers_ShotCount & 0xFFU;
+    }
+
+    Rmt_Transmit(EventHandlers_ShotData, sizeof(EventHandlers_ShotData));
 
     if (xSemaphoreTake(BopItCommands_TriggerInputFlagMutex, EVENTHANDLERS_SEMPHR_BLOCK_TIME) == pdTRUE)
     {

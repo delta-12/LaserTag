@@ -13,6 +13,8 @@
 /* Includes
  ******************************************************************************/
 #include <stdbool.h>
+#include <stddef.h>
+#include <stdint.h>
 
 /* Function Prototypes
  ******************************************************************************/
@@ -20,5 +22,6 @@
 void BleCentral_Init(void);
 void BleCentral_DeInit(void);
 bool BleCentral_IsConnected(void);
+void BleCentral_RegisterNotifyCallback(void (*notifyCallback)(uint8_t *const data, const size_t size));
 
 #endif

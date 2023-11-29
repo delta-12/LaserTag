@@ -24,7 +24,7 @@
 #define BLEPERIPHERAL_PRESENT 1U
 #define BLEPERIPHERAL_COMPLETE 1U
 #define BLEPERIPHERAL_TARGET_SERVICE 0x4C54U
-#define BLEPERIPHERAL_CHARACTERISTIC_VAL_SIZE 128U
+#define BLEPERIPHERAL_CHARACTERISTIC_VAL_SIZE 7U
 
 /* Globals
  ******************************************************************************/

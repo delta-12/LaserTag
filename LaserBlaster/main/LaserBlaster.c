@@ -16,8 +16,14 @@ static const char *BopItTag = "BopIt";
 
 static BopIt_Command_t *BopItCommands[BOPIT_COMMAND_COUNT] = {&BopItCommands_Trigger, &BopItCommands_Prime, &BopItCommands_Reload};
 
+static bool ShotReceived = false;
+static SemaphoreHandle_t ShotReceivedMutex = NULL;
+static StaticSemaphore_t ShotReceivedMutexBuffer;
+
 static void BopItLogger(const char *const message);
 static BopIt_TimeMs_t BopItTime(void);
+
+static void NotifyCallback(uint8_t *const data, const size_t size);
 
 void app_main(void)
 {
@@ -30,6 +36,8 @@ void app_main(void)
     }
     ESP_ERROR_CHECK(err);
 
+    ShotReceivedMutex = xSemaphoreCreateMutexStatic(&ShotReceivedMutexBuffer);
+
     /* Initialize peripherals and modules */
     Gpio_Init();
     BopItCommands_Init();
@@ -41,6 +49,8 @@ void app_main(void)
 
     /* TODO Testing */
     Gpio_RegisterEventHandler(GPIO_TYPE_JOYSTICK, EventHandlers_JoystickEventHandler);
+
+    BleCentral_RegisterNotifyCallback(NotifyCallback);
 
     /* Initialize BopIt game */
     BopIt_GameContext_t bopItGameContext = {
@@ -65,21 +75,29 @@ void app_main(void)
         BopIt_Run(&bopItGameContext);
 
         /* TODO check if trigger was pressed and state is success, then wait for shot be received in remaining time to complete command */
-        // if (bopItGameContext.CurrentCommand == &BopItCommands_Trigger && bopItGameContext.GameState == BOPIT_GAMESTATE_SUCCESS)
-        // {
-        //     bool shotReceived = false;
-        //     while ((BopItTime() - bopItGameContext.WaitStart) < bopItGameContext.WaitTime && !shotReceived && BleCentral_IsConnected())
-        //     {
-        //         /* TODO check for shot received */
-        //         shotReceived = true;
-        //     }
+        if (bopItGameContext.CurrentCommand == &BopItCommands_Trigger && bopItGameContext.GameState == BOPIT_GAMESTATE_SUCCESS)
+        {
+            bool shotReceived = false;
+            while ((BopItTime() - bopItGameContext.WaitStart) < bopItGameContext.WaitTime && !shotReceived && BleCentral_IsConnected())
+            {
+                /* TODO check for shot received */
+                shotReceived = true;
 
-        //     if (!shotReceived)
-        //     {
-        //         bopItGameContext.GameState = BOPIT_GAMESTATE_FAIL;
-        //     }
+                if (xSemaphoreTake(ShotReceivedMutex, portMAX_DELAY) == pdTRUE)
+                {
+                    shotReceived = ShotReceived;
+                    ShotReceived = false;
+                    xSemaphoreGive(ShotReceivedMutex);
+                }
 
-        // }
+                vTaskDelay(BOPIT_RUN_DELAY_MS / portTICK_PERIOD_MS);
+            }
+
+            if (!shotReceived)
+            {
+                bopItGameContext.GameState = BOPIT_GAMESTATE_FAIL;
+            }
+        }
 
         vTaskDelay(BOPIT_RUN_DELAY_MS / portTICK_PERIOD_MS);
     }
@@ -99,4 +117,19 @@ static void BopItLogger(const char *const message)
 static BopIt_TimeMs_t BopItTime(void)
 {
     return (BopIt_TimeMs_t)(esp_timer_get_time() / US_PER_MS);
+}
+
+static void NotifyCallback(uint8_t *const data, const size_t size)
+{
+    for (size_t i = 0U; i < size; i++)
+    {
+        printf("%02x ", data[i]);
+    }
+    printf("\n");
+
+    if (xSemaphoreTake(ShotReceivedMutex, portMAX_DELAY) == pdTRUE)
+    {
+        ShotReceived = true;
+        xSemaphoreGive(ShotReceivedMutex);
+    }
 }

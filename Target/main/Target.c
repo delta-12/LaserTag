@@ -21,6 +21,8 @@
 static uint8_t NeopixelBuffer[NEOPIXEL_PIXEL_BUFFER_SIZE(NEOPIXEL_COUNT)]; /* Buffer for storing neopixel channel code data */
 static Neopixel_Strip_t NeopixelStrip;
 static size_t PixelNum;
+static uint32_t NextShot = 1U;
+Neopixel_ColorName_t NeopixelColor;
 
 void RmtRxEventHandler(const uint8_t *const data, const size_t size);
 void ShotReceivedTask(void *arg);
@@ -80,21 +82,35 @@ void app_main(void)
 
 void RmtRxEventHandler(const uint8_t *const data, const size_t size)
 {
-    ESP_LOGI("Target", "RMT RX EVENT");
-
     for (size_t i = 0U; i < size; i++)
     {
         printf("%x ", *(data + i));
     }
     printf("\n");
 
-    /* Hack to discard const qualifier */
-    /* TODO update Rmt module to remove const qualifier from RX event handler typedef */
-    uint8_t *dataPtr = (uint8_t *)(uint32_t)data;
+    if (size == 7U)
+    {
+        if (data[0U] == 0x4CU && data[1U] == 0x54U && data[2U] == 0x00U)
+        {
+            uint32_t shotNumber = data[3U];
+            shotNumber = (shotNumber << 8U) | data[4U];
+            shotNumber = (shotNumber << 8U) | data[5U];
+            shotNumber = (shotNumber << 8U) | data[6U];
 
-    BlePeripheral_Notify(dataPtr, size);
+            /* Hack to discard const qualifier */
+            /* TODO update Rmt module to remove const qualifier from RX event handler typedef */
+            uint8_t *dataPtr = (uint8_t *)(uint32_t)data;
+            BlePeripheral_Notify(dataPtr, size);
 
-    xTaskCreate(ShotReceivedTask, "ShotReceivedTask", SHOT_RECEIVED_TASK_STACK_DEPTH, NULL, SHOT_RECEIVED_TASK_PRIORITY, NULL);
+            NeopixelColor = NEOPIXEL_COLORNAME_RED;
+            if (shotNumber == NextShot)
+            {
+                NeopixelColor = NEOPIXEL_COLORNAME_GREEN;
+                NextShot++;
+            }
+            xTaskCreate(ShotReceivedTask, "ShotReceivedTask", SHOT_RECEIVED_TASK_STACK_DEPTH, NULL, SHOT_RECEIVED_TASK_PRIORITY, NULL);
+        }
+    }
 }
 
 void ShotReceivedTask(void *arg)
@@ -102,11 +118,10 @@ void ShotReceivedTask(void *arg)
     uint16_t blinkCount = 0U;
 
     PixelNum = 0U;
-
     while (blinkCount < SHOT_RECEIVED_BLINK_COUNT)
     {
         Neopixel_Clear(&NeopixelStrip);
-        Neopixel_SetPixelColorName(&NeopixelStrip, PixelNum, NEOPIXEL_COLORNAME_GREEN);
+        Neopixel_SetPixelColorName(&NeopixelStrip, PixelNum, NeopixelColor);
         Neopixel_Show(&NeopixelStrip);
 
         PixelNum++;

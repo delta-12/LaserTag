@@ -54,6 +54,8 @@ static char BleCentral_StringBuffer[BLECENTRAL_STRINGBUFFER_LENGTH];
 
 static bool BleCentral_Connected = false;
 
+static void (*BleCentral_NotifyCallback)(uint8_t *const data, const size_t size) = NULL;
+
 /* Typedefs
  ******************************************************************************/
 
@@ -127,6 +129,11 @@ void BleCentral_DeInit(void)
 bool BleCentral_IsConnected(void)
 {
     return BleCentral_Connected;
+}
+
+void BleCentral_RegisterNotifyCallback(void (*notifyCallback)(uint8_t *const data, const size_t size))
+{
+    BleCentral_NotifyCallback = notifyCallback;
 }
 
 static void BleCentral_OnReset(const int reason)
@@ -486,7 +493,12 @@ static int BleCentral_HandleNotifyRx(const struct ble_gap_event *const event)
              OS_MBUF_PKTLEN(event->notify_rx.om));
 
     /* TODO callback registered by client */
-    print_mbuf(event->notify_rx.om);
+    // print_mbuf(event->notify_rx.om);
+
+    if (BleCentral_NotifyCallback != NULL)
+    {
+        (*BleCentral_NotifyCallback)(event->notify_rx.om->om_data, OS_MBUF_PKTLEN(event->notify_rx.om));
+    }
 
     return BLECENTRAL_OK;
 }

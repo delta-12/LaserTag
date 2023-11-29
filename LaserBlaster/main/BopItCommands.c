@@ -60,6 +60,10 @@ bool BopItCommands_TriggerInputFlag = false;                  /* Indicates if Tr
 SemaphoreHandle_t BopItCommands_TriggerInputFlagMutex = NULL; /* Mutex for Trigger flag */
 StaticSemaphore_t BopItCommands_TriggerInputFlagMutexBuffer;  /* Buffer to store mutex for Trigger flag */
 
+bool BopItCommands_TriggerCommandIssuedFlag = false;                  /* Indicates if Trigger command was issued */
+SemaphoreHandle_t BopItCommands_TriggerCommandIssuedFlagMutex = NULL; /* Mutex for Trigger Command Issued flag */
+StaticSemaphore_t BopItCommands_TriggerCommandIssuedFlagMutexBuffer;  /* Buffer to store mutex for Trigger Command Issued flag */
+
 /* BopIt command for Trigger */
 BopIt_Command_t BopItCommands_Trigger = {
     .Name = "Trigger Command",
@@ -111,6 +115,7 @@ static void BopItCommands_ResetInputFlags(void);
 void BopItCommands_Init(void)
 {
     BopItCommands_TriggerInputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_TriggerInputFlagMutexBuffer);
+    BopItCommands_TriggerCommandIssuedFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_TriggerCommandIssuedFlagMutexBuffer);
     BopItCommands_PrimeInputFlagMutex = xSemaphoreCreateMutexStatic(&BopItCommands_PrimeInputFlagMutexBuffer);
 
     BopItCommands_PlayerMini = DFPlayerMini_CreateHandle(BOPITCOMMANDS_UART_NUM, BOPITCOMMANDS_UART_RX_PIN, BOPITCOMMANDS_UART_TX_PIN);
@@ -152,6 +157,13 @@ void BopItCommands_DeInit(void)
 void BopItCommands_TriggerIssueCommand(void)
 {
     BopItCommands_ResetInputFlags();
+
+    if (xSemaphoreTake(BopItCommands_TriggerCommandIssuedFlagMutex, portMAX_DELAY) == pdTRUE)
+    {
+        BopItCommands_TriggerCommandIssuedFlag = true;
+        xSemaphoreGive(BopItCommands_TriggerCommandIssuedFlagMutex);
+    }
+
     ESP_LOGI(BopItCommands_EspLogTag, "Press Trigger");
 }
 
@@ -344,6 +356,12 @@ static void BopItCommands_ResetInputFlags(void)
     {
         BopItCommands_TriggerInputFlag = false;
         xSemaphoreGive(BopItCommands_TriggerInputFlagMutex);
+    }
+
+    if (xSemaphoreTake(BopItCommands_TriggerCommandIssuedFlagMutex, portMAX_DELAY) == pdTRUE)
+    {
+        BopItCommands_TriggerCommandIssuedFlag = false;
+        xSemaphoreGive(BopItCommands_TriggerCommandIssuedFlagMutex);
     }
 
     if (xSemaphoreTake(BopItCommands_PrimeInputFlagMutex, portMAX_DELAY) == pdTRUE)

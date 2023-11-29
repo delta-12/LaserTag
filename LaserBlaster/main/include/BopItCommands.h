@@ -20,6 +20,9 @@
 extern bool BopItCommands_TriggerInputFlag;
 extern SemaphoreHandle_t BopItCommands_TriggerInputFlagMutex;
 extern StaticSemaphore_t BopItCommands_TriggerInputFlagMutexBuffer;
+extern bool BopItCommands_TriggerCommandIssuedFlag;
+extern SemaphoreHandle_t BopItCommands_TriggerCommandIssuedFlagMutex;
+extern StaticSemaphore_t BopItCommands_TriggerCommandIssuedFlagMutexBuffer;
 extern BopIt_Command_t BopItCommands_Trigger;
 
 extern bool BopItCommands_PrimeInputFlag;
