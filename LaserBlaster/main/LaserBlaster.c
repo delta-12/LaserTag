@@ -81,6 +81,8 @@ void app_main(void)
 	BopIt_RegisterTime(BopItTime);
 	BopIt_Init(&bopItGameContext);
 
+	Ssd1306MainScreen();
+
 	/* Wait for BLE connection to Target */
 	Ssd1306WaitForBleConnectScreen();
 	while (!BleCentral_IsConnected())
@@ -89,7 +91,6 @@ void app_main(void)
 	}
 
 	/* Run BopIt game */
-	Ssd1306MainScreen();
 	Ssd1306StartGameScreen();
 	while (!StartGame)
 	{

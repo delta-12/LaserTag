@@ -20,8 +20,8 @@
 #define BOPIT_LOG_BUFFER_SIZE 1024U                                                                        /* Size of buffer for storing messages to be logged */
 #define BOPIT_MAX_SCORE 99U                                                                                /* Maximum game score, game is over after player reaches this score */
 #define BOPIT_INIT_LIVES 3U                                                                                /* Starting player lives */
-#define BOPIT_MAX_WAIT_TIME_MS 5000U                                                                       /* Maximum time in milliseconds to complete a command */
-#define BOPIT_MIN_WAIT_TIME_MS 500U                                                                        /* Minimum time in milliseconds to complete a command */
+#define BOPIT_MAX_WAIT_TIME_MS 8000U                                                                       /* Maximum time in milliseconds to complete a command */
+#define BOPIT_MIN_WAIT_TIME_MS 2000U                                                                       /* Minimum time in milliseconds to complete a command */
 #define BOPIT_WAIT_TIME_DECREMENT_MS (BOPIT_MAX_WAIT_TIME_MS - BOPIT_MIN_WAIT_TIME_MS) / (BOPIT_MAX_SCORE) /* Numer of milliseconds to decrease time to complete a command */
 
 /* Globals
