@@ -30,10 +30,10 @@
 #define BOPITCOMMANDS_PLAYERMINI_FAIL_FILE 2U         /* DFPlayerMini file to play for fail feedback */
 #define BOPITCOMMANDS_NEOPIXEL_PIN GPIO_NUM_4         /* GPIO pin for neopixel strip */
 #define BOPITCOMMANDS_NEOPIXEL_COUNT 6U               /* Neopixel strip with 6 pixels */
-#define BOPITCOMMANDS_CLIP0_VOLTAGE_LOWER_BOUND 1500U /* Lower bound for voltage that should be read for clip 0 */
-#define BOPITCOMMANDS_CLIP0_VOLTAGE_UPPER_BOUND 1800U /* Upper bound for voltage that should be read for clip 0 */
-#define BOPITCOMMANDS_CLIP1_VOLTAGE_LOWER_BOUND 2950U /* Lower bound for voltage that should be read for clip 1 */
-#define BOPITCOMMANDS_CLIP1_VOLTAGE_UPPER_BOUND 3050U /* Upper bound for voltage that should be read for clip 1 */
+#define BOPITCOMMANDS_CLIP0_VOLTAGE_LOWER_BOUND 2950U /* Lower bound for voltage that should be read for clip 0 */
+#define BOPITCOMMANDS_CLIP0_VOLTAGE_UPPER_BOUND 3050U /* Upper bound for voltage that should be read for clip 0 */
+#define BOPITCOMMANDS_CLIP1_VOLTAGE_LOWER_BOUND 1500U /* Lower bound for voltage that should be read for clip 1 */
+#define BOPITCOMMANDS_CLIP1_VOLTAGE_UPPER_BOUND 1800U /* Upper bound for voltage that should be read for clip 1 */
 #define BOPITCOMMANDS_FEEDBACK_DELAY_MS 1000U         /* 1000ms delay after providing feedback */
 
 /* Typedefs
@@ -293,14 +293,14 @@ bool BopItCommands_ReloadGetInput(void)
         }
         else if (voltage >= BOPITCOMMANDS_CLIP1_VOLTAGE_LOWER_BOUND && voltage < BOPITCOMMANDS_CLIP1_VOLTAGE_UPPER_BOUND)
         {
-            insertedClip = BOPITCOMMANDS_CLIPNUMBER_0;
+            insertedClip = BOPITCOMMANDS_CLIPNUMBER_1;
         }
 
         if (insertedClip != BOPITCOMMANDS_CLIPNUMBER_UNDEFINED && insertedClip != BopItCommands_InsertedClip)
         {
+            BopItCommands_InsertedClip = insertedClip;
             input = true;
         }
-        BopItCommands_InsertedClip = insertedClip;
     }
 
     return input;
