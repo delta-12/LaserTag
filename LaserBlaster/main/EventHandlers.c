@@ -86,37 +86,3 @@ void EventHandlers_PrimeEventHandler(void)
         xSemaphoreGive(BopItCommands_PrimeInputFlagMutex);
     }
 }
-
-/**
- * @brief Handle a joystick event.
- *
- * @param[in] gpioNum GPIO number of the joystick input that produced the event
- ******************************************************************************/
-void EventHandlers_JoystickEventHandler(const Gpio_GpioNum_t gpioNum)
-{
-    /* TODO integrate with display and menu */
-
-    /* Stub handler */
-    printf("Joystick input: ");
-
-    switch (gpioNum)
-    {
-    case GPIO_JOYSTICK_UP:
-        printf("UP\n");
-        break;
-    case GPIO_JOYSTICK_DOWN:
-        printf("DOWN\n");
-        break;
-    case GPIO_JOYSTICK_LEFT:
-        printf("LEFT\n");
-        break;
-    case GPIO_JOYSTICK_RIGHT:
-        printf("RIGHT\n");
-        break;
-    case GPIO_JOYSTICK_CENTER:
-        printf("CENTER\n");
-        break;
-    default:
-        break;
-    }
-}
