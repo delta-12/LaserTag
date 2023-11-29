@@ -7,8 +7,8 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
 #include "MenuScreens.h"
-#include "ssd1306.h"
 #include "nvs_flash.h"
+#include "ssd1306.h"
 
 #define BOPIT_COMMAND_COUNT 3U
 #define BOPIT_RUN_DELAY_MS 10U
@@ -47,30 +47,30 @@ static void NotifyCallback(uint8_t *const data, const size_t size);
 
 void app_main(void)
 {
-    /* Initialize NVS — it is used to store PHY calibration data */
-    esp_err_t err = nvs_flash_init();
-    if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND)
-    {
-        ESP_ERROR_CHECK(nvs_flash_erase());
-        err = nvs_flash_init();
-    }
-    ESP_ERROR_CHECK(err);
+	/* Initialize NVS — it is used to store PHY calibration data */
+	esp_err_t err = nvs_flash_init();
+	if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND)
+	{
+		ESP_ERROR_CHECK(nvs_flash_erase());
+		err = nvs_flash_init();
+	}
+	ESP_ERROR_CHECK(err);
 
-    ShotReceivedMutex = xSemaphoreCreateMutexStatic(&ShotReceivedMutexBuffer);
+	ShotReceivedMutex = xSemaphoreCreateMutexStatic(&ShotReceivedMutexBuffer);
 
-    /* Initialize peripherals and modules */
+	/* Initialize peripherals and modules */
 	Gpio_Init();
 	Ssd1306Init();
 	BopItCommands_Init();
 	EventHandlers_Init();
-    BleCentral_Init();
+	BleCentral_Init();
 
 	Gpio_RegisterEventHandler(GPIO_TYPE_BUTTON, EventHandlers_ButtonEventHandler);
 	Gpio_RegisterEventHandler(GPIO_TYPE_JOYSTICK, JoystickEventHandler);
 
-    BleCentral_RegisterNotifyCallback(NotifyCallback);
+	BleCentral_RegisterNotifyCallback(NotifyCallback);
 
-    /* Initialize BopIt game */
+	/* Initialize BopIt game */
 	BopIt_GameContext_t bopItGameContext = {
 		.Commands = BopItCommands,
 		.CommandCount = BOPIT_COMMAND_COUNT,
@@ -81,13 +81,14 @@ void app_main(void)
 	BopIt_RegisterTime(BopItTime);
 	BopIt_Init(&bopItGameContext);
 
-    /* Wait for BLE connection to Target */
-    while (!BleCentral_IsConnected())
-    {
-        vTaskDelay(BOPIT_RUN_DELAY_MS / portTICK_PERIOD_MS);
-    }
+	/* Wait for BLE connection to Target */
+	Ssd1306WaitForBleConnectScreen();
+	while (!BleCentral_IsConnected())
+	{
+		vTaskDelay(BOPIT_RUN_DELAY_MS / portTICK_PERIOD_MS);
+	}
 
-    /* Run BopIt game */
+	/* Run BopIt game */
 	Ssd1306MainScreen();
 	Ssd1306StartGameScreen();
 	while (!StartGame)
@@ -100,30 +101,30 @@ void app_main(void)
 	{
 		BopIt_Run(&bopItGameContext);
 
-        /* TODO check if trigger was pressed and state is success, then wait for shot be received in remaining time to complete command */
-        if (bopItGameContext.CurrentCommand == &BopItCommands_Trigger && bopItGameContext.GameState == BOPIT_GAMESTATE_SUCCESS)
-        {
-            bool shotReceived = false;
-            while ((BopItTime() - bopItGameContext.WaitStart) < bopItGameContext.WaitTime && !shotReceived && BleCentral_IsConnected())
-            {
-                /* TODO check for shot received */
-                shotReceived = true;
+		/* TODO check if trigger was pressed and state is success, then wait for shot be received in remaining time to complete command */
+		if (bopItGameContext.CurrentCommand == &BopItCommands_Trigger && bopItGameContext.GameState == BOPIT_GAMESTATE_SUCCESS)
+		{
+			bool shotReceived = false;
+			while ((BopItTime() - bopItGameContext.WaitStart) < bopItGameContext.WaitTime && !shotReceived && BleCentral_IsConnected())
+			{
+				/* TODO check for shot received */
+				shotReceived = true;
 
-                if (xSemaphoreTake(ShotReceivedMutex, portMAX_DELAY) == pdTRUE)
-                {
-                    shotReceived = ShotReceived;
-                    ShotReceived = false;
-                    xSemaphoreGive(ShotReceivedMutex);
-                }
+				if (xSemaphoreTake(ShotReceivedMutex, portMAX_DELAY) == pdTRUE)
+				{
+					shotReceived = ShotReceived;
+					ShotReceived = false;
+					xSemaphoreGive(ShotReceivedMutex);
+				}
 
-                vTaskDelay(BOPIT_RUN_DELAY_MS / portTICK_PERIOD_MS);
-            }
+				vTaskDelay(BOPIT_RUN_DELAY_MS / portTICK_PERIOD_MS);
+			}
 
-            if (!shotReceived)
-            {
-                bopItGameContext.GameState = BOPIT_GAMESTATE_FAIL;
-            }
-        }
+			if (!shotReceived)
+			{
+				bopItGameContext.GameState = BOPIT_GAMESTATE_FAIL;
+			}
+		}
 
 		ssd1306_clear_screen(Ssd1306Handle, 0x00U);
 		Ssd1306SetScore(bopItGameContext.Score);
@@ -136,9 +137,9 @@ void app_main(void)
 	Ssd1306SetLives(bopItGameContext.Lives);
 	vTaskDelay(BOPIT_RUN_DELAY_MS / portTICK_PERIOD_MS);
 
-    /* De-initialization */
-    BopItCommands_DeInit();
-    BleCentral_DeInit();
+	/* De-initialization */
+	BopItCommands_DeInit();
+	BleCentral_DeInit();
 }
 
 static void BopItLogger(const char *const message)
@@ -347,15 +348,15 @@ static void Ssd1306SetLives(const uint8_t lives)
 
 static void NotifyCallback(uint8_t *const data, const size_t size)
 {
-    for (size_t i = 0U; i < size; i++)
-    {
-        printf("%02x ", data[i]);
-    }
-    printf("\n");
+	for (size_t i = 0U; i < size; i++)
+	{
+		printf("%02x ", data[i]);
+	}
+	printf("\n");
 
-    if (xSemaphoreTake(ShotReceivedMutex, portMAX_DELAY) == pdTRUE)
-    {
-        ShotReceived = true;
-        xSemaphoreGive(ShotReceivedMutex);
-    }
+	if (xSemaphoreTake(ShotReceivedMutex, portMAX_DELAY) == pdTRUE)
+	{
+		ShotReceived = true;
+		xSemaphoreGive(ShotReceivedMutex);
+	}
 }
