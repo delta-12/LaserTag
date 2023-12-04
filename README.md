@@ -4,7 +4,7 @@ A Bop It! style laser tag game.
 
 ## Overview
 
-TODO
+Handheld laser blaster Bop It! toy with actions including shooting, priming, and reloading. The blaster a is self-contained unit powered by a 3.7V 1S LiPo battery and controlled by an ESP32. To save time and avoid the complexity of integrating a bare ESP32 SoC with the PCB design, a development board was used to integrate an ESP32 with the rest of the hardware. The TinyPICO development board designed and manufactured by Seon Rozenblum, AKA Unexpected Maker, was chosen due to its compact form factor, integrated PMIC battery management for a single cell LiPo, and on-board WCH9102F USB/UART converter. The specific ESP32 SoC included on the TinyPICO development board is the ESP32 PICO-D4, which features a 32-bit dual core processor, Bluetooth BLE 4.2, and 2.4 GHz Wifi. The blaster also has an OLED menu screen with a joystick controller, Neopixels, MP3 player and speaker, IR emitter, and laser pointer. Accessories include a target with an IR receiver which communicates with the blaster over BLE.
 
 ## Development
 
