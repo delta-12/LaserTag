@@ -4,7 +4,7 @@ A Bop It! style laser tag game.
 
 ## Overview
 
-TODO
+Handheld laser blaster Bop It! toy with actions including shooting, priming, and reloading. The blaster a is self-contained unit powered by a 3.7V 1S LiPo battery and controlled by an ESP32. To save time and avoid the complexity of integrating a bare ESP32 SoC with the PCB design, a development board was used to integrate an ESP32 with the rest of the hardware. The TinyPICO development board designed and manufactured by Seon Rozenblum, AKA Unexpected Maker, was chosen due to its compact form factor, integrated PMIC battery management for a single cell LiPo, and on-board WCH9102F USB/UART converter. The specific ESP32 SoC included on the TinyPICO development board is the ESP32 PICO-D4, which features a 32-bit dual core processor, Bluetooth BLE 4.2, and 2.4 GHz Wifi. The blaster also has an OLED menu screen with a joystick controller, Neopixels, MP3 player and speaker, IR emitter, and laser pointer. Accessories include a target with an IR receiver which communicates with the blaster over BLE.
 
 ## Development
 
@@ -51,6 +51,8 @@ Guide to getting started with working on this project.
 ### ESP-IDF
 
 Firmware for this project targets the ESP32, and as such, ESP-IDF is used for firmware development.
+
+Note: The following example commands assume the environment is a Debian-based Linux distribution with the target device connected on port `/dev/ttyUSB0`. Another common port for target devices to be connected on is `/dev/ttyACM0`.
 
 #### Build
 
@@ -125,32 +127,30 @@ This will generate a report named `cppcheck_report.xml` in the project's build d
 
 ### Docker
 
-If you do not wish to install ESP-IDF, the ESP-IDF Docker Image can be used instead. This may also be suitable for environments in which it is diffcult to install or use ESP-IDF. Obviously, Docker is required for this approach. For instructions to setup Docker, see [https://www.docker.com/get-started/](https://www.docker.com/get-started/).
+If you do not wish to install ESP-IDF, the Docker image `d3lta12/idf-tools` can be used instead. This may also be suitable for environments in which it is diffcult to install or use ESP-IDF. Obviously, Docker is required for this approach. For instructions to setup Docker, see [https://www.docker.com/get-started/](https://www.docker.com/get-started/). `d3lta12/idf-tools` contains all the necessary tools to work with this project, including ESP-IDF, Cppcheck, and Doxygen. This image uses the ESP-IDF Docker image from Espressif as the base image, and the Dockerfile for this image can be found in `tools/docker`. In addition to the commands below, any other standard `idf.py` commands should also work with this image. `d3lta12/idf-tools` is the image used in CI to run build and static analysis checks as well as to generate documentation.
+
+Note: These commands assume the environment is a Debian-based Linux distribution with the target device connected on port `/dev/ttyUSB0`. Another common port for target devices to be connected on is `/dev/ttyACM0`.
 
 1. The firmware can be configured by running
 
-   `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp -it espressif/idf idf.py menuconfig`
+   `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp -it d3lta12/idf-tools idf.py menuconfig`
 
 2. Navigate to the project directory and build the firmware with the docker command
 
-   `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp espressif/idf idf.py build`
+   `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp d3lta12/idf-tools idf.py build`
 
 3. To flash the firmware, run
 
-   `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp --device=/dev/ttyUSB0 espressif/idf idf.py -p /dev/ttyUSB0 flash`
+   `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp --device=/dev/ttyUSB0 d3lta12/idf-tools idf.py -p /dev/ttyUSB0 flash`
 
    To monitor after flashing, run
 
-   `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp --device=/dev/ttyUSB0 -it espressif/idf idf.py -p /dev/ttyUSB0 monitor`
+   `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp --device=/dev/ttyUSB0 -it d3lta12/idf-tools idf.py -p /dev/ttyUSB0 monitor`
 
    The flash and monitor commands can be combined into a single command as follows
 
-   `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp --device=/dev/ttyUSB0 -it espressif/idf idf.py -p /dev/ttyUSB0 flash monitor`
+   `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp --device=/dev/ttyUSB0 -it d3lta12/idf-tools idf.py -p /dev/ttyUSB0 flash monitor`
 
-4. Static analysis with Cppcheck can be performed with the `d3lta12/idf-cppcheck` Docker image, which is a modified version of the `espressif/idf` image and used in CI.
+4. Static analysis with Cppcheck can be performed with the `d3lta12/idf-cppcheck` Docker image, which is a modified version of the `d3lta12/idf-tools` image and used in CI.
 
    `docker run --rm -v $PWD:/project -w /project -u $UID -e HOME=/tmp -it d3lta12/idf-cppcheck:latest idf.py cppcheck`
-
-   Any of the commands above or other standard `idf.py` commands will also work with this image. The Dockerfile for this image can be found in `tools/docker`.
-
-Note: These commands assume the environment is a Debian-based Linux distribution with the target device connected on port `/dev/ttyUSB0`.
